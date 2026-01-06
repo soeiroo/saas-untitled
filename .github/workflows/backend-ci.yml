@@ -27,12 +27,6 @@ jobs:
           java-version: 17
           cache: maven
 
-      - name: Configurar Maven
-        run: |
-          mkdir -p ~/.m2
-          cp backend/.m2/settings.xml ~/.m2/settings.xml
-
-
       - name: Cache do Maven
         uses: actions/cache@v3
         with:
