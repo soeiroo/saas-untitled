@@ -16,37 +16,35 @@ interface Subscription {
 }
 
 function App() {
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
-  const [editDialogOpen, setEditDialogOpen] = useState(false);
-
-  // Load subscriptions from localStorage
-  useEffect(() => {
+  // Initialize state with function to avoid setState in effect
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>(() => {
+    if (typeof window === 'undefined') return [];
     const stored = localStorage.getItem('subscriptions');
     if (stored) {
-      setSubscriptions(JSON.parse(stored));
-    } else {
-      // Add some example data
-      const exampleData: Subscription[] = [
-        {
-          id: '1',
-          name: 'Netflix',
-          price: 55.90,
-          renewalDate: '2026-01-15',
-          category: 'Streaming'
-        },
-        {
-          id: '2',
-          name: 'Spotify',
-          price: 21.90,
-          renewalDate: '2026-01-08',
-          category: 'Música'
-        }
-      ];
-      setSubscriptions(exampleData);
-      localStorage.setItem('subscriptions', JSON.stringify(exampleData));
+      return JSON.parse(stored);
     }
-  }, []);
+    // Add some example data
+    const exampleData: Subscription[] = [
+      {
+        id: '1',
+        name: 'Netflix',
+        price: 55.90,
+        renewalDate: '2026-01-15',
+        category: 'Streaming'
+      },
+      {
+        id: '2',
+        name: 'Spotify',
+        price: 21.90,
+        renewalDate: '2026-01-08',
+        category: 'Música'
+      }
+    ];
+    localStorage.setItem('subscriptions', JSON.stringify(exampleData));
+    return exampleData;
+  });
+  const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
+  const [editDialogOpen, setEditDialogOpen] = useState(false);
 
   // Save to localStorage whenever subscriptions change
   useEffect(() => {
@@ -145,7 +143,7 @@ function App() {
         {subscriptions.length === 0 ? (
           <Card className="bg-zinc-900 border-zinc-800 p-12 text-center">
             <p className="text-zinc-400 text-lg mb-2">Nenhuma assinatura cadastrada</p>
-            <p className="text-zinc-500">Clique em "Nova Assinatura" para começar</p>
+            <p className="text-zinc-500">Clique em &quot;Nova Assinatura&quot; para começar</p>
           </Card>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
