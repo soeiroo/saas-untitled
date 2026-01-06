@@ -58,4 +58,4 @@ jobs:
           EOL
 
       - name: Build com Maven
-        run: mvn -U clean package -DskipTests
+        run: mvn -U clean package -DskipTests --settings ~/.m2/settings.xml
