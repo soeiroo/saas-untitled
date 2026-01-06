@@ -34,7 +34,28 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('backend/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
+            
+      - name: Configurar Maven settings para Spring 4.0.1
+        run: |
+          mkdir -p ~/.m2
+          cat > ~/.m2/settings.xml <<EOL
+          <settings>
+            <profiles>
+              <profile>
+                <id>spring-milestones</id>
+                <repositories>
+                  <repository>
+                    <id>spring-milestones</id>
+                    <url>https://repo.spring.io/milestone</url>
+                  </repository>
+                </repositories>
+              </profile>
+            </profiles>
+            <activeProfiles>
+              <activeProfile>spring-milestones</activeProfile>
+            </activeProfiles>
+          </settings>
+          EOL
 
       - name: Build com Maven
-        run: mvn -U clean package -DskipTests
-
+        run: mvn -U clean package -DskipTests --settings ~/.m2/settings.xml
