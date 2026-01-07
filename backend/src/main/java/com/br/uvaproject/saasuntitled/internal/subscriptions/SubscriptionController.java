@@ -1,7 +1,7 @@
-package com.br.uvaproject.saasuntitled.internal.subscriptions.controller;
+package com.br.uvaproject.saasuntitled.internal.subscriptions;
 
-import com.br.uvaproject.saasuntitled.internal.subscriptions.model.Subscription;
-import com.br.uvaproject.saasuntitled.internal.subscriptions.service.SubscriptionService;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.Subscription;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

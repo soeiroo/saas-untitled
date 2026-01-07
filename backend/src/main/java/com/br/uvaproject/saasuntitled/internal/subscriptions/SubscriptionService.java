@@ -1,9 +1,9 @@
-package com.br.uvaproject.saasuntitled.internal.subscriptions.service;
+package com.br.uvaproject.saasuntitled.internal.subscriptions;
 
-import com.br.uvaproject.saasuntitled.internal.subscriptions.model.Subscription;
-import com.br.uvaproject.saasuntitled.internal.subscriptions.repository.SubscriptionRepository;
-import com.br.uvaproject.saasuntitled.internal.users.model.User;
-import com.br.uvaproject.saasuntitled.internal.users.repository.UserRepository;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.Subscription;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.SubscriptionRepository;
+import com.br.uvaproject.saasuntitled.internal.users.User;
+import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

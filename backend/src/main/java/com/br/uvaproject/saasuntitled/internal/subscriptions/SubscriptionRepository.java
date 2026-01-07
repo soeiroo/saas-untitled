@@ -1,6 +1,6 @@
-package com.br.uvaproject.saasuntitled.internal.subscriptions.repository;
+package com.br.uvaproject.saasuntitled.internal.subscriptions;
 
-import com.br.uvaproject.saasuntitled.internal.subscriptions.model.Subscription;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.Subscription;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

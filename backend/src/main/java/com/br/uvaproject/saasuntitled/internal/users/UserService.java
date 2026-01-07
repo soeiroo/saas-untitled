@@ -1,7 +1,7 @@
-package com.br.uvaproject.saasuntitled.internal.users.service;
+package com.br.uvaproject.saasuntitled.internal.users;
 
-import com.br.uvaproject.saasuntitled.internal.users.model.User;
-import com.br.uvaproject.saasuntitled.internal.users.repository.UserRepository;
+import com.br.uvaproject.saasuntitled.internal.users.User;
+import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;

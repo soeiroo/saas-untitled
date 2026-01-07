@@ -1,4 +1,4 @@
-package com.br.uvaproject.saasuntitled.internal.users.model;
+package com.br.uvaproject.saasuntitled.internal.users;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -6,7 +6,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
-import com.br.uvaproject.saasuntitled.internal.subscriptions.model.Subscription;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.Subscription;
 
 @Entity
 @Table(name = "users")

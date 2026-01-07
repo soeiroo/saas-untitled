@@ -1,6 +1,6 @@
-package com.br.uvaproject.saasuntitled.internal.subscriptions.model;
+package com.br.uvaproject.saasuntitled.internal.subscriptions;
 
-import com.br.uvaproject.saasuntitled.internal.users.model.User;
+import com.br.uvaproject.saasuntitled.internal.users.User;
 import jakarta.persistence.*;
 import lombok.*;
 import java.math.BigDecimal;

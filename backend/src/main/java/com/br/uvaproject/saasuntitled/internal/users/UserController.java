@@ -1,7 +1,7 @@
-package com.br.uvaproject.saasuntitled.internal.users.controller;
+package com.br.uvaproject.saasuntitled.internal.users;
 
-import com.br.uvaproject.saasuntitled.internal.users.model.User;
-import com.br.uvaproject.saasuntitled.internal.users.service.UserService;
+import com.br.uvaproject.saasuntitled.internal.users.User;
+import com.br.uvaproject.saasuntitled.internal.users.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
