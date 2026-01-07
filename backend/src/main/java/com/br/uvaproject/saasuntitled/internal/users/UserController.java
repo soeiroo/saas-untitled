@@ -2,6 +2,8 @@ package com.br.uvaproject.saasuntitled.internal.users;
 
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import com.br.uvaproject.saasuntitled.internal.users.UserService;
+import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
+import com.br.uvaproject.saasuntitled.internal.users.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,6 +17,7 @@ import java.util.UUID;
 public class UserController {
 
     private final UserService userService;
+    private final UserRepository userRepository;
 
     @PostMapping
     public ResponseEntity<User> create(@RequestBody User user) {
@@ -22,8 +25,11 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<User>> getAll() {
-        return ResponseEntity.ok(userService.getAllUsers());
+    public List<UserDTO> getUsers() {
+        return userRepository.findAll()
+                .stream()
+                .map(u -> new UserDTO(u.getId(), u.getEmail(), u.getName()))
+                .toList();
     }
 
     @GetMapping("/{id}")
