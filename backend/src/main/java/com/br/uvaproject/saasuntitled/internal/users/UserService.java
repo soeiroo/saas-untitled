@@ -5,6 +5,7 @@ import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -22,6 +23,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional
     public List<User> getAllUsers() {
         return userRepository.findAll();
     }
