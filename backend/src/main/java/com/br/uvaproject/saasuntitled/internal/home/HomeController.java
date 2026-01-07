@@ -1,4 +1,4 @@
-package com.br.uvaproject.saasuntitled.home.controller;
+package com.br.uvaproject.saasuntitled.internal.home;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
