@@ -38,13 +38,17 @@ public class Subscription {
     @Column(nullable = false)
     private String category;
 
+    @Column(nullable=true)
+    private String plan;
+
+    @Column(nullable = false)
     private LocalDateTime createdAt;
+
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
 
     @PrePersist
     public void prePersist() {
-        createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
 

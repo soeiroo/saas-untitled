@@ -35,11 +35,8 @@ public class SubscriptionService {
     public Subscription update(UUID id, SubscriptionUpdateDTO dto) {
         Subscription sub = subscriptionRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Subscription not found"));
-
-        if (dto.name() != null) sub.setName(dto.name());
-        if (dto.price() != null) sub.setPrice(dto.price());
-        if (dto.renewalDate() != null) sub.setRenewalDate(dto.renewalDate());
-        if (dto.category() != null) sub.setCategory(dto.category());
+                
+        SubscriptionMapper.updateEntityFromDTO(sub, dto);
 
         return subscriptionRepository.save(sub);
     }
