@@ -42,7 +42,7 @@ public class Subscription {
     private String plan;
 
     @Column(nullable = false)
-    private LocalDateTime createdAt;
+    private LocalDate createdAt;
 
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
