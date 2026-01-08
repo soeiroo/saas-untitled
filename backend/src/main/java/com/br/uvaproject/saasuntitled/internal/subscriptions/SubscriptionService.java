@@ -1,7 +1,8 @@
 package com.br.uvaproject.saasuntitled.internal.subscriptions;
 
-import com.br.uvaproject.saasuntitled.internal.subscriptions.Subscription;
-import com.br.uvaproject.saasuntitled.internal.subscriptions.SubscriptionRepository;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCreateDTO;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.mapper.SubscriptionMapper;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -17,27 +18,33 @@ public class SubscriptionService {
     private final SubscriptionRepository subscriptionRepository;
     private final UserRepository userRepository;
 
-    public Subscription createSubscription(UUID userId, Subscription subscription) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
-        subscription.setUser(user);
-        return subscriptionRepository.save(subscription);
+    public Subscription create(UUID userId, SubscriptionCreateDTO dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        Subscription sub = SubscriptionMapper.fromCreateDTO(dto);
+        sub.setUser(user);
+
+        return subscriptionRepository.save(sub);
     }
 
-    public List<Subscription> getSubscriptionsByUser(UUID userId) {
+    public List<Subscription> findByUser(UUID userId) {
         return subscriptionRepository.findByUserId(userId);
     }
 
-    public Subscription updateSubscription(UUID id, Subscription updated) {
-        return subscriptionRepository.findById(id).map(sub -> {
-            sub.setName(updated.getName());
-            sub.setPrice(updated.getPrice());
-            sub.setRenewalDate(updated.getRenewalDate());
-            sub.setCategory(updated.getCategory());
-            return subscriptionRepository.save(sub);
-        }).orElseThrow(() -> new RuntimeException("Subscription not found"));
+    public Subscription update(UUID id, SubscriptionUpdateDTO dto) {
+        Subscription sub = subscriptionRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Subscription not found"));
+
+        if (dto.name() != null) sub.setName(dto.name());
+        if (dto.price() != null) sub.setPrice(dto.price());
+        if (dto.renewalDate() != null) sub.setRenewalDate(dto.renewalDate());
+        if (dto.category() != null) sub.setCategory(dto.category());
+
+        return subscriptionRepository.save(sub);
     }
 
-    public void deleteSubscription(UUID id) {
+    public void delete(UUID id) {
         subscriptionRepository.deleteById(id);
     }
 }
