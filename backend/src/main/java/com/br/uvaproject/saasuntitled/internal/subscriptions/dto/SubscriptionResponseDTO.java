@@ -12,6 +12,7 @@ public record SubscriptionResponseDTO(
         BigDecimal price,
         LocalDate renewalDate,
         String category,
+        String plan,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}
