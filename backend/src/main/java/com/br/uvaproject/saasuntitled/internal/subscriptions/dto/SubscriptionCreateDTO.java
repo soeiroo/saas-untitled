@@ -9,6 +9,6 @@ public record SubscriptionCreateDTO(
     BigDecimal price,
     LocalDate renewalDate,
     String category,
-    LocalDateTime createdAt,
+    LocalDate createdAt,
     String plan
 ) {}

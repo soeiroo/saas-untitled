@@ -13,6 +13,6 @@ public record SubscriptionResponseDTO(
         LocalDate renewalDate,
         String category,
         String plan,
-        LocalDateTime createdAt,
+        LocalDate createdAt,
         LocalDateTime updatedAt
 ) {}
