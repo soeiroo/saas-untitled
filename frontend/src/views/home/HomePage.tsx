@@ -1,21 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { AddSubscriptionDialog } from './components/AddSubscriptionDialog';
-import { SubscriptionCard } from './components/SubscriptionCard';
-import { EditSubscriptionDialog } from './components/EditSubscriptionDialog';
-import { Card } from './components/ui/card';
+import { AddSubscriptionDialog } from '@/components/subscription/AddSubscriptionDialog';
+import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
+import { EditSubscriptionDialog } from '@/components/subscription/EditSubscriptionDialog';
+import { Card } from '@/components/ui/card';
 import { DollarSign, Bell, TrendingUp } from 'lucide-react';
+import type { Subscription } from '@/types/subscription';
 
-interface Subscription {
-  id: string;
-  name: string;
-  price: number;
-  renewalDate: string;
-  category: string;
-}
-
-function App() {
+export function HomePage() {
   // Initialize state with function to avoid setState in effect
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(() => {
     if (typeof window === 'undefined') return [];
@@ -173,4 +166,4 @@ function App() {
   );
 }
 
-export default App;
+

@@ -1,19 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from './ui/dialog';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
 import { Plus } from 'lucide-react';
-
-interface Subscription {
-  id: string;
-  name: string;
-  price: number;
-  renewalDate: string;
-  category: string;
-}
+import type { Subscription } from '@/types/subscription';
 
 interface AddSubscriptionDialogProps {
   onAdd: (subscription: Omit<Subscription, 'id'>) => void;
@@ -120,3 +113,4 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
     </Dialog>
   );
 }
+

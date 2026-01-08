@@ -1,19 +1,12 @@
 'use client';
 
 import { Calendar, DollarSign, Trash, Pencil, Bell } from 'lucide-react';
-import { Button } from './ui/button';
-import { Card } from './ui/card';
-import { Badge } from './ui/badge';
+import { Button } from '../ui/button';
+import { Card } from '../ui/card';
+import { Badge } from '../ui/badge';
 import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-
-interface Subscription {
-  id: string;
-  name: string;
-  price: number;
-  renewalDate: string;
-  category: string;
-}
+import type { Subscription } from '@/types/subscription';
 
 interface SubscriptionCardProps {
   subscription: Subscription;
@@ -84,3 +77,4 @@ export function SubscriptionCard({ subscription, onDelete, onEdit }: Subscriptio
     </Card>
   );
 }
+

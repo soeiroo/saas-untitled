@@ -1,18 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from './ui/dialog';
-import { Button } from './ui/button';
-import { Input } from './ui/input';
-import { Label } from './ui/label';
-
-interface Subscription {
-  id: string;
-  name: string;
-  price: number;
-  renewalDate: string;
-  category: string;
-}
+import { useState } from 'react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
+import { Button } from '../ui/button';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import type { Subscription } from '@/types/subscription';
 
 interface EditSubscriptionDialogProps {
   subscription: Subscription | null;
@@ -27,19 +20,15 @@ export function EditSubscriptionDialog({
   onClose, 
   onUpdate 
 }: EditSubscriptionDialogProps) {
-  const [name, setName] = useState('');
-  const [price, setPrice] = useState('');
-  const [renewalDate, setRenewalDate] = useState('');
-  const [category, setCategory] = useState('');
-
-  useEffect(() => {
-    if (subscription) {
-      setName(subscription.name);
-      setPrice(subscription.price.toString());
-      setRenewalDate(subscription.renewalDate);
-      setCategory(subscription.category);
-    }
-  }, [subscription]);
+  // Use key to reset form when subscription changes, avoiding setState in effect
+  const formKey = subscription?.id || 'new';
+  
+  // Initialize state with current subscription values
+  // The key prop on the form will reset the component when subscription changes
+  const [name, setName] = useState(() => subscription?.name || '');
+  const [price, setPrice] = useState(() => subscription?.price.toString() || '');
+  const [renewalDate, setRenewalDate] = useState(() => subscription?.renewalDate || '');
+  const [category, setCategory] = useState(() => subscription?.category || '');
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -62,7 +51,7 @@ export function EditSubscriptionDialog({
           <DialogTitle className="text-white">Editar Assinatura</DialogTitle>
           <DialogDescription className="text-zinc-400">Atualize os detalhes da assinatura.</DialogDescription>
         </DialogHeader>
-        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form key={formKey} onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
             <Label htmlFor="edit-name" className="text-zinc-300">Nome do Serviço</Label>
             <Input
@@ -123,3 +112,4 @@ export function EditSubscriptionDialog({
     </Dialog>
   );
 }
+
