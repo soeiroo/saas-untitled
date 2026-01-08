@@ -8,7 +8,7 @@ import { Card } from '@/components/ui/card';
 import { DollarSign, Bell, TrendingUp } from 'lucide-react';
 import type { Subscription } from '@/types/subscription';
 
-export function HomePage() {
+export default function HomePage() {
   // Initialize state with function to avoid setState in effect
   const [subscriptions, setSubscriptions] = useState<Subscription[]>(() => {
     if (typeof window === 'undefined') return [];
@@ -165,5 +165,4 @@ export function HomePage() {
     </div>
   );
 }
-
 
