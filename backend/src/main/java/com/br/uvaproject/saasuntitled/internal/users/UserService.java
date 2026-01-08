@@ -1,5 +1,6 @@
 package com.br.uvaproject.saasuntitled.internal.users;
 
+import com.br.uvaproject.saasuntitled.exceptions.ResourceNotFoundException;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserCreateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.mapper.UserMapper;
@@ -29,11 +30,12 @@ public class UserService {
 
     public User findById(UUID id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("User not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
     }
 
     public User update(UUID id, UserUpdateDTO dto) {
-        User user = findById(id);
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
 
         if (dto.email() != null) user.setEmail(dto.email());
         if (dto.name() != null) user.setName(dto.name());
@@ -45,6 +47,9 @@ public class UserService {
     }
 
     public void delete(UUID id) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+
         userRepository.deleteById(id);
     }
 }
