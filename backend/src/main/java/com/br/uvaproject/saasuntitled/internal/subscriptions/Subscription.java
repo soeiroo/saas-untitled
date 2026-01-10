@@ -45,7 +45,6 @@ public class Subscription {
     private LocalDate createdAt;
 
     private LocalDateTime updatedAt;
-    private LocalDateTime deletedAt;
 
     @PrePersist
     public void prePersist() {
