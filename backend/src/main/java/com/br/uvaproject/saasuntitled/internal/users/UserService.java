@@ -21,15 +21,15 @@ public class UserService {
     public User create(UserCreateDTO dto) {
 
         if (dto.email() == null || dto.email().isBlank()) {
-            throw new IllegalArgumentException("Email must not be empty");
+            throw new IllegalArgumentException("O email não pode estar vazio");
         }
 
         if (dto.password() == null || dto.password().isBlank()) {
-            throw new IllegalArgumentException("Password must not be empty");
+            throw new IllegalArgumentException("A senha não pode estar vazia");
         }
 
         if (userRepository.findByEmail(dto.email()).isPresent()) {
-            throw new IllegalStateException("Email already exists");
+            throw new IllegalStateException("Email já está em uso");
         }
 
         String hash = passwordEncoder.encode(dto.password());
@@ -44,7 +44,7 @@ public class UserService {
 
     public User findById(UUID id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
 
     public User update(UUID id, UserUpdateDTO dto) {
@@ -52,13 +52,13 @@ public class UserService {
 
         if (dto.email() != null) {
             if (dto.email().isBlank()) {
-                throw new IllegalArgumentException("Email must not be empty");
+                throw new IllegalArgumentException("O email não pode estar vazio");
             }
 
             userRepository.findByEmail(dto.email())
                     .filter(u -> !u.getId().equals(id))
                     .ifPresent(u -> {
-                        throw new IllegalStateException("Email already exists");
+                        throw new IllegalStateException("Email já está em uso");
                     });
 
             user.setEmail(dto.email());
@@ -70,7 +70,7 @@ public class UserService {
 
         if (dto.password() != null) {
             if (dto.password().isBlank()) {
-                throw new IllegalArgumentException("Password must not be empty");
+                throw new IllegalArgumentException("A senha não pode estar vazia");
             }
             user.setPasswordHash(passwordEncoder.encode(dto.password()));
         }
@@ -80,7 +80,7 @@ public class UserService {
 
     public void delete(UUID id) {
         if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException("Usuário não encontrado");
         }
         userRepository.deleteById(id);
     }

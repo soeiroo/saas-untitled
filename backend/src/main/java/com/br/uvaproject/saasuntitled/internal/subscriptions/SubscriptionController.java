@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,7 +25,11 @@ public class SubscriptionController {
             @RequestBody SubscriptionCreateDTO dto
     ) {
         Subscription sub = subscriptionService.create(userId, dto);
-        return ResponseEntity.ok(SubscriptionMapper.toResponse(sub));
+
+        URI location = URI.create("/api/subscriptions/" + sub.getId());
+
+        return ResponseEntity.created(location)
+                .body(SubscriptionMapper.toResponse(sub));
     }
 
     @GetMapping("/user/{userId}")
@@ -36,12 +41,12 @@ public class SubscriptionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<SubscriptionResponseDTO> update(
+    public ResponseEntity<Void> update(
             @PathVariable UUID id,
             @RequestBody SubscriptionUpdateDTO dto
     ) {
-        Subscription sub = subscriptionService.update(id, dto);
-        return ResponseEntity.ok(SubscriptionMapper.toResponse(sub));
+        subscriptionService.update(id, dto);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

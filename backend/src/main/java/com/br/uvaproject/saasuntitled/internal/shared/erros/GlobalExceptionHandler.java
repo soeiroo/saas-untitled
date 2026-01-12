@@ -66,7 +66,7 @@ public class GlobalExceptionHandler {
                 .body(new ApiErrorDTO(
                         500,
                         "INTERNAL_SERVER_ERROR",
-                        "Unexpected error",
+                        "Erro inesperado",
                         request.getRequestURI(),
                         LocalDateTime.now()
                 ));

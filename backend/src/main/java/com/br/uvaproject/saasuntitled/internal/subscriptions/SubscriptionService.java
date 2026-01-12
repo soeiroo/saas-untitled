@@ -22,19 +22,19 @@ public class SubscriptionService {
     public Subscription create(UUID userId, SubscriptionCreateDTO dto) {
 
         if (dto.name() == null || dto.name().isBlank()) {
-            throw new IllegalArgumentException("Subscription name must not be empty");
+            throw new IllegalArgumentException("O nome da assinatura não pode estar vazio");
         }
 
         if (dto.price() == null) {
-            throw new IllegalArgumentException("Price must not be null");
+            throw new IllegalArgumentException("O preço da assinatura é obrigatório");
         }
 
         if (dto.renewalDate() == null) {
-            throw new IllegalArgumentException("Renewal date must not be null");
+            throw new IllegalArgumentException("A data de renovação é obrigatória");
         }
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
 
         Subscription sub = SubscriptionMapper.fromCreateDTO(dto);
         sub.setUser(user);
@@ -45,7 +45,7 @@ public class SubscriptionService {
     public List<Subscription> findByUser(UUID userId) {
 
         if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException("Usuário não encontrado");
         }
 
         return subscriptionRepository.findByUserId(userId);
@@ -54,7 +54,7 @@ public class SubscriptionService {
     public Subscription update(UUID id, SubscriptionUpdateDTO dto) {
 
         Subscription sub = subscriptionRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Subscription not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
 
         SubscriptionMapper.updateEntityFromDTO(sub, dto);
 
@@ -64,7 +64,7 @@ public class SubscriptionService {
     public void delete(UUID id) {
 
         if (!subscriptionRepository.existsById(id)) {
-            throw new EntityNotFoundException("Subscription not found");
+            throw new EntityNotFoundException("Assinatura não encontrada");
         }
 
         subscriptionRepository.deleteById(id);
