@@ -1,16 +1,12 @@
 package com.br.uvaproject.saasuntitled.internal.users;
 
-import com.br.uvaproject.saasuntitled.internal.users.dto.UserCreateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
-import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/users")
@@ -19,42 +15,24 @@ public class UserController {
 
     private final UserService userService;
 
-    @PostMapping
-    public ResponseEntity<UserResponseDTO> create(@RequestBody UserCreateDTO dto) {
-        User user = userService.create(dto);
-
-        URI location = URI.create("/api/users/" + user.getId());
-
-        return ResponseEntity.created(location)
-                .body(UserMapper.toResponse(user));
-    }
-
-    @GetMapping
-    public List<UserResponseDTO> getAll() {
-        return userService.findAll()
-                .stream()
-                .map(UserMapper::toResponse)
-                .toList();
-    }
-
-    @GetMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> getById(@PathVariable UUID id) {
-        User user = userService.findById(id);
+    @GetMapping("/me")
+    public ResponseEntity<UserResponseDTO> getMe(Authentication authentication) {
+        User user = userService.getMe(authentication.getName());
         return ResponseEntity.ok(UserMapper.toResponse(user));
     }
 
-    @PutMapping("/{id}")
-    public ResponseEntity<UserResponseDTO> update(
-            @PathVariable UUID id,
+    @PutMapping("/me")
+    public ResponseEntity<UserResponseDTO> updateMe(
+            Authentication authentication,
             @RequestBody UserUpdateDTO dto
     ) {
-        User user = userService.update(id, dto);
-        return ResponseEntity.ok(UserMapper.toResponse(user));
+        User updated = userService.updateMe(authentication.getName(), dto);
+        return ResponseEntity.ok(UserMapper.toResponse(updated));
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        userService.delete(id);
+    @DeleteMapping("/me")
+    public ResponseEntity<Void> deleteMe(Authentication authentication) {
+        userService.deleteMe(authentication.getName());
         return ResponseEntity.noContent().build();
     }
 }
