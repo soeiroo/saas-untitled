@@ -4,11 +4,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.context.annotation.Import;
-import com.br.uvaproject.saasuntitled.config.TestConfig;
+import com.br.uvaproject.saasuntitled.config.SecurityConfigTest;
 
 @SpringBootTest
 @ActiveProfiles("test")
-@Import(TestConfig.class)
+@Import(SecurityConfigTest.class)
 class SaasUntitledApplicationTests {
 	@Test
 	void contextLoads() {

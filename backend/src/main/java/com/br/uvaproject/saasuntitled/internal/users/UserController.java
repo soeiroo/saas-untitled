@@ -27,7 +27,7 @@ public class UserController {
             @RequestBody UserUpdateDTO dto
     ) {
         User updated = userService.updateMe(authentication.getName(), dto);
-        return ResponseEntity.ok(UserMapper.toResponse(updated));
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")
