@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff } from 'lucide-react';
 
@@ -96,7 +96,7 @@ export default function LoginPage() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center">Registrar</CardTitle>
-            <CardDescription className="text-center">Crie uma conta para acessar o sistema</CardDescription>
+  
           </CardHeader>
           <CardContent>
             <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
@@ -169,7 +169,6 @@ export default function LoginPage() {
       <Card className="w-full max-w-md">
         <CardHeader>
           <CardTitle className="text-center">Login</CardTitle>
-          <CardDescription className="text-center">Faça login para acessar o sistema</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
