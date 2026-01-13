@@ -4,7 +4,6 @@ import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCre
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.mapper.SubscriptionMapper;
 import com.br.uvaproject.saasuntitled.internal.users.User;
-import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,9 +16,8 @@ import java.util.UUID;
 public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
-    private final UserRepository userRepository;
 
-    public Subscription create(UUID userId, SubscriptionCreateDTO dto) {
+    public Subscription create(User user, SubscriptionCreateDTO dto) {
 
         if (dto.name() == null || dto.name().isBlank()) {
             throw new IllegalArgumentException("O nome da assinatura não pode estar vazio");
@@ -33,40 +31,39 @@ public class SubscriptionService {
             throw new IllegalArgumentException("A data de renovação é obrigatória");
         }
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+        Subscription subscription = SubscriptionMapper.fromCreateDTO(dto);
+        subscription.setUser(user);
 
-        Subscription sub = SubscriptionMapper.fromCreateDTO(dto);
-        sub.setUser(user);
-
-        return subscriptionRepository.save(sub);
+        return subscriptionRepository.save(subscription);
     }
 
-    public List<Subscription> findByUser(UUID userId) {
-
-        if (!userRepository.existsById(userId)) {
-            throw new EntityNotFoundException("Usuário não encontrado");
-        }
-
-        return subscriptionRepository.findByUserId(userId);
+    public List<Subscription> findMine(User user) {
+        return subscriptionRepository.findByUserId(user.getId());
     }
 
-    public Subscription update(UUID id, SubscriptionUpdateDTO dto) {
+    public Subscription update(User user, UUID subscriptionId, SubscriptionUpdateDTO dto) {
 
-        Subscription sub = subscriptionRepository.findById(id)
+        Subscription subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
 
-        SubscriptionMapper.updateEntityFromDTO(sub, dto);
-
-        return subscriptionRepository.save(sub);
-    }
-
-    public void delete(UUID id) {
-
-        if (!subscriptionRepository.existsById(id)) {
+        if (!subscription.getUser().getId().equals(user.getId())) {
             throw new EntityNotFoundException("Assinatura não encontrada");
         }
 
-        subscriptionRepository.deleteById(id);
+        SubscriptionMapper.updateEntityFromDTO(subscription, dto);
+
+        return subscriptionRepository.save(subscription);
+    }
+
+    public void delete(User user, UUID subscriptionId) {
+
+        Subscription subscription = subscriptionRepository.findById(subscriptionId)
+                .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
+
+        if (!subscription.getUser().getId().equals(user.getId())) {
+            throw new EntityNotFoundException("Assinatura não encontrada");
+        }
+
+        subscriptionRepository.delete(subscription);
     }
 }

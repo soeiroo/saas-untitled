@@ -1,11 +1,14 @@
 package com.br.uvaproject.saasuntitled.internal.subscriptions;
 
+import com.br.uvaproject.saasuntitled.internal.security.AuthenticatedUserService;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCreateDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.mapper.SubscriptionMapper;
+import com.br.uvaproject.saasuntitled.internal.users.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
@@ -18,40 +21,60 @@ import java.util.UUID;
 public class SubscriptionController {
 
     private final SubscriptionService subscriptionService;
+    private final AuthenticatedUserService authenticatedUserService;
 
-    @PostMapping("/user/{userId}")
+    @PostMapping
     public ResponseEntity<SubscriptionResponseDTO> create(
-            @PathVariable UUID userId,
+            Authentication authentication,
             @RequestBody SubscriptionCreateDTO dto
     ) {
-        Subscription sub = subscriptionService.create(userId, dto);
+        User user = authenticatedUserService.getUser(authentication);
 
-        URI location = URI.create("/api/subscriptions/" + sub.getId());
+        Subscription subscription = subscriptionService.create(user, dto);
 
-        return ResponseEntity.created(location)
-                .body(SubscriptionMapper.toResponse(sub));
+        URI location = URI.create("/api/subscriptions/" + subscription.getId());
+
+        return ResponseEntity
+                .created(location)
+                .body(SubscriptionMapper.toResponse(subscription));
     }
 
-    @GetMapping("/user/{userId}")
-    public List<SubscriptionResponseDTO> getByUser(@PathVariable UUID userId) {
-        return subscriptionService.findByUser(userId)
+    @GetMapping
+    public ResponseEntity<List<SubscriptionResponseDTO>> getMySubscriptions(
+            Authentication authentication
+    ) {
+        User user = authenticatedUserService.getUser(authentication);
+
+        List<SubscriptionResponseDTO> response = subscriptionService.findMine(user)
                 .stream()
                 .map(SubscriptionMapper::toResponse)
                 .toList();
+
+        return ResponseEntity.ok(response);
     }
 
     @PutMapping("/{id}")
     public ResponseEntity<Void> update(
+            Authentication authentication,
             @PathVariable UUID id,
             @RequestBody SubscriptionUpdateDTO dto
     ) {
-        subscriptionService.update(id, dto);
+        User user = authenticatedUserService.getUser(authentication);
+
+        subscriptionService.update(user, id, dto);
+
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable UUID id) {
-        subscriptionService.delete(id);
+    public ResponseEntity<Void> delete(
+            Authentication authentication,
+            @PathVariable UUID id
+    ) {
+        User user = authenticatedUserService.getUser(authentication);
+
+        subscriptionService.delete(user, id);
+
         return ResponseEntity.noContent().build();
     }
 }

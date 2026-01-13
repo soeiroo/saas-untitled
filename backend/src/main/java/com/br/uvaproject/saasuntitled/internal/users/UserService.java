@@ -8,9 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.UUID;
-
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -38,17 +35,34 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public List<User> findAll() {
-        return userRepository.findAll();
+    public User authenticate(String email, String password) {
+
+        if (email == null || email.isBlank()) {
+            throw new IllegalArgumentException("O email não pode estar vazio");
+        }
+
+        if (password == null || password.isBlank()) {
+            throw new IllegalArgumentException("A senha não pode estar vazia");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
+
+        if (!passwordEncoder.matches(password, user.getPasswordHash())) {
+            throw new IllegalArgumentException("Email ou senha inválidos");
+        }
+
+        return user;
     }
 
-    public User findById(UUID id) {
-        return userRepository.findById(id)
+    public User getMe(String email) {
+        return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
     }
 
-    public User update(UUID id, UserUpdateDTO dto) {
-        User user = findById(id);
+    public User updateMe(String email, UserUpdateDTO dto) {
+
+        User user = getMe(email);
 
         if (dto.email() != null) {
             if (dto.email().isBlank()) {
@@ -56,7 +70,7 @@ public class UserService {
             }
 
             userRepository.findByEmail(dto.email())
-                    .filter(u -> !u.getId().equals(id))
+                    .filter(u -> !u.getId().equals(user.getId()))
                     .ifPresent(u -> {
                         throw new IllegalStateException("Email já está em uso");
                     });
@@ -78,10 +92,8 @@ public class UserService {
         return userRepository.save(user);
     }
 
-    public void delete(UUID id) {
-        if (!userRepository.existsById(id)) {
-            throw new EntityNotFoundException("Usuário não encontrado");
-        }
-        userRepository.deleteById(id);
+    public void deleteMe(String email) {
+        User user = getMe(email);
+        userRepository.delete(user);
     }
 }

@@ -28,198 +28,94 @@ class UserServiceTest {
     }
 
     @Test
-    void createUser_Success() {
-        UserCreateDTO dto =
-                new UserCreateDTO("alice@example.com", "123456", "Alice");
-
-        when(userRepository.findByEmail(dto.email()))
-                .thenReturn(Optional.empty());
-        when(passwordEncoder.encode(dto.password()))
-                .thenReturn("hashed-password");
-        when(userRepository.save(any(User.class)))
-                .thenAnswer(inv -> inv.getArgument(0));
-
-        User user = userService.create(dto);
-
-        assertEquals("alice@example.com", user.getEmail());
-        assertEquals("Alice", user.getName());
-        assertEquals("hashed-password", user.getPasswordHash());
-
-        verify(userRepository).save(any(User.class));
-    }
-
-    @Test
-    void createUser_EmptyEmail_Throws() {
-        UserCreateDTO dto =
-                new UserCreateDTO("", "123456", "Alice");
-
-        IllegalArgumentException ex =
-                assertThrows(IllegalArgumentException.class,
-                        () -> userService.create(dto));
-
-        assertEquals("O email não pode estar vazio", ex.getMessage());
-    }
-
-    @Test
-    void createUser_EmptyPassword_Throws() {
-        UserCreateDTO dto =
-                new UserCreateDTO("alice@example.com", "", "Alice");
-
-        IllegalArgumentException ex =
-                assertThrows(IllegalArgumentException.class,
-                        () -> userService.create(dto));
-
-        assertEquals("A senha não pode estar vazia", ex.getMessage());
-    }
-
-    @Test
-    void createUser_EmailAlreadyExists_Throws() {
-        UserCreateDTO dto =
-                new UserCreateDTO("bob@example.com", "123456", "Bob");
-
-        when(userRepository.findByEmail(dto.email()))
-                .thenReturn(Optional.of(new User()));
-
-        IllegalStateException ex =
-                assertThrows(IllegalStateException.class,
-                        () -> userService.create(dto));
-
-        assertEquals("Email já está em uso", ex.getMessage());
-    }
-
-    @Test
-    void findById_UserExists() {
-        UUID id = UUID.randomUUID();
+    void authenticate_Success() {
         User user = new User();
-        user.setId(id);
+        user.setEmail("alice@example.com");
+        user.setPasswordHash("hashed");
 
-        when(userRepository.findById(id))
+        when(userRepository.findByEmail("alice@example.com"))
+                .thenReturn(Optional.of(user));
+        when(passwordEncoder.matches("123", "hashed"))
+                .thenReturn(true);
+
+        User result = userService.authenticate("alice@example.com", "123");
+
+        assertEquals("alice@example.com", result.getEmail());
+    }
+
+    @Test
+    void authenticate_InvalidPassword_Throws() {
+        User user = new User();
+        user.setPasswordHash("hashed");
+
+        when(userRepository.findByEmail("alice@example.com"))
+                .thenReturn(Optional.of(user));
+        when(passwordEncoder.matches(any(), any()))
+                .thenReturn(false);
+
+        IllegalArgumentException ex = assertThrows(
+                IllegalArgumentException.class,
+                () -> userService.authenticate("alice@example.com", "wrong")
+        );
+
+        assertEquals("Email ou senha inválidos", ex.getMessage());
+    }
+
+    @Test
+    void getMe_UserExists() {
+        User user = new User();
+        user.setEmail("me@example.com");
+
+        when(userRepository.findByEmail("me@example.com"))
                 .thenReturn(Optional.of(user));
 
-        User result = userService.findById(id);
+        User result = userService.getMe("me@example.com");
 
-        assertEquals(id, result.getId());
+        assertEquals("me@example.com", result.getEmail());
     }
 
     @Test
-    void findById_UserNotFound_Throws() {
-        UUID id = UUID.randomUUID();
-
-        when(userRepository.findById(id))
+    void getMe_NotFound_Throws() {
+        when(userRepository.findByEmail(any()))
                 .thenReturn(Optional.empty());
 
-        EntityNotFoundException ex =
-                assertThrows(EntityNotFoundException.class,
-                        () -> userService.findById(id));
+        EntityNotFoundException ex = assertThrows(
+                EntityNotFoundException.class,
+                () -> userService.getMe("x@y.com")
+        );
 
         assertEquals("Usuário não encontrado", ex.getMessage());
     }
 
     @Test
-    void findAll_ReturnsList() {
-        when(userRepository.findAll())
-                .thenReturn(List.of(new User(), new User()));
-
-        List<User> users = userService.findAll();
-
-        assertEquals(2, users.size());
-    }
-
-    @Test
-    void updateUser_Success() {
-        UUID id = UUID.randomUUID();
+    void updateMe_Success() {
         User user = new User();
-        user.setId(id);
+        user.setId(UUID.randomUUID());
         user.setEmail("old@example.com");
-        user.setName("Old");
-        user.setPasswordHash("old-hash");
 
-        when(userRepository.findById(id))
+        when(userRepository.findByEmail("old@example.com"))
                 .thenReturn(Optional.of(user));
-        when(userRepository.findByEmail("new@example.com"))
-                .thenReturn(Optional.empty());
-        when(passwordEncoder.encode("newpass"))
-                .thenReturn("new-hash");
-        when(userRepository.save(any(User.class)))
+        when(userRepository.save(any()))
                 .thenAnswer(inv -> inv.getArgument(0));
 
         UserUpdateDTO dto =
-                new UserUpdateDTO("new@example.com", "New", "newpass");
+                new UserUpdateDTO("new@example.com", "New", null);
 
-        User updated = userService.update(id, dto);
+        User updated = userService.updateMe("old@example.com", dto);
 
         assertEquals("new@example.com", updated.getEmail());
         assertEquals("New", updated.getName());
-        assertEquals("new-hash", updated.getPasswordHash());
     }
 
     @Test
-    void updateUser_EmailAlreadyExists_Throws() {
-        UUID id = UUID.randomUUID();
+    void deleteMe_Success() {
+        User user = new User();
+        user.setEmail("me@example.com");
 
-        User existing = new User();
-        existing.setId(UUID.randomUUID());
-        existing.setEmail("taken@example.com");
+        when(userRepository.findByEmail("me@example.com"))
+                .thenReturn(Optional.of(user));
 
-        User current = new User();
-        current.setId(id);
-        current.setEmail("old@example.com");
-
-        when(userRepository.findById(id))
-                .thenReturn(Optional.of(current));
-        when(userRepository.findByEmail("taken@example.com"))
-                .thenReturn(Optional.of(existing));
-
-        UserUpdateDTO dto =
-                new UserUpdateDTO("taken@example.com", null, null);
-
-        IllegalStateException ex =
-                assertThrows(IllegalStateException.class,
-                        () -> userService.update(id, dto));
-
-        assertEquals("Email já está em uso", ex.getMessage());
-    }
-
-    @Test
-    void updateUser_UserNotFound_Throws() {
-        UUID id = UUID.randomUUID();
-
-        when(userRepository.findById(id))
-                .thenReturn(Optional.empty());
-
-        UserUpdateDTO dto =
-                new UserUpdateDTO("new@example.com", "New", "123");
-
-        EntityNotFoundException ex =
-                assertThrows(EntityNotFoundException.class,
-                        () -> userService.update(id, dto));
-
-        assertEquals("Usuário não encontrado", ex.getMessage());
-    }
-
-    @Test
-    void deleteUser_Success() {
-        UUID id = UUID.randomUUID();
-
-        when(userRepository.existsById(id))
-                .thenReturn(true);
-
-        assertDoesNotThrow(() -> userService.delete(id));
-
-        verify(userRepository).deleteById(id);
-    }
-
-    @Test
-    void deleteUser_NotFound_Throws() {
-        UUID id = UUID.randomUUID();
-
-        when(userRepository.existsById(id))
-                .thenReturn(false);
-
-        EntityNotFoundException ex =
-                assertThrows(EntityNotFoundException.class,
-                        () -> userService.delete(id));
-
-        assertEquals("Usuário não encontrado", ex.getMessage());
+        assertDoesNotThrow(() -> userService.deleteMe("me@example.com"));
+        verify(userRepository).delete(user);
     }
 }
