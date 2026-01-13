@@ -51,6 +51,7 @@ class SubscriptionServiceTest {
         assertNotNull(result);
         assertEquals("Netflix", result.getName());
         assertEquals(new BigDecimal("29.90"), result.getPrice());
+        assertEquals("Streaming", result.getCategory());
         assertEquals(user, result.getUser());
 
         verify(subscriptionRepository).save(any(Subscription.class));
@@ -62,7 +63,7 @@ class SubscriptionServiceTest {
                 "",
                 new BigDecimal("10.00"),
                 LocalDate.now(),
-                null,
+                "Streaming",
                 null,
                 null
         );
@@ -80,7 +81,7 @@ class SubscriptionServiceTest {
                 "Spotify",
                 null,
                 LocalDate.now(),
-                null,
+                "Streaming",
                 null,
                 null
         );
@@ -98,7 +99,7 @@ class SubscriptionServiceTest {
                 "Spotify",
                 new BigDecimal("19.90"),
                 null,
-                null,
+                "Streaming",
                 null,
                 null
         );
@@ -108,6 +109,24 @@ class SubscriptionServiceTest {
                         () -> subscriptionService.create(user, dto));
 
         assertEquals("A data de renovação é obrigatória", ex.getMessage());
+    }
+
+    @Test
+    void createSubscription_EmptyCategory_Throws() {
+        SubscriptionCreateDTO dto = new SubscriptionCreateDTO(
+                "Spotify",
+                new BigDecimal("19.90"),
+                LocalDate.now(),
+                "",
+                null,
+                null
+        );
+
+        IllegalArgumentException ex =
+                assertThrows(IllegalArgumentException.class,
+                        () -> subscriptionService.create(user, dto));
+
+        assertEquals("A categoria da assinatura é obrigatória", ex.getMessage());
     }
 
     @Test
@@ -135,10 +154,10 @@ class SubscriptionServiceTest {
         subscription.setId(subscriptionId);
         subscription.setUser(user);
         subscription.setName("Netflix");
+        subscription.setCategory("Streaming");
 
         when(subscriptionRepository.findById(subscriptionId))
                 .thenReturn(Optional.of(subscription));
-
         when(subscriptionRepository.save(any(Subscription.class)))
                 .thenAnswer(inv -> inv.getArgument(0));
 
@@ -146,7 +165,7 @@ class SubscriptionServiceTest {
                 "Netflix Atualizado",
                 new BigDecimal("39.90"),
                 LocalDate.of(2026, 2, 1),
-                "Streaming",
+                "Streaming Premium",
                 "Gold",
                 null
         );
@@ -156,14 +175,50 @@ class SubscriptionServiceTest {
 
         assertEquals("Netflix Atualizado", updated.getName());
         assertEquals(new BigDecimal("39.90"), updated.getPrice());
+        assertEquals("Streaming Premium", updated.getCategory());
 
         verify(subscriptionRepository).save(subscription);
     }
 
     @Test
+    void updateSubscription_EmptyName_Throws() {
+        UUID subscriptionId = UUID.randomUUID();
+        Subscription subscription = new Subscription();
+        subscription.setId(subscriptionId);
+        subscription.setUser(user);
+
+        when(subscriptionRepository.findById(subscriptionId))
+                .thenReturn(Optional.of(subscription));
+
+        IllegalArgumentException ex =
+                assertThrows(IllegalArgumentException.class,
+                        () -> subscriptionService.update(user, subscriptionId,
+                                new SubscriptionUpdateDTO("", null, null, null, null, null)));
+
+        assertEquals("O nome da assinatura não pode estar vazio", ex.getMessage());
+    }
+
+    @Test
+    void updateSubscription_EmptyCategory_Throws() {
+        UUID subscriptionId = UUID.randomUUID();
+        Subscription subscription = new Subscription();
+        subscription.setId(subscriptionId);
+        subscription.setUser(user);
+
+        when(subscriptionRepository.findById(subscriptionId))
+                .thenReturn(Optional.of(subscription));
+
+        IllegalArgumentException ex =
+                assertThrows(IllegalArgumentException.class,
+                        () -> subscriptionService.update(user, subscriptionId,
+                                new SubscriptionUpdateDTO(null, null, null, "", null, null)));
+
+        assertEquals("A categoria da assinatura é obrigatória", ex.getMessage());
+    }
+
+    @Test
     void updateSubscription_NotOwner_Throws() {
         UUID subscriptionId = UUID.randomUUID();
-
         User otherUser = new User();
         otherUser.setId(UUID.randomUUID());
 
@@ -176,9 +231,8 @@ class SubscriptionServiceTest {
 
         EntityNotFoundException ex =
                 assertThrows(EntityNotFoundException.class,
-                        () -> subscriptionService.update(user, subscriptionId, new SubscriptionUpdateDTO(
-                                null, null, null, null, null, null
-                        )));
+                        () -> subscriptionService.update(user, subscriptionId,
+                                new SubscriptionUpdateDTO(null, null, null, null, null, null)));
 
         assertEquals("Assinatura não encontrada", ex.getMessage());
     }
@@ -186,15 +240,12 @@ class SubscriptionServiceTest {
     @Test
     void updateSubscription_NotFound_Throws() {
         UUID subscriptionId = UUID.randomUUID();
-
-        when(subscriptionRepository.findById(subscriptionId))
-                .thenReturn(Optional.empty());
+        when(subscriptionRepository.findById(subscriptionId)).thenReturn(Optional.empty());
 
         EntityNotFoundException ex =
                 assertThrows(EntityNotFoundException.class,
-                        () -> subscriptionService.update(user, subscriptionId, new SubscriptionUpdateDTO(
-                                null, null, null, null, null, null
-                        )));
+                        () -> subscriptionService.update(user, subscriptionId,
+                                new SubscriptionUpdateDTO(null, null, null, null, null, null)));
 
         assertEquals("Assinatura não encontrada", ex.getMessage());
     }
@@ -219,7 +270,6 @@ class SubscriptionServiceTest {
     @Test
     void deleteSubscription_NotOwner_Throws() {
         UUID subscriptionId = UUID.randomUUID();
-
         User otherUser = new User();
         otherUser.setId(UUID.randomUUID());
 
@@ -240,7 +290,6 @@ class SubscriptionServiceTest {
     @Test
     void deleteSubscription_NotFound_Throws() {
         UUID subscriptionId = UUID.randomUUID();
-
         when(subscriptionRepository.findById(subscriptionId))
                 .thenReturn(Optional.empty());
 

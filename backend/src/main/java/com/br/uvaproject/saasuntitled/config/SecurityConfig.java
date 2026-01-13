@@ -17,8 +17,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.core.env.Environment;
 
 import java.util.List;
+import java.util.Arrays;
 
 @Configuration
 @RequiredArgsConstructor
@@ -27,6 +29,7 @@ public class SecurityConfig {
 
     private final JwtFilter jwtFilter;
     private final JwtAuthenticationEntryPoint authenticationEntryPoint;
+    private final Environment env;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -67,9 +70,10 @@ public class SecurityConfig {
         configuration.setAllowCredentials(true);
         configuration.setAllowedHeaders(List.of("*"));
         configuration.setAllowedMethods(List.of("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+
+        String[] activeProfiles = env.getActiveProfiles();
         
-        String activeProfile = System.getProperty("spring.profiles.active", "dev");
-        if ("prod".equals(activeProfile)) {
+        if (Arrays.asList(activeProfiles).contains("prod")) {
             configuration.setAllowedOrigins(List.of("https://saas-untitled.vercel.app"));
         } else {
             configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://192.168.0.14:3000", "http://localhost:8080"));

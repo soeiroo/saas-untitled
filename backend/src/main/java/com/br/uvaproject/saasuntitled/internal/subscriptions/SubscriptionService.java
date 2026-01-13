@@ -31,6 +31,10 @@ public class SubscriptionService {
             throw new IllegalArgumentException("A data de renovação é obrigatória");
         }
 
+        if (dto.category() == null || dto.category().isBlank()) {
+            throw new IllegalArgumentException("A categoria da assinatura é obrigatória");
+        }
+
         Subscription subscription = SubscriptionMapper.fromCreateDTO(dto);
         subscription.setUser(user);
 
@@ -48,6 +52,14 @@ public class SubscriptionService {
 
         if (!subscription.getUser().getId().equals(user.getId())) {
             throw new EntityNotFoundException("Assinatura não encontrada");
+        }
+
+        if (dto.name() != null && dto.name().isBlank()) {
+            throw new IllegalArgumentException("O nome da assinatura não pode estar vazio");
+        }
+
+        if (dto.category() != null && dto.category().isBlank()) {
+            throw new IllegalArgumentException("A categoria da assinatura é obrigatória");
         }
 
         SubscriptionMapper.updateEntityFromDTO(subscription, dto);
