@@ -57,5 +57,8 @@ jobs:
           </settings>
           EOL
 
+      - name: Rodar testes
+        run: mvn test --settings ~/.m2/settings.xml
+
       - name: Build com Maven
-        run: mvn -U clean package -DskipTests --settings ~/.m2/settings.xml
+        run: mvn clean package --settings ~/.m2/settings.xml
