@@ -9,5 +9,4 @@ public class SaasUntitledApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(SaasUntitledApplication.class, args);
 	}
-
 }
