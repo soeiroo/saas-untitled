@@ -64,7 +64,9 @@ export default function LoginPage() {
       });
       if (response.ok) {
         const result = await response.json();
-        localStorage.setItem('authToken', result.token);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('authToken', result.token);
+        }
         router.push('/dashboard');
       } else {
         const errorData = await response.json();
@@ -101,7 +103,9 @@ export default function LoginPage() {
       });
       if (response.ok) {
         const result = await response.json();
-        localStorage.setItem('authToken', result.token);
+        if (typeof window !== 'undefined') {
+          localStorage.setItem('authToken', result.token);
+        }
         router.push('/dashboard');
       } else {
         const errorData = await response.json().catch(() => ({}));
