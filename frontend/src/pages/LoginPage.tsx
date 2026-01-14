@@ -33,6 +33,7 @@ type RegisterForm = z.infer<typeof registerSchema>;
 export default function LoginPage() {
   const [isRegistered, setIsRegistered] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const router = useRouter();
@@ -48,13 +49,17 @@ export default function LoginPage() {
   const onLoginSubmit = async (data: LoginForm) => {
     setLoading(true);
     setError('');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000); 
+    
     try {
-      const response = await fetch(`https://saas-untitled.onrender.com/api/auth/login`, {
+      const response = await fetch(`https://saas-untitled.onrender.com/auth/login`, {
         method: 'GET',
         headers: {
           'Authorization': `Basic ${btoa(`${data.email}:${data.password}`)}`,
           'Content-Type': 'application/json',
         },
+        signal: controller.signal,
       });
       if (response.ok) {
         const result = await response.json();
@@ -64,9 +69,14 @@ export default function LoginPage() {
         const errorData = await response.json();
         setError(errorData.message || 'Credenciais inválidas');
       }
-    } catch {
-      setError('Erro ao conectar ao servidor');
+    } catch (err) {
+      if (err instanceof Error && err.name === 'AbortError') {
+        setError('Tempo limite excedido. Tente novamente.');
+      } else {
+        setError('Erro ao conectar ao servidor');
+      }
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };
@@ -74,8 +84,11 @@ export default function LoginPage() {
   const onRegisterSubmit = async (data: RegisterForm) => {
     setLoading(true);
     setError('');
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 10000);
+    
     try {
-      const response = await fetch(`https://saas-untitled.onrender.com/api/auth/register`, {
+      const response = await fetch(`https://saas-untitled.onrender.com/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -83,18 +96,25 @@ export default function LoginPage() {
           password: data.password,
           name: data.name,
         }),
+        signal: controller.signal,
       });
       if (response.ok) {
-        setIsRegistered(true);
-        setError('Registro realizado! Faça login.');
+        const result = await response.json();
+        localStorage.setItem('authToken', result.token);
+        router.push('/dashboard');
       } else {
         const errorData = await response.json().catch(() => ({}));
         setError(errorData.message || 'Erro ao registrar');
       }
     } catch (err) {
-      console.error('Erro no registro:', err);
-      setError('Erro ao registrar.');
+      if (err instanceof Error && err.name === 'AbortError') {
+        setError('Tempo limite excedido. Tente novamente.');
+      } else {
+        console.error('Erro no registro:', err);
+        setError('Erro ao registrar.');
+      }
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };
@@ -105,7 +125,6 @@ export default function LoginPage() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle className="text-center">Registrar</CardTitle>
-  
           </CardHeader>
           <CardContent>
             <form onSubmit={registerForm.handleSubmit(onRegisterSubmit)} className="space-y-4">
@@ -133,24 +152,42 @@ export default function LoginPage() {
               </div>
               <div>
                 <Label htmlFor="regPassword">Senha</Label>
-                <Input
-                  id="regPassword"
-                  type="password"
-                  {...registerForm.register('password')}
-                  className="mt-1"
-                  placeholder="Sua senha"
-                />
+                <div className="relative">
+                  <Input
+                    id="regPassword"
+                    type={showPassword ? 'text' : 'password'}
+                    {...registerForm.register('password')}
+                    className="mt-1 pr-10"
+                    placeholder="Sua senha"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
                 {registerForm.formState.errors.password && <p className="text-red-500 text-sm mt-1">{registerForm.formState.errors.password.message}</p>}
               </div>
               <div>
                 <Label htmlFor="confirmPassword">Confirmar Senha</Label>
-                <Input
-                  id="confirmPassword"
-                  type="password"
-                  {...registerForm.register('confirmPassword')}
-                  className="mt-1"
-                  placeholder="Confirme sua senha"
-                />
+                <div className="relative">
+                  <Input
+                    id="confirmPassword"
+                    type={showConfirmPassword ? 'text' : 'password'}
+                    {...registerForm.register('confirmPassword')}
+                    className="mt-1 pr-10"
+                    placeholder="Confirme sua senha"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                  >
+                    {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                  </button>
+                </div>
                 {registerForm.formState.errors.confirmPassword && <p className="text-red-500 text-sm mt-1">{registerForm.formState.errors.confirmPassword.message}</p>}
               </div>
               {error && (
@@ -163,8 +200,8 @@ export default function LoginPage() {
               </Button>
             </form>
           </CardContent>
-          <CardFooter>
-            <Button variant="link" onClick={() => setIsRegistered(true)} className="w-full">
+          <CardFooter className="flex flex-col space-y-2">
+            <Button variant="link" onClick={() => setIsRegistered(true)} className="w-full text-sm">
               Já tem conta? Faça login
             </Button>
           </CardFooter>
