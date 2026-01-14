@@ -49,7 +49,7 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch(`https://saas-untitled.onrender.com/api/auth/login`, {
         method: 'GET',
         headers: {
           'Authorization': `Basic ${btoa(`${data.email}:${data.password}`)}`,
@@ -57,6 +57,8 @@ export default function LoginPage() {
         },
       });
       if (response.ok) {
+        const result = await response.json();
+        localStorage.setItem('authToken', result.token);
         router.push('/dashboard');
       } else {
         setError('Credenciais inválidas');
@@ -72,7 +74,7 @@ export default function LoginPage() {
     setLoading(true);
     setError('');
     try {
-      const response = await fetch('/api/users', {
+      const response = await fetch(`https://saas-untitled.onrender.com/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name: data.name, email: data.email, password: data.password }),
