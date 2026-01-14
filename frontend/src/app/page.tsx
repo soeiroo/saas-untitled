@@ -1,13 +1,21 @@
-import { redirect } from 'next/navigation';
+'use client';
+
+import { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 export default function Page() {
-    // verificar se o usuário está autenticado
-    if (typeof window !== 'undefined') {
-        const token = localStorage.getItem('authToken'); // substituir por verificação real de autenticação
+    const router = useRouter();
+
+    useEffect(() => {
+        // verificar se o usuário está autenticado
+        const token = localStorage.getItem('authToken');
+        
         if (token) {
-            redirect('/dashboard');
+            router.replace('/dashboard');
         } else {
-            redirect('/login');
+            router.replace('/login');
         }
-    }
+    }, [router]);
+
+    return null;
 }
