@@ -53,14 +53,18 @@ export default function LoginPage() {
     const timeoutId = setTimeout(() => controller.abort(), 10000); 
     
     try {
-      const response = await fetch(`https://saas-untitled.onrender.com/auth/login`, {
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: JSON.stringify({
           email: data.email,
           password: data.password,
         }),
         signal: controller.signal,
+        credentials: 'include',
       });
       if (response.ok) {
         const result = await response.json();
@@ -91,15 +95,19 @@ export default function LoginPage() {
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     
     try {
-      const response = await fetch(`https://saas-untitled.onrender.com/auth/register`, {
+      const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/register`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
         body: JSON.stringify({
           email: data.email,
           password: data.password,
           name: data.name,
         }),
         signal: controller.signal,
+        credentials: 'include',
       });
       if (response.ok) {
         const result = await response.json();
