@@ -8,10 +8,12 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import io.jsonwebtoken.JwtException;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
@@ -46,9 +48,8 @@ public class JwtFilter extends OncePerRequestFilter {
 
         try {
             email = jwtUtil.extractEmail(token);
-        } catch (Exception e) {
-            filterChain.doFilter(request, response);
-            return;
+        } catch (JwtException e) {
+            throw new BadCredentialsException("JWT inválido", e);
         }
 
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
