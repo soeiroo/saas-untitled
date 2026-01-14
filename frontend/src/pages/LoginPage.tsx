@@ -61,10 +61,11 @@ export default function LoginPage() {
         localStorage.setItem('authToken', result.token);
         router.push('/dashboard');
       } else {
-        setError('Credenciais inválidas');
+        const errorData = await response.json();
+        setError(errorData.message || 'Credenciais inválidas');
       }
     } catch {
-      setError('Erro ao fazer login');
+      setError('Erro ao conectar ao servidor');
     } finally {
       setLoading(false);
     }
@@ -77,16 +78,22 @@ export default function LoginPage() {
       const response = await fetch(`https://saas-untitled.onrender.com/api/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: data.name, email: data.email, password: data.password }),
+        body: JSON.stringify({
+          email: data.email,
+          password: data.password,
+          name: data.name,
+        }),
       });
       if (response.ok) {
         setIsRegistered(true);
         setError('Registro realizado! Faça login.');
       } else {
-        setError('Erro ao registrar');
+        const errorData = await response.json().catch(() => ({}));
+        setError(errorData.message || 'Erro ao registrar');
       }
-    } catch {
-      setError('Erro ao registrar');
+    } catch (err) {
+      console.error('Erro no registro:', err);
+      setError('Erro ao registrar.');
     } finally {
       setLoading(false);
     }
