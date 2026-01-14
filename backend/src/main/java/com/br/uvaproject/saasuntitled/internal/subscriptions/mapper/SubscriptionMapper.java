@@ -16,6 +16,7 @@ public class SubscriptionMapper {
                 sub.getRenewalDate(),
                 sub.getCategory(),
                 sub.getPlan(),
+                sub.getPeriod(),
                 sub.getCreatedAt(),
                 sub.getUpdatedAt()
         );
@@ -28,6 +29,7 @@ public class SubscriptionMapper {
                 .renewalDate(dto.renewalDate())
                 .category(dto.category() != null ? dto.category() : "Outros")
                 .plan(dto.plan())
+                .period(dto.period())
                 .createdAt(dto.createdAt())
                 .build();
     }
@@ -38,6 +40,7 @@ public class SubscriptionMapper {
         if (dto.renewalDate() != null) sub.setRenewalDate(dto.renewalDate());
         if (dto.category() != null) sub.setCategory(dto.category());
         if (dto.plan() != null) sub.setPlan(dto.plan());
+        if (dto.period() != null) sub.setPeriod(dto.period());
         if (dto.createdAt() != null) sub.setCreatedAt(dto.createdAt());
     }
 }

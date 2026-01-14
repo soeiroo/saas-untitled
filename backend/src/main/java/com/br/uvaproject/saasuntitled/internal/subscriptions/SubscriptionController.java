@@ -4,7 +4,6 @@ import com.br.uvaproject.saasuntitled.internal.security.AuthenticatedUserService
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCreateDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
-import com.br.uvaproject.saasuntitled.internal.subscriptions.mapper.SubscriptionMapper;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,13 +29,14 @@ public class SubscriptionController {
     ) {
         User user = authenticatedUserService.getUser(authentication);
 
-        Subscription subscription = subscriptionService.create(user, dto);
+        SubscriptionResponseDTO response =
+                subscriptionService.create(user, dto);
 
-        URI location = URI.create("/api/subscriptions/" + subscription.getId());
+        URI location = URI.create("/api/subscriptions/" + response.id());
 
         return ResponseEntity
                 .created(location)
-                .body(SubscriptionMapper.toResponse(subscription));
+                .body(response);
     }
 
     @GetMapping
@@ -45,12 +45,7 @@ public class SubscriptionController {
     ) {
         User user = authenticatedUserService.getUser(authentication);
 
-        List<SubscriptionResponseDTO> response = subscriptionService.findMine(user)
-                .stream()
-                .map(SubscriptionMapper::toResponse)
-                .toList();
-
-        return ResponseEntity.ok(response);
+        return ResponseEntity.ok(subscriptionService.findMine(user));
     }
 
     @PutMapping("/{id}")

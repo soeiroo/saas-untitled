@@ -41,6 +41,9 @@ public class Subscription {
     @Column(nullable=true)
     private String plan;
 
+    @Column(nullable=true)
+    private String period;
+
     @Column(nullable = false)
     private LocalDate createdAt;
 
