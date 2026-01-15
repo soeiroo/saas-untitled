@@ -22,11 +22,11 @@ public class UserController {
     }
 
     @PutMapping("/me")
-    public ResponseEntity<UserResponseDTO> updateMe(
+    public ResponseEntity<Void> updateMe(
             Authentication authentication,
             @RequestBody UserUpdateDTO dto
     ) {
-        User updated = userService.updateMe(authentication.getName(), dto);
+        userService.updateMe(authentication.getName(), dto);
         return ResponseEntity.noContent().build();
     }
 

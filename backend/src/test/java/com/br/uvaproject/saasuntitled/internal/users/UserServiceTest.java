@@ -88,34 +88,87 @@ class UserServiceTest {
     }
 
     @Test
-    void updateMe_Success() {
+    void updateMe_UpdatesFieldsCorrectly() {
         User user = new User();
         user.setId(UUID.randomUUID());
         user.setEmail("old@example.com");
 
         when(userRepository.findByEmail("old@example.com"))
                 .thenReturn(Optional.of(user));
+        when(userRepository.findByEmail("new@example.com"))
+                .thenReturn(Optional.empty());
+        when(passwordEncoder.encode("123"))
+                .thenReturn("hashed");
         when(userRepository.save(any()))
                 .thenAnswer(inv -> inv.getArgument(0));
 
         UserUpdateDTO dto =
-                new UserUpdateDTO("new@example.com", "New", null);
+                new UserUpdateDTO("new@example.com", "New", "123");
 
         User updated = userService.updateMe("old@example.com", dto);
 
         assertEquals("new@example.com", updated.getEmail());
         assertEquals("New", updated.getName());
+        assertEquals("hashed", updated.getPasswordHash());
     }
 
     @Test
-    void deleteMe_Success() {
+    void updateMe_EmailAlreadyInUse_Throws() {
+        UUID currentUserId = UUID.randomUUID();
+        UUID otherUserId = UUID.randomUUID();
+
+        User currentUser = new User();
+        currentUser.setId(currentUserId);
+        currentUser.setEmail("old@example.com");
+
+        User otherUser = new User();
+        otherUser.setId(otherUserId);
+        otherUser.setEmail("new@example.com");
+
+        when(userRepository.findByEmail("old@example.com"))
+                .thenReturn(Optional.of(currentUser));
+
+        when(userRepository.findByEmail("new@example.com"))
+                .thenReturn(Optional.of(otherUser));
+
+        UserUpdateDTO dto =
+                new UserUpdateDTO("new@example.com", "New", null);
+
+        IllegalStateException ex = assertThrows(
+                IllegalStateException.class,
+                () -> userService.updateMe("old@example.com", dto)
+        );
+
+        assertEquals("Email já está em uso", ex.getMessage());
+
+        verify(userRepository, never()).save(any());
+    }
+
+    @Test
+    void deleteMe_DeletesUser() {
         User user = new User();
         user.setEmail("me@example.com");
 
         when(userRepository.findByEmail("me@example.com"))
                 .thenReturn(Optional.of(user));
 
-        assertDoesNotThrow(() -> userService.deleteMe("me@example.com"));
+        userService.deleteMe("me@example.com");
+
         verify(userRepository).delete(user);
+    }
+
+    @Test
+    void deleteMe_UserNotFound_Throws() {
+        when(userRepository.findByEmail("missing@example.com"))
+        .thenReturn(Optional.empty());
+
+        EntityNotFoundException ex = assertThrows(
+                EntityNotFoundException.class,
+                () -> userService.deleteMe("missing@example.com")
+        );
+
+        assertEquals("Usuário não encontrado", ex.getMessage());
+
+        verify(userRepository, never()).delete(any());
     }
 }
