@@ -7,9 +7,11 @@ import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserService {
 
     private final UserRepository userRepository;
@@ -35,6 +37,7 @@ public class UserService {
         return userRepository.save(user);
     }
 
+    @Transactional(readOnly = true)
     public User authenticate(String email, String password) {
 
         if (email == null || email.isBlank()) {
@@ -55,6 +58,7 @@ public class UserService {
         return user;
     }
 
+    @Transactional(readOnly = true)
     public User getMe(String email) {
         return userRepository.findByEmail(email)
                 .orElseThrow(() -> new EntityNotFoundException("Usuário não encontrado"));
