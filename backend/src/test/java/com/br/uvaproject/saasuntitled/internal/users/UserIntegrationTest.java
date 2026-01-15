@@ -57,6 +57,13 @@ class UserIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "nonexistent@example.com", roles = "USER")
+    void getMe_NotFound_ShouldReturn404() throws Exception {
+        mockMvc.perform(get("/api/users/me"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @WithMockUser(username = "test@example.com", roles = "USER")
     void updateMe_ShouldUpdateUserAndReturnNoContent() throws Exception {
 
@@ -76,6 +83,17 @@ class UserIntegrationTest {
     }
 
     @Test
+    @WithMockUser(username = "nonexistent@example.com", roles = "USER")
+    void updateMe_NotFound_ShouldReturn404() throws Exception {
+        UserUpdateDTO dto = new UserUpdateDTO("new@example.com", "New Name", "newpass");
+
+        mockMvc.perform(put("/api/users/me")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     @WithMockUser(username = "test@example.com", roles = "USER")
     void deleteMe_ShouldDeleteUserAndReturnNoContent() throws Exception {
 
@@ -83,5 +101,12 @@ class UserIntegrationTest {
                 .andExpect(status().isNoContent());
 
         assertTrue(userRepository.findByEmail("test@example.com").isEmpty());
+    }
+
+    @Test
+    @WithMockUser(username = "nonexistent@example.com", roles = "USER")
+    void deleteMe_NotFound_ShouldReturn404() throws Exception {
+        mockMvc.perform(delete("/api/users/me"))
+                .andExpect(status().isNotFound());
     }
 }

@@ -1,6 +1,7 @@
 package com.br.uvaproject.saasuntitled.internal.subscriptions;
 
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCreateDTO;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,17 +15,18 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.user;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -87,6 +89,131 @@ class SubscriptionIntegrationTest {
 
     @Test
     @WithMockUser(username = "test@example.com", roles = "USER")
+    void createSubscription_InvalidName_ShouldReturnBadRequest() throws Exception {
+        SubscriptionCreateDTO createDTO = new SubscriptionCreateDTO(
+                "",
+                BigDecimal.valueOf(29.90),
+                LocalDate.now().plusDays(30),
+                "Streaming",
+                LocalDate.now(),
+                "Premium",
+                "Monthly"
+        );
+
+        mockMvc.perform(post("/api/subscriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createDTO)))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = "USER")
+    void updateSubscription_ShouldReturnNoContent() throws Exception {
+
+        SubscriptionCreateDTO createDTO = new SubscriptionCreateDTO(
+                "Netflix",
+                BigDecimal.valueOf(29.90),
+                LocalDate.now().plusDays(30),
+                "Streaming",
+                LocalDate.now(),
+                "Premium",
+                "Monthly"
+        );
+
+        String response = mockMvc.perform(post("/api/subscriptions")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String subscriptionId = objectMapper.readTree(response).get("id").asText();
+
+        SubscriptionUpdateDTO updateDTO = new SubscriptionUpdateDTO(
+                "Netflix Updated",
+                BigDecimal.valueOf(39.90),
+                LocalDate.now().plusDays(60),
+                "Streaming Updated",
+                "Premium",
+                "Monthly",
+                LocalDate.now().plusDays(60)
+        );
+
+        mockMvc.perform(put("/api/subscriptions/" + subscriptionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isNoContent());
+
+        mockMvc.perform(get("/api/subscriptions"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Netflix Updated"))
+                .andExpect(jsonPath("$[0].price").value(39.90))
+                .andExpect(jsonPath("$[0].category").value("Streaming Updated"));
+    }
+
+
+    @Test
+    void updateSubscription_NotOwned_ShouldReturnNotFound() throws Exception {
+
+        User owner = new User();
+        owner.setEmail("owner@example.com");
+        owner.setName("Owner User");
+        owner.setPasswordHash(passwordEncoder.encode("123456"));
+        userRepository.save(owner);
+
+        User anotherUser = new User();
+        anotherUser.setEmail("another@example.com");
+        anotherUser.setName("Another User");
+        anotherUser.setPasswordHash(passwordEncoder.encode("123456"));
+        userRepository.save(anotherUser);
+
+        SubscriptionCreateDTO createDTO = new SubscriptionCreateDTO(
+                "Disney+",
+                BigDecimal.valueOf(27.90),
+                LocalDate.now().plusDays(30),
+                "Streaming",
+                LocalDate.now(),
+                "Premium",
+                "Monthly"
+        );
+
+        String response = mockMvc.perform(post("/api/subscriptions")
+                        .with(user(owner.getEmail()).roles("USER"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createDTO)))
+                .andExpect(status().isCreated())
+                .andReturn()
+                .getResponse()
+                .getContentAsString();
+
+        String subscriptionId = objectMapper.readTree(response).get("id").asText();
+
+        SubscriptionUpdateDTO updateDTO = new SubscriptionUpdateDTO(
+                "Disney Updated",
+                BigDecimal.valueOf(37.90),
+                LocalDate.now().plusDays(60),
+                "Streaming Updated",
+                "Premium",
+                "Monthly",
+                LocalDate.now().plusDays(60)
+        );
+
+        mockMvc.perform(put("/api/subscriptions/" + subscriptionId)
+                        .with(user(anotherUser.getEmail()).roles("USER"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(updateDTO)))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/api/subscriptions")
+                        .with(user(owner.getEmail()).roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].name").value("Disney+"))
+                .andExpect(jsonPath("$[0].price").value(27.90));
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = "USER")
     void deleteSubscription_ShouldReturnNoContent() throws Exception {
 
         SubscriptionCreateDTO createDTO = new SubscriptionCreateDTO(
@@ -115,5 +242,51 @@ class SubscriptionIntegrationTest {
         mockMvc.perform(get("/api/subscriptions"))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").isEmpty());
+    }
+
+    @Test
+    void deleteSubscription_NotOwned_ShouldReturnNotFound() throws Exception {
+
+        User owner = new User();
+        owner.setEmail("owner@example.com");
+        owner.setName("Owner User");
+        owner.setPasswordHash(passwordEncoder.encode("123456"));
+        userRepository.save(owner);
+
+        User anotherUser = new User();
+        anotherUser.setEmail("another@example.com");
+        anotherUser.setName("Another User");
+        anotherUser.setPasswordHash(passwordEncoder.encode("123456"));
+        userRepository.save(anotherUser);
+
+        SubscriptionCreateDTO createDTO = new SubscriptionCreateDTO(
+                "Disney+",
+                BigDecimal.valueOf(27.90),
+                LocalDate.now().plusDays(30),
+                "Streaming",
+                LocalDate.now(),
+                "Premium",
+                "Monthly"
+        );
+
+        String response = mockMvc.perform(post("/api/subscriptions")
+                        .with(user(owner.getEmail()).roles("USER"))
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(createDTO)))
+                        .andExpect(status().isCreated())
+                        .andReturn()
+                        .getResponse()
+                        .getContentAsString();
+
+        String subscriptionId = objectMapper.readTree(response).get("id").asText();
+
+        mockMvc.perform(delete("/api/subscriptions/" + subscriptionId)
+                        .with(user(anotherUser.getEmail()).roles("USER")))
+                .andExpect(status().isNotFound());
+
+        mockMvc.perform(get("/api/subscriptions")
+                        .with(user(owner.getEmail()).roles("USER")))
+                        .andExpect(status().isOk())
+                        .andExpect(jsonPath("$[0].id").value(subscriptionId));
     }
 }
