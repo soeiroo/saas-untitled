@@ -5,7 +5,7 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://backend:8080/:path*',      
+        destination: 'http://saas-untitled.onrender.com/api/:path*',      
       },
     ];
   },
