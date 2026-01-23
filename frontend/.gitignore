@@ -18,7 +18,7 @@
 /out/
 
 ### Config ###
-next.config.ts
+/next.config.ts
 
 # production
 /build
