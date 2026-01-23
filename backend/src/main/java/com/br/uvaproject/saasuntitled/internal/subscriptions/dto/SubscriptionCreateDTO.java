@@ -11,5 +11,6 @@ public record SubscriptionCreateDTO(
     String category,
     LocalDate createdAt,
     String plan,
-    String period
+    String period,
+    String icon
 ) {}
