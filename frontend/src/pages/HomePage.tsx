@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { getSubscriptions, addSubscription, updateSubscription, deleteSubscription } from '@/api/subscription';
 import { AddSubscriptionDialog } from '@/components/subscription/AddSubscriptionDialog';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { EditSubscriptionDialog } from '@/components/subscription/EditSubscriptionDialog';
@@ -9,53 +10,78 @@ import { DollarSign, Bell, TrendingUp } from 'lucide-react';
 import type { Subscription } from '@/types/subscription';
 
 export default function HomePage() {
-  // Initialize state with function to avoid setState in effect
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>(() => {
-    if (typeof window === 'undefined') return [];
-    const stored = localStorage.getItem('subscriptions');
-    if (stored) {
-      return JSON.parse(stored);
-    }
-    // Add some example data
-    const exampleData: Subscription[] = [
-      {
-        id: '1',
-        name: 'Netflix',
-        price: 55.90,
-        renewalDate: '2026-01-15',
-        category: 'Streaming'
-      },
-      {
-        id: '2',
-        name: 'Spotify',
-        price: 21.90,
-        renewalDate: '2026-01-08',
-        category: 'Música'
-      }
-    ];
-    localStorage.setItem('subscriptions', JSON.stringify(exampleData));
-    return exampleData;
-  });
+  
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
-  // Save to localStorage whenever subscriptions change
   useEffect(() => {
-    if (subscriptions.length > 0) {
-      localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
+    async function fetchSubs() {
+      setLoading(true);
+      setError('');
+      try {
+        const subs = await getSubscriptions();
+        setSubscriptions(subs);
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else if (typeof err === 'string') {
+          setError(err);
+        } else {
+          setError('Erro ao buscar assinaturas');
+        }
+      } finally {
+        setLoading(false);
+      }
     }
-  }, [subscriptions]);
+    fetchSubs();
+  }, []);
 
-  const handleAddSubscription = (newSub: Omit<Subscription, 'id'>) => {
-    const subscription: Subscription = {
-      ...newSub,
-      id: Date.now().toString()
-    };
-    setSubscriptions([...subscriptions, subscription]);
+  // useEffect(() => {
+  //   if (subscriptions.length > 0) {
+  //     localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
+  //   }
+  // }, [subscriptions]);
+
+
+  const handleAddSubscription = async (newSub: Omit<Subscription, 'id' | 'userId' >) => {
+    setLoading(true);
+    setError('');
+    try {
+      const created = await addSubscription(newSub);
+      setSubscriptions(prev => [...prev, created]);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao adicionar assinatura');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDeleteSubscription = (id: string) => {
-    setSubscriptions(subscriptions.filter(sub => sub.id !== id));
+  const handleDeleteSubscription = async (id: string) => {
+    setLoading(true);
+    setError('');
+    try {
+      await deleteSubscription(id);
+      setSubscriptions(prev => prev.filter(sub => sub.id !== id));
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao deletar assinatura');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEditSubscription = (subscription: Subscription) => {
@@ -63,16 +89,28 @@ export default function HomePage() {
     setEditDialogOpen(true);
   };
 
-  const handleUpdateSubscription = (updated: Subscription) => {
-    setSubscriptions(subscriptions.map(sub => 
-      sub.id === updated.id ? updated : sub
-    ));
+  const handleUpdateSubscription = async (updated: Subscription) => {
+    setLoading(true);
+    setError('');
+    try {
+      const result = await updateSubscription(updated.id, updated);
+      setSubscriptions(prev => prev.map(sub => sub.id === result.id ? result : sub));
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao atualizar assinatura');
+      }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const totalMonthly = subscriptions.reduce((sum, sub) => sum + sub.price, 0);
   const totalYearly = totalMonthly * 12;
 
-  // Count upcoming renewals (next 7 days)
   const upcomingRenewals = subscriptions.filter(sub => {
     const daysUntilRenewal = Math.ceil(
       (new Date(sub.renewalDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
@@ -83,13 +121,12 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <div className="max-w-6xl mx-auto px-4 py-8">
-        {/* Header */}
+
         <div className="mb-8">
           <h1 className="text-4xl mb-2">Controle de Assinaturas</h1>
           <p className="text-zinc-400">Gerencie suas assinaturas e nunca perca uma cobrança</p>
         </div>
 
-        {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           <Card className="bg-zinc-900 border-zinc-800 p-6">
             <div className="flex items-center justify-between">
@@ -127,12 +164,10 @@ export default function HomePage() {
           </Card>
         </div>
 
-        {/* Add Button */}
         <div className="mb-6">
           <AddSubscriptionDialog onAdd={handleAddSubscription} />
         </div>
 
-        {/* Subscriptions List */}
         {subscriptions.length === 0 ? (
           <Card className="bg-zinc-900 border-zinc-800 p-12 text-center">
             <p className="text-zinc-400 text-lg mb-2">Nenhuma assinatura cadastrada</p>
@@ -151,7 +186,6 @@ export default function HomePage() {
           </div>
         )}
 
-        {/* Edit Dialog */}
         <EditSubscriptionDialog
           subscription={editingSubscription}
           open={editDialogOpen}
