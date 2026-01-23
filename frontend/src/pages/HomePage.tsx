@@ -24,8 +24,14 @@ export default function HomePage() {
       try {
         const subs = await getSubscriptions();
         setSubscriptions(subs);
-      } catch (err: any) {
-        setError(err.message || 'Erro ao buscar assinaturas');
+      } catch (err: unknown) {
+        if (err instanceof Error) {
+          setError(err.message);
+        } else if (typeof err === 'string') {
+          setError(err);
+        } else {
+          setError('Erro ao buscar assinaturas');
+        }
       } finally {
         setLoading(false);
       }
@@ -46,8 +52,14 @@ export default function HomePage() {
     try {
       const created = await addSubscription(newSub);
       setSubscriptions(prev => [...prev, created]);
-    } catch (err: any) {
-      setError(err.message || 'Erro ao adicionar assinatura');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao adicionar assinatura');
+      }
     } finally {
       setLoading(false);
     }
@@ -59,13 +71,18 @@ export default function HomePage() {
     try {
       await deleteSubscription(id);
       setSubscriptions(prev => prev.filter(sub => sub.id !== id));
-    } catch (err: any) {
-      setError(err.message || 'Erro ao deletar assinatura');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao deletar assinatura');
+      }
     } finally {
       setLoading(false);
     }
   };
-
 
   const handleEditSubscription = (subscription: Subscription) => {
     setEditingSubscription(subscription);
@@ -78,8 +95,14 @@ export default function HomePage() {
     try {
       const result = await updateSubscription(updated.id, updated);
       setSubscriptions(prev => prev.map(sub => sub.id === result.id ? result : sub));
-    } catch (err: any) {
-      setError(err.message || 'Erro ao atualizar assinatura');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao atualizar assinatura');
+      }
     } finally {
       setLoading(false);
     }
