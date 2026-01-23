@@ -48,6 +48,7 @@ class SubscriptionServiceTest {
         assertEquals(new BigDecimal("29.90"), response.price());
         assertEquals("Streaming", response.category());
         assertEquals("Monthly", response.period());
+        assertEquals("icon", response.icon());
 
         verify(subscriptionRepository).save(any(Subscription.class));
     }
@@ -61,7 +62,8 @@ class SubscriptionServiceTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
 
         IllegalArgumentException ex = assertThrows(
@@ -180,7 +182,8 @@ class SubscriptionServiceTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
     }
 
@@ -192,6 +195,7 @@ class SubscriptionServiceTest {
                 "Streaming",
                 "Premium",
                 "Yearly",
+                "icon",
                 LocalDate.now()
         );
     }

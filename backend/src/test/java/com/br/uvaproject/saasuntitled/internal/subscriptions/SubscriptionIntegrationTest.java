@@ -72,7 +72,8 @@ class SubscriptionIntegrationTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
 
         mockMvc.perform(post("/api/subscriptions")
@@ -84,7 +85,8 @@ class SubscriptionIntegrationTest {
                 .andExpect(jsonPath("$.price").value(29.90))
                 .andExpect(jsonPath("$.category").value("Streaming"))
                 .andExpect(jsonPath("$.plan").value("Premium"))
-                .andExpect(jsonPath("$.period").value("Monthly"));
+                .andExpect(jsonPath("$.period").value("Monthly"))
+                .andExpect(jsonPath("$.icon").value("icon"));
     }
 
     @Test
@@ -97,7 +99,8 @@ class SubscriptionIntegrationTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
 
         mockMvc.perform(post("/api/subscriptions")
@@ -117,7 +120,8 @@ class SubscriptionIntegrationTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
 
         String response = mockMvc.perform(post("/api/subscriptions")
@@ -137,6 +141,7 @@ class SubscriptionIntegrationTest {
                 "Streaming Updated",
                 "Premium",
                 "Monthly",
+                "icon",
                 LocalDate.now().plusDays(60)
         );
 
@@ -175,7 +180,8 @@ class SubscriptionIntegrationTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
 
         String response = mockMvc.perform(post("/api/subscriptions")
@@ -196,6 +202,7 @@ class SubscriptionIntegrationTest {
                 "Streaming Updated",
                 "Premium",
                 "Monthly",
+                "icon",
                 LocalDate.now().plusDays(60)
         );
 
@@ -223,7 +230,8 @@ class SubscriptionIntegrationTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
 
         String response = mockMvc.perform(post("/api/subscriptions")
@@ -266,7 +274,8 @@ class SubscriptionIntegrationTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
 
         String response = mockMvc.perform(post("/api/subscriptions")
