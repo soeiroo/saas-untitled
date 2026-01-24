@@ -63,8 +63,7 @@ export default function LoginPage() {
           email: data.email,
           password: data.password,
         }),
-        signal: controller.signal,
-        credentials: 'include',
+        signal: controller.signal
       });
       if (response.ok) {
         const result = await response.json();
@@ -106,8 +105,7 @@ export default function LoginPage() {
           password: data.password,
           name: data.name,
         }),
-        signal: controller.signal,
-        credentials: 'include',
+        signal: controller.signal
       });
       if (response.ok) {
         const result = await response.json();
