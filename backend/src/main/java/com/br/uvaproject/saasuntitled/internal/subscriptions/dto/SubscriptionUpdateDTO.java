@@ -11,5 +11,6 @@ public record SubscriptionUpdateDTO(
         String category,
         String plan,
         String period,
+        String icon,
         LocalDate createdAt
 ) {}

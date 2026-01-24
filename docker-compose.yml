@@ -9,6 +9,14 @@ services:
       - /app/node_modules
     restart: unless-stopped
 
+  backend-tests:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    command: mvn test
+    volumes:
+      - ./backend:/app
+
   backend:
     build:
       context: ./backend
@@ -18,8 +26,6 @@ services:
       - "8080:8080"
     env_file:
       - ./backend/.env
+    volumes:
+      - ./backend:/app
     restart: unless-stopped
-  
-  backend-tests:
-    build: ./backend
-    command: mvn test

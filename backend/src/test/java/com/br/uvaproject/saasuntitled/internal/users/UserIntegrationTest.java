@@ -4,6 +4,8 @@ import com.br.uvaproject.saasuntitled.internal.users.dto.UserUpdateDTO;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -30,19 +32,19 @@ class UserIntegrationTest {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
-    private final ObjectMapper objectMapper = new ObjectMapper();
-
-    private User testUser;
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setUp() {
         userRepository.deleteAll();
 
-        testUser = new User();
-        testUser.setEmail("test@example.com");
-        testUser.setName("Test User");
-        testUser.setPasswordHash(passwordEncoder.encode("123456"));
-        userRepository.save(testUser);
+        User user = new User();
+        user.setEmail("test@example.com");
+        user.setName("Test User");
+        user.setPasswordHash(passwordEncoder.encode("123456"));
+
+        userRepository.save(user);
     }
 
     @Test
@@ -55,20 +57,56 @@ class UserIntegrationTest {
     }
 
     @Test
-    @WithMockUser(username = "test@example.com", roles = "USER")
-    void updateMe_ShouldReturnNoContent() throws Exception {
-        UserUpdateDTO updateDTO = new UserUpdateDTO("newemail@example.com", "New Name", "newpass");
-
-        mockMvc.perform(put("/api/users/me")
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(updateDTO)))
-                .andExpect(status().isNoContent());
+    @WithMockUser(username = "nonexistent@example.com", roles = "USER")
+    void getMe_NotFound_ShouldReturn404() throws Exception {
+        mockMvc.perform(get("/api/users/me"))
+                .andExpect(status().isNotFound());
     }
 
     @Test
     @WithMockUser(username = "test@example.com", roles = "USER")
-    void deleteMe_ShouldReturnNoContent() throws Exception {
+    void updateMe_ShouldUpdateUserAndReturnNoContent() throws Exception {
+
+        UserUpdateDTO dto =
+                new UserUpdateDTO("new@example.com", "New Name", "newpass");
+
+        mockMvc.perform(put("/api/users/me")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isNoContent());
+
+        User updated =
+                userRepository.findByEmail("new@example.com").orElseThrow();
+
+        assertEquals("New Name", updated.getName());
+        assertTrue(passwordEncoder.matches("newpass", updated.getPasswordHash()));
+    }
+
+    @Test
+    @WithMockUser(username = "nonexistent@example.com", roles = "USER")
+    void updateMe_NotFound_ShouldReturn404() throws Exception {
+        UserUpdateDTO dto = new UserUpdateDTO("new@example.com", "New Name", "newpass");
+
+        mockMvc.perform(put("/api/users/me")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(dto)))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username = "test@example.com", roles = "USER")
+    void deleteMe_ShouldDeleteUserAndReturnNoContent() throws Exception {
+
         mockMvc.perform(delete("/api/users/me"))
                 .andExpect(status().isNoContent());
+
+        assertTrue(userRepository.findByEmail("test@example.com").isEmpty());
+    }
+
+    @Test
+    @WithMockUser(username = "nonexistent@example.com", roles = "USER")
+    void deleteMe_NotFound_ShouldReturn404() throws Exception {
+        mockMvc.perform(delete("/api/users/me"))
+                .andExpect(status().isNotFound());
     }
 }

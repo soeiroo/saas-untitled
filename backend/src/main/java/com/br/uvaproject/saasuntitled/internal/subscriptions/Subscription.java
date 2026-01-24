@@ -44,6 +44,9 @@ public class Subscription {
     @Column(nullable=true)
     private String period;
 
+    @Column(nullable=true)
+    private String icon;
+
     @Column(nullable = false)
     private LocalDate createdAt;
 

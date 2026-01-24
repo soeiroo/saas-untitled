@@ -47,6 +47,8 @@ class SubscriptionServiceTest {
         assertEquals("Netflix", response.name());
         assertEquals(new BigDecimal("29.90"), response.price());
         assertEquals("Streaming", response.category());
+        assertEquals("Monthly", response.period());
+        assertEquals("icon", response.icon());
 
         verify(subscriptionRepository).save(any(Subscription.class));
     }
@@ -60,7 +62,8 @@ class SubscriptionServiceTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
 
         IllegalArgumentException ex = assertThrows(
@@ -90,6 +93,8 @@ class SubscriptionServiceTest {
         assertEquals(2, result.size());
         assertEquals("Netflix", result.get(0).name());
         assertEquals("Spotify", result.get(1).name());
+
+        verify(subscriptionRepository).findByUserId(user.getId());
     }
 
     @Test
@@ -151,6 +156,23 @@ class SubscriptionServiceTest {
 
         verify(subscriptionRepository).delete(subscription);
     }
+    
+    @Test
+    void deleteSubscription_NotFound_Throws() {
+        UUID id = UUID.randomUUID();
+        
+        when(subscriptionRepository.findById(id))
+                .thenReturn(Optional.empty());
+
+        EntityNotFoundException ex = assertThrows(
+                EntityNotFoundException.class,
+                () -> subscriptionService.delete(user, id)
+        );
+
+        assertEquals("Assinatura não encontrada", ex.getMessage());
+
+        verify(subscriptionRepository, never()).delete(any());
+    }
 
     private SubscriptionCreateDTO validCreateDTO() {
         return new SubscriptionCreateDTO(
@@ -160,7 +182,8 @@ class SubscriptionServiceTest {
                 "Streaming",
                 LocalDate.now(),
                 "Premium",
-                "Monthly"
+                "Monthly",
+                "icon"
         );
     }
 
@@ -172,6 +195,7 @@ class SubscriptionServiceTest {
                 "Streaming",
                 "Premium",
                 "Yearly",
+                "icon",
                 LocalDate.now()
         );
     }

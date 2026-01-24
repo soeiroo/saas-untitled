@@ -14,6 +14,7 @@ public record SubscriptionResponseDTO(
         String category,
         String plan,
         String period,
+        String icon,
         LocalDate createdAt,
         LocalDateTime updatedAt
 ) {}

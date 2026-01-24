@@ -17,6 +17,7 @@ public class SubscriptionMapper {
                 sub.getCategory(),
                 sub.getPlan(),
                 sub.getPeriod(),
+                sub.getIcon(),
                 sub.getCreatedAt(),
                 sub.getUpdatedAt()
         );
@@ -30,6 +31,7 @@ public class SubscriptionMapper {
                 .category(dto.category() != null ? dto.category() : "Outros")
                 .plan(dto.plan())
                 .period(dto.period())
+                .icon(dto.icon())
                 .createdAt(dto.createdAt())
                 .build();
     }
@@ -41,6 +43,7 @@ public class SubscriptionMapper {
         if (dto.category() != null) sub.setCategory(dto.category());
         if (dto.plan() != null) sub.setPlan(dto.plan());
         if (dto.period() != null) sub.setPeriod(dto.period());
+        if (dto.icon() != null) sub.setIcon(dto.icon());
         if (dto.createdAt() != null) sub.setCreatedAt(dto.createdAt());
     }
 }
