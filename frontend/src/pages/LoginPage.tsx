@@ -54,7 +54,7 @@ export default function LoginPage() {
     const timeoutId = setTimeout(() => controller.abort(), 10000); 
     
     try {
-      const response = await fetch(`/auth/login`, {
+      const response = await fetch(`/login`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ export default function LoginPage() {
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     
     try {
-      const response = await fetch(`/auth/register`, {
+      const response = await fetch(`/register`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
