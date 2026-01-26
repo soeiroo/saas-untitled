@@ -122,20 +122,18 @@ export default function SubscriptionsPage() {
     >
       <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
         <div className="relative w-full md:max-w-sm">
-          <Search className="h-4 w-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+          <Search className="h-4 w-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
           <Input
             value={searchQuery}
             onChange={(event) => setSearchQuery(event.target.value)}
             placeholder="Buscar por nome, categoria ou plano"
-            className="pl-9 bg-zinc-900/70 border-zinc-800 text-zinc-100"
+            className="pl-9"
           />
         </div>
 
         <div className="flex items-center gap-3">
           <div className="md:hidden">
-            <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">
-              Total: {subscriptions.length}
-            </Badge>
+            <Badge variant="outline">Total: {subscriptions.length}</Badge>
           </div>
           <AddSubscriptionDialog onAdd={handleAddSubscription} />
         </div>
@@ -148,7 +146,7 @@ export default function SubscriptionsPage() {
       )}
 
       {(isFetchingSubscriptions || isMutatingSubscriptions) && subscriptions.length > 0 && (
-        <div className="mt-4 flex items-center gap-2 text-xs text-zinc-400">
+        <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
           <Loader2 className="h-3.5 w-3.5 animate-spin" />
           <span>
             {deletingId
@@ -162,16 +160,16 @@ export default function SubscriptionsPage() {
 
       <div className="mt-6">
         {isFetchingSubscriptions && subscriptions.length === 0 ? (
-          <Card className="bg-zinc-900/70 border-zinc-800 p-10 text-center shadow-lg shadow-black/20">
-            <p className="text-zinc-400 text-base mb-1">Carregando assinaturas…</p>
-            <p className="text-zinc-500 text-sm">Só um instante</p>
+          <Card className="p-10 text-center">
+            <p className="text-muted-foreground text-base mb-1">Carregando assinaturas…</p>
+            <p className="text-muted-foreground text-sm">Só um instante</p>
           </Card>
         ) : filteredSubscriptions.length === 0 ? (
-          <Card className="bg-zinc-900/70 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
-            <p className="text-zinc-400 text-lg mb-2">
+          <Card className="p-12 text-center">
+            <p className="text-muted-foreground text-lg mb-2">
               {subscriptions.length === 0 ? 'Nenhuma assinatura cadastrada' : 'Nenhum resultado encontrado'}
             </p>
-            <p className="text-zinc-500">
+            <p className="text-muted-foreground">
               {subscriptions.length === 0
                 ? 'Clique em "Nova Assinatura" para começar'
                 : 'Tente outro termo de busca'}

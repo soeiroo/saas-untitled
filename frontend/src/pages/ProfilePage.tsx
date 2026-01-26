@@ -5,6 +5,7 @@ import { User, UpdateUserData } from '@/types/user';
 import { getCurrentUser, updateCurrentUser, deleteCurrentUser } from '@/api/user';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { EditProfileDialog } from '@/components/profile/EditProfileDialog';
 import { ChangePasswordDialog } from '@/components/profile/ChangePasswordDialog';
@@ -94,21 +95,18 @@ export default function ProfilePage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white">
-        <div className="relative">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
-          <div className="relative flex">
-            <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur" />
-            <main className="flex-1">
-              <MobileAppMenu title="Account Settings" />
-              <div className="max-w-6xl mx-auto px-4 py-8">
-                <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
-                  <p className="text-zinc-400 text-lg mb-2">Carregando perfil...</p>
-                  <p className="text-zinc-500">Buscando dados atualizados</p>
-                </Card>
-              </div>
-            </main>
-          </div>
+      <div className="min-h-screen bg-background text-foreground">
+        <div className="flex">
+          <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-sidebar border-r border-sidebar-border px-5 py-6" />
+          <main className="flex-1">
+            <MobileAppMenu title="Account Settings" />
+            <div className="max-w-6xl mx-auto px-4 py-8">
+              <Card className="p-12 text-center">
+                <p className="text-muted-foreground text-lg mb-2">Carregando perfil...</p>
+                <p className="text-muted-foreground">Buscando dados atualizados</p>
+              </Card>
+            </div>
+          </main>
         </div>
       </div>
     );
@@ -116,30 +114,28 @@ export default function ProfilePage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-zinc-950 text-white flex items-center justify-center">
-        <div className="text-lg text-red-400">Erro ao carregar dados do usuário</div>
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+        <div className="text-lg text-destructive">Erro ao carregar dados do usuário</div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
-        <div className="relative flex">
-          {/* Sidebar */}
-          <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur">
-            <Link href="/dashboard" className="flex items-center gap-2 text-zinc-400 hover:text-white mb-8">
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="flex">
+        {/* Sidebar */}
+        <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-sidebar border-r border-sidebar-border px-5 py-6">
+            <Link href="/overview" className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8">
               <ArrowLeft className="w-4 h-4" />
               <span>Back</span>
             </Link>
             
             <nav className="space-y-2 text-sm">
-              <div className="px-3 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700 text-white flex items-center gap-2">
-                <UserIcon className="w-4 h-4 text-emerald-400" />
+              <div className="px-3 py-2 rounded-lg bg-sidebar-accent text-sidebar-accent-foreground flex items-center gap-2">
+                <UserIcon className="w-4 h-4" />
                 <span>Account</span>
               </div>
-              <button className="w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-800/30 hover:text-white transition">
+              <button className="w-full text-left px-3 py-2 rounded-lg text-muted-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground transition">
                 <span className="flex items-center gap-2">
                   <span>Plan & Billing</span>
                 </span>
@@ -154,32 +150,32 @@ export default function ProfilePage() {
               {/* Page Header */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
-                  <div className="p-2 bg-zinc-800 rounded-lg">
-                    <UserIcon className="w-5 h-5 text-emerald-400" />
+                  <div className="p-2 bg-muted rounded-lg">
+                    <UserIcon className="w-5 h-5 text-muted-foreground" />
                   </div>
                   <div>
-                    <h1 className="text-2xl font-semibold text-white">Account Settings</h1>
-                    <p className="text-sm text-zinc-400">Here you can update information about your account</p>
+                    <h1 className="text-2xl font-semibold">Account Settings</h1>
+                    <p className="text-sm text-muted-foreground">Here you can update information about your account</p>
                   </div>
                 </div>
               </div>
 
               {/* Profile Picture Section */}
-              <Card className="bg-zinc-900/80 border-zinc-800">
+              <Card>
                 <CardContent className="pt-6">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
                     <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 min-w-0">
-                      <Avatar className="w-24 h-24 border-2 border-emerald-500/20">
-                        <AvatarFallback className="text-2xl bg-gradient-to-br from-emerald-500 to-purple-500 text-white">
+                      <Avatar className="w-24 h-24">
+                        <AvatarFallback className="text-2xl bg-muted text-foreground">
                           {getInitials()}
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-white mb-2">Upload a profile picture</h3>
-                        <p className="text-sm text-zinc-400 mb-4">
+                        <h3 className="font-semibold mb-2">Upload a profile picture</h3>
+                        <p className="text-sm text-muted-foreground mb-4">
                           to personalize your workspace and help collaborators identify you.
                         </p>
-                        <p className="text-xs text-zinc-500">
+                        <p className="text-xs text-muted-foreground">
                           The recommended size is 400x400px and less than 1 MB.
                         </p>
                       </div>
@@ -189,7 +185,7 @@ export default function ProfilePage() {
                         variant="outline"
                         size="sm"
                         onClick={() => setEditProfileOpen(true)}
-                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 w-full sm:w-auto"
+                        className="w-full sm:w-auto"
                       >
                         <Pencil className="w-4 h-4 mr-2" />
                         Change Profile
@@ -200,45 +196,42 @@ export default function ProfilePage() {
               </Card>
 
               {/* Form Section */}
-              <Card className="bg-zinc-900/80 border-zinc-800">
+              <Card>
                 <CardContent className="pt-6 space-y-6">
                   {/* Name Fields */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-zinc-300 mb-2">First Name</label>
-                      <input
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">First Name</label>
+                      <Input
                         type="text"
                         value={user.name.split(' ')[0]}
                         disabled
-                        className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-zinc-300 mb-2">Last Name</label>
-                      <input
+                      <label className="block text-sm font-medium text-muted-foreground mb-2">Last Name</label>
+                      <Input
                         type="text"
                         value={user.name.split(' ').slice(1).join(' ')}
                         disabled
-                        className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
                       />
                     </div>
                   </div>
 
                   {/* Email Field */}
                   <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">Email Address</label>
-                    <input
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">Email Address</label>
+                    <Input
                       type="email"
                       value={user.email}
                       disabled
-                      className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
                     />
                   </div>
 
                   {/* Save Button */}
                   <div className="flex flex-col sm:flex-row gap-2 pt-4">
                     <Button
-                      className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto"
+                      className="w-full sm:w-auto"
                       onClick={() => setEditProfileOpen(true)}
                     >
                       Save Changes
@@ -248,27 +241,26 @@ export default function ProfilePage() {
               </Card>
 
               {/* Security Section */}
-              <Card className="bg-zinc-900/80 border-zinc-800">
+              <Card>
                 <CardHeader>
                   <div className="flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-purple-400" />
-                    <CardTitle className="text-white">Security</CardTitle>
+                    <Shield className="w-5 h-5 text-muted-foreground" />
+                    <CardTitle>Security</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">Password</label>
+                    <label className="block text-sm font-medium text-muted-foreground mb-2">Password</label>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                      <input
+                      <Input
                         type="password"
                         value="••••••••"
                         disabled
-                        className="w-full sm:flex-1 sm:min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
                       />
                       <Button
                         variant="outline"
                         size="sm"
-                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 w-full sm:w-auto"
+                        className="w-full sm:w-auto"
                         onClick={() => setChangePasswordOpen(true)}
                       >
                         <Key className="w-4 h-4 mr-2" />
@@ -280,19 +272,19 @@ export default function ProfilePage() {
               </Card>
 
               {/* Danger Zone */}
-              <Card className="bg-zinc-900/80 border-red-900/50">
+              <Card className="border-destructive/30">
                 <CardContent className="pt-6">
-                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 p-4 border border-red-900/30 rounded-lg bg-red-900/10">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 p-4 border border-destructive/20 rounded-lg bg-destructive/5">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="p-2 bg-red-900/30 rounded-lg mt-0.5">
-                        <AlertCircle className="w-4 h-4 text-red-400" />
+                      <div className="p-2 bg-destructive/10 rounded-lg mt-0.5">
+                        <AlertCircle className="w-4 h-4 text-destructive" />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-semibold text-white">Delete Account</h3>
-                        <p className="text-sm text-zinc-400 mt-1">
+                        <h3 className="font-semibold">Delete Account</h3>
+                        <p className="text-sm text-muted-foreground mt-1">
                           Delete your account and all of your data in SaaS.
                         </p>
-                        <p className="text-xs text-red-400 mt-1">
+                        <p className="text-xs text-destructive mt-1">
                           This action is permanent and irreversible.
                         </p>
                       </div>
@@ -300,7 +292,7 @@ export default function ProfilePage() {
                     <Button
                       variant="destructive"
                       onClick={() => setDeleteDialogOpen(true)}
-                      className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto sm:shrink-0"
+                      className="w-full sm:w-auto sm:shrink-0"
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Delete Account
@@ -311,7 +303,6 @@ export default function ProfilePage() {
             </div>
           </main>
         </div>
-      </div>
 
       {/* Dialogs */}
       <EditProfileDialog
@@ -328,21 +319,21 @@ export default function ProfilePage() {
       />
 
       <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
-        <AlertDialogContent className="bg-zinc-900 border-zinc-800">
+        <AlertDialogContent>
           <AlertDialogHeader>
-            <AlertDialogTitle className="text-white flex items-center gap-2">
-              <AlertCircle className="w-5 h-5 text-red-500" />
+            <AlertDialogTitle className="flex items-center gap-2">
+              <AlertCircle className="w-5 h-5 text-destructive" />
               Delete your account?
             </AlertDialogTitle>
-            <AlertDialogDescription className="text-zinc-400">
+            <AlertDialogDescription>
               This will permanently delete your account and all of your data. This action cannot be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">Cancel</AlertDialogCancel>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteAccount}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
             >
               Delete Account
             </AlertDialogAction>
