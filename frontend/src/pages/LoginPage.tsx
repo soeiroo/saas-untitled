@@ -10,7 +10,8 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff } from 'lucide-react';
-import { token } from '@/api/subscription';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
 const loginSchema = z.object({
   email: z.string().email('Email inválido'),
@@ -54,7 +55,7 @@ export default function LoginPage() {
     const timeoutId = setTimeout(() => controller.abort(), 10000); 
     
     try {
-      const response = await fetch(`auth/login`, {
+      const response = await fetch(`${API_URL}/auth/login`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
@@ -70,7 +71,6 @@ export default function LoginPage() {
         const result = await response.json();
         if (typeof window !== 'undefined') {
           localStorage.setItem('authToken', result.token);
-          console.log('Token armazenado:', result.token);
         }
         router.push('/dashboard');
       } else {
@@ -86,7 +86,6 @@ export default function LoginPage() {
     } finally {
       clearTimeout(timeoutId);
       setLoading(false);
-      console.log(token);
     }
   };
 
@@ -97,7 +96,7 @@ export default function LoginPage() {
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     
     try {
-      const response = await fetch(`auth/register`, {
+      const response = await fetch(`${API_URL}/auth/register`, {
         method: 'POST',
         headers: { 
           'Content-Type': 'application/json',
