@@ -123,6 +123,14 @@ export default function HomePage() {
     return daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
   }).length;
 
+  const nearestRenewalDays = subscriptions.length
+    ? Math.min(
+        ...subscriptions.map(sub =>
+          Math.ceil((new Date(sub.renewalDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
+        )
+      )
+    : null;
+
   const filteredSubscriptions = subscriptions.filter(sub => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return true;
@@ -184,7 +192,13 @@ export default function HomePage() {
                   <p className="text-zinc-400 mt-2">Gerencie suas assinaturas e nunca perca uma cobrança</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <Badge className="bg-gradient-to-r from-emerald-500/10 to-purple-500/10 text-emerald-200 border border-emerald-500/30">Saúde financeira: boa</Badge>
+                  <Badge className="bg-gradient-to-r from-emerald-500/10 to-purple-500/10 text-emerald-200 border border-emerald-500/30">
+                    {nearestRenewalDays === null
+                      ? 'Sem renovações próximas'
+                      : nearestRenewalDays < 0
+                        ? 'Renovação atrasada'
+                        : `Próxima renovação em ${nearestRenewalDays} dias`}
+                  </Badge>
                   <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">Total: {subscriptions.length}</Badge>
                   <LogoutButton floating={false} className="relative" />
                 </div>
