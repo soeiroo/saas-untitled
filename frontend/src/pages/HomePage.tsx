@@ -186,10 +186,9 @@ export default function HomePage() {
           <main className="flex-1">
             <div className="max-w-6xl mx-auto px-4 py-8 relative">
               <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-10">
-                <div>
-                  <p className="text-sm text-zinc-400">Visão geral</p>
-                  <h1 className="text-3xl md:text-4xl font-semibold">Controle de Assinaturas</h1>
-                  <p className="text-zinc-400 mt-2">Gerencie suas assinaturas e nunca perca uma cobrança</p>
+                <div className="space-y-2">
+                  <h1 className="text-3xl md:text-4xl font-semibold">Painel financeiro</h1>
+                  <p className="text-zinc-500">Acompanhe gastos, renovações e planos em um só lugar</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge className="bg-gradient-to-r from-emerald-500/10 to-purple-500/10 text-emerald-200 border border-emerald-500/30">
