@@ -2,6 +2,7 @@ package com.br.uvaproject.saasuntitled.internal.users;
 
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserCreateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserUpdateDTO;
+import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.users.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;

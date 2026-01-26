@@ -2,11 +2,14 @@ package com.br.uvaproject.saasuntitled.internal.users;
 
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserUpdateDTO;
+import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.users.mapper.UserMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
