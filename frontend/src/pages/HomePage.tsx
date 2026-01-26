@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { DollarSign, Bell, TrendingUp, Search, LayoutDashboard, CreditCard, BarChart3, Settings, Sparkles } from 'lucide-react';
 import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
+import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import Link from 'next/link';
 
 export default function HomePage() {
@@ -184,6 +185,7 @@ export default function HomePage() {
         </aside>
 
           <main className="flex-1">
+            <MobileAppMenu title="Assinaturas Pro" />
             <div className="max-w-6xl mx-auto px-4 py-8 relative">
               <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-10">
                 <div className="space-y-2">
@@ -199,7 +201,9 @@ export default function HomePage() {
                         : `Próxima renovação em ${nearestRenewalDays} dias`}
                   </Badge>
                   <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">Total: {subscriptions.length}</Badge>
-                  <LogoutButton floating={false} className="relative" />
+                  <div className="hidden lg:block">
+                    <LogoutButton floating={false} className="relative" />
+                  </div>
                 </div>
               </header>
 

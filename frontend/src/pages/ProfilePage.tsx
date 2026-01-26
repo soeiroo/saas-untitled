@@ -9,6 +9,7 @@ import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { EditProfileDialog } from '@/components/profile/EditProfileDialog';
 import { ChangePasswordDialog } from '@/components/profile/ChangePasswordDialog';
 import { toast } from 'sonner';
+import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { Pencil, Trash2, Key, ArrowLeft, User as UserIcon, Shield, AlertCircle } from 'lucide-react';
 import {
   AlertDialog,
@@ -100,6 +101,7 @@ export default function ProfilePage() {
             <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur" />
             <main className="flex-1">
               <div className="max-w-6xl mx-auto px-4 py-8">
+                <MobileAppMenu title="Account Settings" />
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
                   <p className="text-zinc-400 text-lg mb-2">Carregando perfil...</p>
                   <p className="text-zinc-500">Buscando dados atualizados</p>
@@ -147,13 +149,8 @@ export default function ProfilePage() {
 
           {/* Main Content */}
           <main className="flex-1">
+            <MobileAppMenu title="Account Settings" />
             <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-              {/* Back Button Mobile */}
-              <Link href="/dashboard" className="lg:hidden flex items-center gap-2 text-zinc-400 hover:text-white mb-6">
-                <ArrowLeft className="w-4 h-4" />
-                <span>Back</span>
-              </Link>
-
               {/* Page Header */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
