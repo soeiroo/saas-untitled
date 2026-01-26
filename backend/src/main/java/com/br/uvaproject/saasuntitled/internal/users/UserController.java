@@ -37,10 +37,14 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<UserSearchResponseDTO>> search(@RequestParam String q, Authentication authentication) {
-        List<UserSearchResponseDTO> users =
-                userService.searchUsers(q, authentication.getName());
+    public ResponseEntity<List<UserSearchResponseDTO>> search(
+            @RequestParam String query,
+            Authentication authentication
+    ) {
+        User user = userService.getMe(authentication.getName());
 
-        return ResponseEntity.ok(users);
+        return ResponseEntity.ok(
+                userService.searchUsers(query, user)
+        );
     }
 }
