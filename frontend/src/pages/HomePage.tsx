@@ -6,10 +6,11 @@ import { AddSubscriptionDialog } from '@/components/subscription/AddSubscription
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { EditSubscriptionDialog } from '@/components/subscription/EditSubscriptionDialog';
 import { Card } from '@/components/ui/card';
-import { DollarSign, Bell, TrendingUp } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { DollarSign, Bell, TrendingUp, Search, LayoutDashboard, CreditCard, BarChart3, Settings, Sparkles } from 'lucide-react';
 import type { Subscription } from '@/types/subscription';
-import { useRouter } from 'next/navigation';
-import { Button } from '@/components/ui/button';
 import LogoutButton from '@/components/ui/LogoutButton';
 
 export default function HomePage() {
@@ -19,7 +20,7 @@ export default function HomePage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const router = useRouter();
+  const [searchQuery, setSearchQuery] = useState('');
 
   useEffect(() => {
     async function fetchSubs() {
@@ -122,83 +123,185 @@ export default function HomePage() {
     return daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
   }).length;
 
+  const filteredSubscriptions = subscriptions.filter(sub => {
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return true;
+    return (
+      sub.name.toLowerCase().includes(query) ||
+      sub.category.toLowerCase().includes(query) ||
+      sub.plan.toLowerCase().includes(query)
+    );
+  });
+
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="max-w-6xl mx-auto px-4 py-8 relative">
-        <LogoutButton />
-        <div className="mb-8">
-          <h1 className="text-4xl mb-2">Controle de Assinaturas</h1>
-          <p className="text-zinc-400">Gerencie suas assinaturas e nunca perca uma cobrança</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <Card className="bg-zinc-900 border-zinc-800 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-zinc-400 text-sm mb-1">Gasto Mensal</p>
-                <p className="text-3xl text-white">
-                  R$ {totalMonthly.toFixed(2).replace('.', ',')}
-                </p>
+      <div className="relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
+        <div className="relative flex">
+          <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur">
+            <div className="flex items-center gap-3 mb-8">
+                <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+                <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
               </div>
-              <DollarSign className="h-10 w-10 text-purple-500" />
-            </div>
-          </Card>
-
-          <Card className="bg-zinc-900 border-zinc-800 p-6">
-            <div className="flex items-center justify-between">
               <div>
-                <p className="text-zinc-400 text-sm mb-1">Gasto Anual</p>
-                <p className="text-3xl text-white">
-                  R$ {totalYearly.toFixed(2).replace('.', ',')}
-                </p>
+                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">SaaS</p>
+                <p className="text-base font-semibold">Assinaturas Pro</p>
               </div>
-              <TrendingUp className="h-10 w-10 text-green-500" />
             </div>
-          </Card>
-
-          <Card className="bg-zinc-900 border-zinc-800 p-6">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-zinc-400 text-sm mb-1">Cobranças Próximas</p>
-                <p className="text-3xl text-white">{upcomingRenewals}</p>
-                <p className="text-zinc-500 text-xs mt-1">Próximos 7 dias</p>
+            <nav className="space-y-2 text-sm">
+              <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">
+                <span className="flex items-center gap-2"><LayoutDashboard className="h-4 w-4" />Overview</span>
+                <span className="text-xs text-emerald-400">Atual</span>
+              </button>
+              <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+                <span className="flex items-center gap-2"><CreditCard className="h-4 w-4" />Assinaturas</span>
+                <span className="text-xs">Em breve</span>
+              </button>
+              <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+                <span className="flex items-center gap-2"><BarChart3 className="h-4 w-4" />Relatórios</span>
+                <span className="text-xs">Em breve</span>
+              </button>
+              <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+                <span className="flex items-center gap-2"><Settings className="h-4 w-4" />Configurações</span>
+                <span className="text-xs">Em breve</span>
+              </button>
+          </nav>
+            <div className="mt-auto pt-6">
+              <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-zinc-900/40 p-4">
+                <p className="text-xs text-zinc-500">Plano atual</p>
+                <p className="text-sm font-semibold">Starter</p>
+                <p className="text-xs text-emerald-400 mt-1">Upgrade disponível</p>
               </div>
-              <Bell className="h-10 w-10 text-yellow-500" />
             </div>
-          </Card>
-        </div>
+        </aside>
 
-        <div className="mb-6">
-          <AddSubscriptionDialog onAdd={handleAddSubscription} />
-        </div>
+          <main className="flex-1">
+            <div className="max-w-6xl mx-auto px-4 py-8 relative">
+              <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-10">
+                <div>
+                  <p className="text-sm text-zinc-400">Visão geral</p>
+                  <h1 className="text-3xl md:text-4xl font-semibold">Controle de Assinaturas</h1>
+                  <p className="text-zinc-400 mt-2">Gerencie suas assinaturas e nunca perca uma cobrança</p>
+                </div>
+                <div className="flex flex-wrap items-center gap-3">
+                  <Badge className="bg-gradient-to-r from-emerald-500/10 to-purple-500/10 text-emerald-200 border border-emerald-500/30">Saúde financeira: boa</Badge>
+                  <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">Total: {subscriptions.length}</Badge>
+                  <LogoutButton floating={false} className="relative" />
+                </div>
+              </header>
 
-        {subscriptions.length === 0 ? (
-          <Card className="bg-zinc-900 border-zinc-800 p-12 text-center">
-            <p className="text-zinc-400 text-lg mb-2">Nenhuma assinatura cadastrada</p>
-            <p className="text-zinc-500">Clique em &quot;Nova Assinatura&quot; para começar</p>
-          </Card>
-        ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {subscriptions.map(subscription => (
-              <SubscriptionCard
-                key={subscription.id}
-                subscription={subscription}
-                onDelete={handleDeleteSubscription}
-                onEdit={handleEditSubscription}
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
+                <div className="relative w-full md:max-w-sm">
+                  <Search className="h-4 w-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                  <Input
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder="Buscar por nome, categoria ou plano"
+                    className="pl-9 bg-zinc-900/80 border-zinc-800 text-zinc-100"
+                  />
+                </div>
+                <div className="flex items-center gap-3">
+                  <div className="rounded-xl px-3 py-2 text-xs text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-purple-400" />
+                    Insights atualizados hoje
+                  </div>
+                </div>
+              </div>
+
+              {error && (
+                <Alert variant="destructive" className="mb-6">
+                  <AlertDescription>{error}</AlertDescription>
+                </Alert>
+              )}
+
+              <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-zinc-400 text-sm mb-1">Gasto Mensal</p>
+                      <p className="text-3xl text-white">
+                        R$ {totalMonthly.toFixed(2).replace('.', ',')}
+                      </p>
+                      <p className="text-xs text-zinc-500 mt-2">Atualizado hoje</p>
+                    </div>
+                    <DollarSign className="h-10 w-10 text-purple-500" />
+                  </div>
+                </Card>
+
+                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-zinc-400 text-sm mb-1">Gasto Anual</p>
+                      <p className="text-3xl text-white">
+                        R$ {totalYearly.toFixed(2).replace('.', ',')}
+                      </p>
+                      <p className="text-xs text-zinc-500 mt-2">Projeção de 12 meses</p>
+                    </div>
+                    <TrendingUp className="h-10 w-10 text-emerald-400" />
+                  </div>
+                </Card>
+
+                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-zinc-400 text-sm mb-1">Cobranças Próximas</p>
+                      <p className="text-3xl text-white">{upcomingRenewals}</p>
+                      <p className="text-zinc-500 text-xs mt-1">Próximos 7 dias</p>
+                    </div>
+                    <Bell className="h-10 w-10 text-yellow-500" />
+                  </div>
+                </Card>
+              </section>
+
+              <section className="flex flex-wrap items-center justify-between gap-4 mb-6">
+                <div>
+                  <p className="text-sm text-zinc-500">Ações rápidas</p>
+                  <p className="text-base">Gerencie suas assinaturas</p>
+                </div>
+                <AddSubscriptionDialog onAdd={handleAddSubscription} />
+              </section>
+
+              {loading ? (
+                <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
+                  <p className="text-zinc-400 text-lg mb-2">Carregando assinaturas...</p>
+                  <p className="text-zinc-500">Buscando dados atualizados</p>
+                </Card>
+              ) : filteredSubscriptions.length === 0 ? (
+                <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
+                  <p className="text-zinc-400 text-lg mb-2">
+                    {subscriptions.length === 0 ? 'Nenhuma assinatura cadastrada' : 'Nenhum resultado encontrado'}
+                  </p>
+                  <p className="text-zinc-500">
+                    {subscriptions.length === 0
+                      ? 'Clique em "Nova Assinatura" para começar'
+                      : 'Tente outro termo de busca'}
+                  </p>
+                </Card>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {filteredSubscriptions.map(subscription => (
+                    <SubscriptionCard
+                      key={subscription.id}
+                      subscription={subscription}
+                      onDelete={handleDeleteSubscription}
+                      onEdit={handleEditSubscription}
+                    />
+                  ))}
+                </div>
+              )}
+
+              <EditSubscriptionDialog
+                subscription={editingSubscription}
+                open={editDialogOpen}
+                onClose={() => {
+                  setEditDialogOpen(false);
+                  setEditingSubscription(null);
+                }}
+                onUpdate={handleUpdateSubscription}
               />
-            ))}
-          </div>
-        )}
-
-        <EditSubscriptionDialog
-          subscription={editingSubscription}
-          open={editDialogOpen}
-          onClose={() => {
-            setEditDialogOpen(false);
-            setEditingSubscription(null);
-          }}
-          onUpdate={handleUpdateSubscription}
-        />
+            </div>
+          </main>
+        </div>
       </div>
     </div>
   );
