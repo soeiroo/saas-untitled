@@ -20,20 +20,20 @@ public class FriendService {
 
     private final UserFriendRepository userFriendRepository;
 
-    public void sendFriendRequest(User currentUser, UUID friendId) {
-        if (currentUser.getId().equals(friendId)) {
+    public void sendFriendRequest(User user, UUID friendId) {
+        if (user.getId().equals(friendId)) {
             throw new IllegalArgumentException("Não é possível adicionar você mesmo.");
         }
 
-        boolean exists = userFriendRepository.findByUserIdAndFriendId(currentUser.getId(), friendId).isPresent()
-                || userFriendRepository.findByUserIdAndFriendId(friendId, currentUser.getId()).isPresent();
+        boolean exists = userFriendRepository.findByUserIdAndFriendId(user.getId(), friendId).isPresent()
+                || userFriendRepository.findByUserIdAndFriendId(friendId, user.getId()).isPresent();
 
         if (exists) {
             throw new IllegalStateException("Já existe um pedido ou amizade entre esses usuários.");
         }
 
         UserFriend request = new UserFriend();
-        request.setUser(currentUser);
+        request.setUser(user);
 
         User friend = new User();
         friend.setId(friendId);
@@ -44,11 +44,11 @@ public class FriendService {
         userFriendRepository.save(request);
     }
 
-    public void acceptFriendRequest(User currentUser, UUID requestId) {
+    public void acceptFriendRequest(User user, UUID requestId) {
         UserFriend request = userFriendRepository.findById(requestId)
                 .orElseThrow(() -> new EntityNotFoundException("Pedido de amizade não encontrado"));
 
-        if (!request.getFriend().getId().equals(currentUser.getId())) {
+        if (!request.getFriend().getId().equals(user.getId())) {
             throw new IllegalArgumentException("Você não pode aceitar este pedido.");
         }
 
@@ -57,23 +57,23 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
-    public List<FriendRequestDTO> listPendingRequests(User currentUser) {
-        return userFriendRepository.findByFriendIdAndStatus(currentUser.getId(), FriendStatus.PENDING)
+    public List<FriendRequestDTO> listPendingRequests(User user) {
+        return userFriendRepository.findByFriendIdAndStatus(user.getId(), FriendStatus.PENDING)
                 .stream()
                 .map(FriendMapper::toRequestDTO)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
-    public List<UserSearchResponseDTO> listFriends(User currentUser) {
+    public List<UserSearchResponseDTO> listFriends(User user) {
         return userFriendRepository.findByStatusAndUserIdOrFriendId(
                         FriendStatus.ACCEPTED,
-                        currentUser.getId(),
-                        currentUser.getId()
+                        user.getId(),
+                        user.getId()
                 )
                 .stream()
                 .map(uf -> {
-                    User friend = uf.getUser().getId().equals(currentUser.getId())
+                    User friend = uf.getUser().getId().equals(user.getId())
                             ? uf.getFriend()
                             : uf.getUser();
                     return new UserSearchResponseDTO(friend.getId(), friend.getName(), friend.getEmail());
@@ -81,9 +81,9 @@ public class FriendService {
                 .collect(Collectors.toList());
     }
 
-    public void removeFriend(User currentUser, UUID friendId) {
-        UserFriend friendship = userFriendRepository.findByUserIdAndFriendId(currentUser.getId(), friendId)
-                .or(() -> userFriendRepository.findByUserIdAndFriendId(friendId, currentUser.getId()))
+    public void removeFriend(User user, UUID friendId) {
+        UserFriend friendship = userFriendRepository.findByUserIdAndFriendId(user.getId(), friendId)
+                .or(() -> userFriendRepository.findByUserIdAndFriendId(friendId, user.getId()))
                 .orElseThrow(() -> new EntityNotFoundException("Amizade não encontrada"));
 
         userFriendRepository.delete(friendship);
