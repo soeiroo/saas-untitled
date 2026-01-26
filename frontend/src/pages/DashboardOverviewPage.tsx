@@ -109,11 +109,7 @@ export default function DashboardOverviewPage() {
               <p className="text-sm text-muted-foreground">Adicione novas assinaturas e acompanhe renovações.</p>
             </div>
           </div>
-          <Button
-            variant="ghost"
-            className="justify-start md:justify-center"
-            onClick={() => router.push('/assinaturas')}
-          >
+          <Button variant="ghost" onClick={() => router.push('/assinaturas')} className="justify-start md:justify-center">
             Ver assinaturas <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
         </div>
@@ -124,7 +120,7 @@ export default function DashboardOverviewPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground text-sm mb-1">Gasto Mensal</p>
-              <p className="text-3xl font-semibold">R$ {totalMonthly.toFixed(2).replace('.', ',')}</p>
+              <p className="text-3xl">R$ {totalMonthly.toFixed(2).replace('.', ',')}</p>
               <p className="text-xs text-muted-foreground mt-2">Atualizado hoje</p>
             </div>
             <DollarSign className="h-10 w-10 text-muted-foreground" />
@@ -135,7 +131,7 @@ export default function DashboardOverviewPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground text-sm mb-1">Gasto Anual</p>
-              <p className="text-3xl font-semibold">R$ {totalYearly.toFixed(2).replace('.', ',')}</p>
+              <p className="text-3xl">R$ {totalYearly.toFixed(2).replace('.', ',')}</p>
               <p className="text-xs text-muted-foreground mt-2">Projeção de 12 meses</p>
             </div>
             <TrendingUp className="h-10 w-10 text-muted-foreground" />
@@ -146,7 +142,7 @@ export default function DashboardOverviewPage() {
           <div className="flex items-center justify-between">
             <div>
               <p className="text-muted-foreground text-sm mb-1">Cobranças Próximas</p>
-              <p className="text-3xl font-semibold">{upcomingRenewals}</p>
+              <p className="text-3xl">{upcomingRenewals}</p>
               <p className="text-muted-foreground text-xs mt-1">Próximos 7 dias</p>
             </div>
             <Bell className="h-10 w-10 text-muted-foreground" />
@@ -160,10 +156,7 @@ export default function DashboardOverviewPage() {
             <p className="text-sm font-medium">Próximas renovações</p>
             <p className="text-sm text-muted-foreground">As 5 mais próximas a partir de hoje</p>
           </div>
-          <Button
-            variant="ghost"
-            onClick={() => router.push('/assinaturas')}
-          >
+          <Button variant="ghost" onClick={() => router.push('/assinaturas')}>
             Ver tudo
           </Button>
         </div>
