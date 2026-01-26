@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
-import { DollarSign, Bell, TrendingUp, Search, LayoutDashboard, CreditCard, BarChart3, Settings, Sparkles } from 'lucide-react';
+import { DollarSign, Bell, TrendingUp, Search, LayoutDashboard, CreditCard, BarChart3, Settings, Sparkles, Loader2 } from 'lucide-react';
 import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
@@ -22,14 +22,16 @@ export default function HomePage() {
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
-  const [loading, setLoading] = useState(false);
+  const [isFetchingSubscriptions, setIsFetchingSubscriptions] = useState(false);
+  const [isMutatingSubscriptions, setIsMutatingSubscriptions] = useState(false);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     async function fetchSubs() {
-      setLoading(true);
+      setIsFetchingSubscriptions(true);
       setError('');
       try {
         // Best-effort: show greeting even if subscriptions load fails.
@@ -50,7 +52,7 @@ export default function HomePage() {
           setError('Erro ao buscar assinaturas');
         }
       } finally {
-        setLoading(false);
+        setIsFetchingSubscriptions(false);
       }
     }
     fetchSubs();
@@ -64,7 +66,7 @@ export default function HomePage() {
 
 
   const handleAddSubscription = async (newSub: Omit<Subscription, 'id' | 'userId' >) => {
-    setLoading(true);
+    setIsMutatingSubscriptions(true);
     setError('');
     try {
       const created = await addSubscription(newSub);
@@ -78,12 +80,13 @@ export default function HomePage() {
         setError('Erro ao adicionar assinatura');
       }
     } finally {
-      setLoading(false);
+      setIsMutatingSubscriptions(false);
     }
   };
 
   const handleDeleteSubscription = async (id: string) => {
-    setLoading(true);
+    setIsMutatingSubscriptions(true);
+    setDeletingId(id);
     setError('');
     try {
       await deleteSubscription(id);
@@ -97,7 +100,8 @@ export default function HomePage() {
         setError('Erro ao deletar assinatura');
       }
     } finally {
-      setLoading(false);
+      setDeletingId(null);
+      setIsMutatingSubscriptions(false);
     }
   };
 
@@ -107,7 +111,7 @@ export default function HomePage() {
   };
 
   const handleUpdateSubscription = async (updated: Subscription) => {
-    setLoading(true);
+    setIsMutatingSubscriptions(true);
     setError('');
     try {
       const result = await updateSubscription(updated.id, updated);
@@ -121,7 +125,7 @@ export default function HomePage() {
         setError('Erro ao atualizar assinatura');
       }
     } finally {
-      setLoading(false);
+      setIsMutatingSubscriptions(false);
     }
   };
 
@@ -289,10 +293,23 @@ export default function HomePage() {
                 <AddSubscriptionDialog onAdd={handleAddSubscription} />
               </section>
 
-              {loading ? (
-                <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
-                  <p className="text-zinc-400 text-lg mb-2">Carregando assinaturas...</p>
-                  <p className="text-zinc-500">Buscando dados atualizados</p>
+              {(isFetchingSubscriptions || isMutatingSubscriptions) && subscriptions.length > 0 && (
+                <div className="mb-4 flex items-center gap-2 text-xs text-zinc-400">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <span>
+                    {deletingId
+                      ? 'Removendo assinatura…'
+                      : isFetchingSubscriptions
+                        ? 'Atualizando assinaturas…'
+                        : 'Salvando alterações…'}
+                  </span>
+                </div>
+              )}
+
+              {isFetchingSubscriptions && subscriptions.length === 0 ? (
+                <Card className="bg-zinc-900/80 border-zinc-800 p-10 text-center shadow-lg shadow-black/20">
+                  <p className="text-zinc-400 text-base mb-1">Carregando assinaturas…</p>
+                  <p className="text-zinc-500 text-sm">Só um instante</p>
                 </Card>
               ) : filteredSubscriptions.length === 0 ? (
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
