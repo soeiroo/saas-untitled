@@ -104,7 +104,7 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public List<UserSearchResponseDTO> searchUsers(String query, User currentUser) {
+    public List<UserSearchResponseDTO> searchUsersExcludingFriends(String query, User user) {
         if (query == null || query.isBlank()) {
             return List.of();
         }
@@ -112,8 +112,8 @@ public class UserService {
         return userRepository
                 .searchUsersExcludingFriends(
                         query,
-                        currentUser.getEmail(),
-                        currentUser.getId()
+                        user.getEmail(),
+                        user.getId()
                 )
                 .stream()
                 .map(UserMapper::toSearchResponse)

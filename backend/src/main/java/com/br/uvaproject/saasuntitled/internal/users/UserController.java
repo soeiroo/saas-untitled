@@ -44,7 +44,7 @@ public class UserController {
         User user = userService.getMe(authentication.getName());
 
         return ResponseEntity.ok(
-                userService.searchUsers(query, user)
+                userService.searchUsersExcludingFriends(query, user)
         );
     }
 }
