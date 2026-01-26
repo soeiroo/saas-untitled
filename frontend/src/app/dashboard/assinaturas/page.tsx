@@ -7,7 +7,7 @@ export default function Page() {
   const router = useRouter();
 
   useEffect(() => {
-    router.replace('/overview');
+    router.replace('/assinaturas');
   }, [router]);
 
   return null;
