@@ -62,7 +62,7 @@ export default function MobileAppMenu({
           </SheetTrigger>
 
           <div className="flex items-center gap-2">
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/30 flex items-center justify-center">
+            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
               <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
             </div>
             <div className="leading-tight">

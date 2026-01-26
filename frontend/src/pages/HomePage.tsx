@@ -14,6 +14,8 @@ import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import Link from 'next/link';
+import { getCurrentUser } from '@/api/user';
+import type { User } from '@/types/user';
 
 export default function HomePage() {
   
@@ -23,12 +25,20 @@ export default function HomePage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     async function fetchSubs() {
       setLoading(true);
       setError('');
       try {
+        // Best-effort: show greeting even if subscriptions load fails.
+        try {
+          const me = await getCurrentUser();
+          setCurrentUser(me);
+        } catch {
+          // ignore
+        }
         const subs = await getSubscriptions();
         setSubscriptions(subs);
       } catch (err: unknown) {
@@ -125,13 +135,14 @@ export default function HomePage() {
     return daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
   }).length;
 
-  const nearestRenewalDays = subscriptions.length
-    ? Math.min(
-        ...subscriptions.map(sub =>
-          Math.ceil((new Date(sub.renewalDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24))
-        )
-      )
-    : null;
+  const nearestRenewalDays = (() => {
+    if (!subscriptions.length) return null;
+    const futureDays = subscriptions
+      .map(sub => Math.ceil((new Date(sub.renewalDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
+      .filter(days => days >= 0);
+    if (!futureDays.length) return null;
+    return Math.min(...futureDays);
+  })();
 
   const filteredSubscriptions = subscriptions.filter(sub => {
     const query = searchQuery.trim().toLowerCase();
@@ -184,21 +195,21 @@ export default function HomePage() {
             </div>
         </aside>
 
-          <main className="flex-1">
+          <main className="flex-1 lg:pl-6">
             <MobileAppMenu title="Assinaturas Pro" />
-            <div className="max-w-6xl mx-auto px-4 py-8 relative">
+            <div className="max-w-6xl mx-auto px-4 lg:px-6 py-8 relative">
               <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-10">
                 <div className="space-y-2">
-                  <h1 className="text-3xl md:text-4xl font-semibold">Painel financeiro</h1>
-                  <p className="text-zinc-500">Acompanhe gastos, renovações e planos em um só lugar</p>
+                  <h1 className="text-3xl md:text-4xl font-semibold">
+                    Oi{currentUser?.name ? `, ${currentUser.name.split(' ')[0]}` : ''}!
+                  </h1>
+                  <p className="text-zinc-500">Aqui estão suas assinaturas e próximos vencimentos</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge className="bg-gradient-to-r from-emerald-500/10 to-purple-500/10 text-emerald-200 border border-emerald-500/30">
                     {nearestRenewalDays === null
                       ? 'Sem renovações próximas'
-                      : nearestRenewalDays < 0
-                        ? 'Renovação atrasada'
-                        : `Próxima renovação em ${nearestRenewalDays} dias`}
+                      : `Próxima renovação em ${nearestRenewalDays} dias`}
                   </Badge>
                   <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">Total: {subscriptions.length}</Badge>
                   <div className="hidden lg:block">

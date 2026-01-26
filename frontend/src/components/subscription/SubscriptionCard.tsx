@@ -18,7 +18,6 @@ interface SubscriptionCardProps {
 export function SubscriptionCard({ subscription, onDelete, onEdit }: SubscriptionCardProps) {
   const daysUntilRenewal = differenceInDays(new Date(subscription.renewalDate), new Date());
   const isUpcoming = daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
-  const isOverdue = daysUntilRenewal < 0;
 
   const icon = subscriptionIcons.find(i => i.name === subscription.icon) || subscriptionIcons[0];
 
@@ -91,15 +90,6 @@ export function SubscriptionCard({ subscription, onDelete, onEdit }: Subscriptio
             Próxima cobrança: {format(new Date(subscription.renewalDate), "dd 'de' MMMM", { locale: ptBR })}
           </span>
         </div>
-
-        {isOverdue && (
-          <div className="flex items-center gap-2 text-red-300 bg-red-950/40 border border-red-900/60 p-2 rounded-md mt-3">
-            <Bell className="h-4 w-4" />
-            <span className="text-sm">
-              {`Pagamento vencido há ${Math.abs(daysUntilRenewal)} ${Math.abs(daysUntilRenewal) === 1 ? 'dia' : 'dias'}`}
-            </span>
-          </div>
-        )}
 
         {isUpcoming && (
           <div className="flex items-center gap-2 text-yellow-500 bg-yellow-950/30 p-2 rounded-md mt-3">
