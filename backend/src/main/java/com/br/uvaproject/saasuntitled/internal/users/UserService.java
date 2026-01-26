@@ -9,6 +9,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 @Transactional
@@ -99,5 +101,18 @@ public class UserService {
     public void deleteMe(String email) {
         User user = getMe(email);
         userRepository.delete(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserSearchResponseDTO> searchUsers(String query, String currentEmail) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+
+        return userRepository
+                .searchUsersExcludingFriends(query, currentEmail)
+                .stream()
+                .map(UserMapper::toSearchResponse)
+                .toList();
     }
 }

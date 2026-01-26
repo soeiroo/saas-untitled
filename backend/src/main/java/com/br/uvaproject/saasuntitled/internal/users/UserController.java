@@ -35,4 +35,12 @@ public class UserController {
         userService.deleteMe(authentication.getName());
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/search")
+    public ResponseEntity<List<UserSearchResponseDTO>> search(@RequestParam String q, Authentication authentication) {
+        List<UserSearchResponseDTO> users =
+                userService.searchUsers(q, authentication.getName());
+
+        return ResponseEntity.ok(users);
+    }
 }
