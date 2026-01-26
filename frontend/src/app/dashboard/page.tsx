@@ -1,6 +1,7 @@
 'use client';
 
 import HomePage from '@/pages/HomePage';
+import AuthGuard from '@/utils/authGuard';
 import { useRouter } from 'next/dist/client/components/navigation';
 import { useEffect } from 'react';
 
@@ -17,5 +18,9 @@ export default function Page() {
       }
   }, [router]);
         
-  return <HomePage />;
+    return (
+      <AuthGuard requireAuth>
+        <HomePage />
+      </AuthGuard>
+    );
 }

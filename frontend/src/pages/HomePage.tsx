@@ -8,6 +8,9 @@ import { EditSubscriptionDialog } from '@/components/subscription/EditSubscripti
 import { Card } from '@/components/ui/card';
 import { DollarSign, Bell, TrendingUp } from 'lucide-react';
 import type { Subscription } from '@/types/subscription';
+import { useRouter } from 'next/navigation';
+import { Button } from '@/components/ui/button';
+import LogoutButton from '@/components/ui/LogoutButton';
 
 export default function HomePage() {
   
@@ -16,6 +19,7 @@ export default function HomePage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     async function fetchSubs() {
@@ -120,8 +124,8 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="max-w-6xl mx-auto px-4 py-8">
-
+      <div className="max-w-6xl mx-auto px-4 py-8 relative">
+        <LogoutButton />
         <div className="mb-8">
           <h1 className="text-4xl mb-2">Controle de Assinaturas</h1>
           <p className="text-zinc-400">Gerencie suas assinaturas e nunca perca uma cobrança</p>
