@@ -12,6 +12,7 @@ import { Badge } from '@/components/ui/badge';
 import { DollarSign, Bell, TrendingUp, Search, LayoutDashboard, CreditCard, BarChart3, Settings, Sparkles } from 'lucide-react';
 import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
+import Link from 'next/link';
 
 export default function HomePage() {
   
@@ -169,10 +170,9 @@ export default function HomePage() {
                 <span className="flex items-center gap-2"><BarChart3 className="h-4 w-4" />Relatórios</span>
                 <span className="text-xs">Em breve</span>
               </button>
-              <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60">
+              <Link href="/profile" className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60">
                 <span className="flex items-center gap-2"><Settings className="h-4 w-4" />Configurações</span>
-                <span className="text-xs">Em breve</span>
-              </button>
+              </Link>
           </nav>
             <div className="mt-auto pt-6">
               <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-zinc-900/40 p-4">
