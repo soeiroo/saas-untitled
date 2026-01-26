@@ -18,7 +18,25 @@ export async function getCurrentUser(): Promise<User> {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
-  if (!response.ok) throw new Error('Erro ao buscar dados do usuário');
+  if (!response.ok) {
+    const contentType = response.headers.get('content-type');
+    let errorMessage = 'Erro ao buscar dados do usuário';
+    if (contentType?.includes('application/json')) {
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (e) {
+        // Ignorar erro de parsing
+      }
+    }
+    throw new Error(errorMessage);
+  }
+  
+  const contentType = response.headers.get('content-type');
+  if (!contentType?.includes('application/json')) {
+    throw new Error('Resposta inválida do servidor');
+  }
+  
   return response.json();
 }
 
@@ -33,7 +51,26 @@ export async function updateCurrentUser(data: UpdateUserData): Promise<User> {
     credentials: 'include',
     body: JSON.stringify(data),
   });
-  if (!response.ok) throw new Error('Erro ao atualizar dados do usuário');
+  
+  if (!response.ok) {
+    const contentType = response.headers.get('content-type');
+    let errorMessage = 'Erro ao atualizar dados do usuário';
+    if (contentType?.includes('application/json')) {
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (e) {
+        // Ignorar erro de parsing
+      }
+    }
+    throw new Error(errorMessage);
+  }
+  
+  const contentType = response.headers.get('content-type');
+  if (!contentType?.includes('application/json')) {
+    throw new Error('Resposta inválida do servidor');
+  }
+  
   return response.json();
 }
 
@@ -45,5 +82,17 @@ export async function deleteCurrentUser(): Promise<void> {
     },
     credentials: 'include',
   });
-  if (!response.ok) throw new Error('Erro ao deletar conta do usuário');
+  if (!response.ok) {
+    const contentType = response.headers.get('content-type');
+    let errorMessage = 'Erro ao deletar conta do usuário';
+    if (contentType?.includes('application/json')) {
+      try {
+        const errorData = await response.json();
+        errorMessage = errorData.message || errorMessage;
+      } catch (e) {
+        // Ignorar erro de parsing
+      }
+    }
+    throw new Error(errorMessage);
+  }
 }
