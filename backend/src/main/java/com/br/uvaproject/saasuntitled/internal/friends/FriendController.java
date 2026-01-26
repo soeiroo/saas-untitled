@@ -25,8 +25,8 @@ public class FriendController {
             @PathVariable UUID friendId,
             Authentication authentication
     ) {
-        User currentUser = userService.getMe(authentication.getName());
-        friendService.sendFriendRequest(currentUser, friendId);
+        User user = userService.getMe(authentication.getName());
+        friendService.sendFriendRequest(user, friendId);
         return ResponseEntity.ok().build();
     }
 
@@ -35,8 +35,8 @@ public class FriendController {
             @PathVariable UUID requestId,
             Authentication authentication
     ) {
-        User currentUser = userService.getMe(authentication.getName());
-        friendService.acceptFriendRequest(currentUser, requestId);
+        User user = userService.getMe(authentication.getName());
+        friendService.acceptFriendRequest(user, requestId);
         return ResponseEntity.ok().build();
     }
 
@@ -44,8 +44,8 @@ public class FriendController {
     public ResponseEntity<List<FriendRequestDTO>> listPendingRequests(
             Authentication authentication
     ) {
-        User currentUser = userService.getMe(authentication.getName());
-        List<FriendRequestDTO> requests = friendService.listPendingRequests(currentUser);
+        User user = userService.getMe(authentication.getName());
+        List<FriendRequestDTO> requests = friendService.listPendingRequests(user);
         return ResponseEntity.ok(requests);
     }
 
@@ -53,8 +53,8 @@ public class FriendController {
     public ResponseEntity<List<UserSearchResponseDTO>> listFriends(
             Authentication authentication
     ) {
-        User currentUser = userService.getMe(authentication.getName());
-        List<UserSearchResponseDTO> friends = friendService.listFriends(currentUser);
+        User user = userService.getMe(authentication.getName());
+        List<UserSearchResponseDTO> friends = friendService.listFriends(user);
         return ResponseEntity.ok(friends);
     }
 
@@ -63,8 +63,8 @@ public class FriendController {
             @PathVariable UUID friendId,
             Authentication authentication
     ) {
-        User currentUser = userService.getMe(authentication.getName());
-        friendService.removeFriend(currentUser, friendId);
+        User user = userService.getMe(authentication.getName());
+        friendService.removeFriend(user, friendId);
         return ResponseEntity.noContent().build();
     }
 }
