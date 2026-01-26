@@ -1,6 +1,7 @@
 package com.br.uvaproject.saasuntitled.internal.users;
 
 import com.br.uvaproject.saasuntitled.internal.subscriptions.Subscription;
+import com.br.uvaproject.saasuntitled.internal.friends.UserFriend;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -35,6 +36,13 @@ public class User {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Subscription> subscriptions;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserFriend> friends;
+
+    @OneToMany(mappedBy = "friend", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserFriend> friendOf;
+
 
     @PrePersist
     public void prePersist() {
