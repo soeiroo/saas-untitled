@@ -3,6 +3,7 @@ package com.br.uvaproject.saasuntitled.internal.users.mapper;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserCreateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserResponseDTO;
+import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
 
 public class UserMapper {
 
@@ -22,5 +23,13 @@ public class UserMapper {
                 .passwordHash(passwordHash)
                 .name(dto.name())
                 .build();
+    }
+
+    public static UserSearchResponseDTO toSearchResponse(User user) {
+        return new UserSearchResponseDTO(
+                user.getId(),
+                user.getName(),
+                user.getEmail()
+        );
     }
 }

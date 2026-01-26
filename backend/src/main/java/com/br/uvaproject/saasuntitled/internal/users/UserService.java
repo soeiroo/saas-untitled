@@ -2,12 +2,15 @@ package com.br.uvaproject.saasuntitled.internal.users;
 
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserCreateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserUpdateDTO;
+import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.users.mapper.UserMapper;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -99,5 +102,22 @@ public class UserService {
     public void deleteMe(String email) {
         User user = getMe(email);
         userRepository.delete(user);
+    }
+
+    @Transactional(readOnly = true)
+    public List<UserSearchResponseDTO> searchUsersExcludingFriends(String query, User user) {
+        if (query == null || query.isBlank()) {
+            return List.of();
+        }
+
+        return userRepository
+                .searchUsersExcludingFriends(
+                        query,
+                        user.getEmail(),
+                        user.getId()
+                )
+                .stream()
+                .map(UserMapper::toSearchResponse)
+                .toList();
     }
 }
