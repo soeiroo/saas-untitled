@@ -100,8 +100,8 @@ export default function ProfilePage() {
           <div className="relative flex">
             <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur" />
             <main className="flex-1">
+              <MobileAppMenu title="Account Settings" />
               <div className="max-w-6xl mx-auto px-4 py-8">
-                <MobileAppMenu title="Account Settings" />
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
                   <p className="text-zinc-400 text-lg mb-2">Carregando perfil...</p>
                   <p className="text-zinc-500">Buscando dados atualizados</p>
@@ -167,14 +167,14 @@ export default function ProfilePage() {
               {/* Profile Picture Section */}
               <Card className="bg-zinc-900/80 border-zinc-800">
                 <CardContent className="pt-6">
-                  <div className="flex items-start justify-between gap-6">
-                    <div className="flex items-start gap-6">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
+                    <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 min-w-0">
                       <Avatar className="w-24 h-24 border-2 border-emerald-500/20">
                         <AvatarFallback className="text-2xl bg-gradient-to-br from-emerald-500 to-purple-500 text-white">
                           {getInitials()}
                         </AvatarFallback>
                       </Avatar>
-                      <div className="flex-1">
+                      <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-white mb-2">Upload a profile picture</h3>
                         <p className="text-sm text-zinc-400 mb-4">
                           to personalize your workspace and help collaborators identify you.
@@ -184,12 +184,12 @@ export default function ProfilePage() {
                         </p>
                       </div>
                     </div>
-                    <div className="flex gap-2">
+                    <div className="flex gap-2 w-full sm:w-auto">
                       <Button
                         variant="outline"
                         size="sm"
-                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
                         onClick={() => setEditProfileOpen(true)}
+                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 w-full sm:w-auto"
                       >
                         <Pencil className="w-4 h-4 mr-2" />
                         Change Profile
@@ -203,14 +203,14 @@ export default function ProfilePage() {
               <Card className="bg-zinc-900/80 border-zinc-800">
                 <CardContent className="pt-6 space-y-6">
                   {/* Name Fields */}
-                  <div className="grid grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-zinc-300 mb-2">First Name</label>
                       <input
                         type="text"
                         value={user.name.split(' ')[0]}
                         disabled
-                        className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
+                        className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
                       />
                     </div>
                     <div>
@@ -219,7 +219,7 @@ export default function ProfilePage() {
                         type="text"
                         value={user.name.split(' ').slice(1).join(' ')}
                         disabled
-                        className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
+                        className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
                       />
                     </div>
                   </div>
@@ -231,14 +231,14 @@ export default function ProfilePage() {
                       type="email"
                       value={user.email}
                       disabled
-                      className="w-full px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
+                      className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
                     />
                   </div>
 
                   {/* Save Button */}
-                  <div className="flex gap-2 pt-4">
+                  <div className="flex flex-col sm:flex-row gap-2 pt-4">
                     <Button
-                      className="bg-purple-600 hover:bg-purple-700 text-white"
+                      className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto"
                       onClick={() => setEditProfileOpen(true)}
                     >
                       Save Changes
@@ -258,17 +258,17 @@ export default function ProfilePage() {
                 <CardContent className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-zinc-300 mb-2">Password</label>
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                       <input
                         type="password"
                         value="••••••••"
                         disabled
-                        className="flex-1 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
+                        className="w-full sm:flex-1 sm:min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
                       />
                       <Button
                         variant="outline"
                         size="sm"
-                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
+                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 w-full sm:w-auto"
                         onClick={() => setChangePasswordOpen(true)}
                       >
                         <Key className="w-4 h-4 mr-2" />
@@ -282,12 +282,12 @@ export default function ProfilePage() {
               {/* Danger Zone */}
               <Card className="bg-zinc-900/80 border-red-900/50">
                 <CardContent className="pt-6">
-                  <div className="flex items-start justify-between gap-6 p-4 border border-red-900/30 rounded-lg bg-red-900/10">
-                    <div className="flex items-start gap-3">
+                  <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 p-4 border border-red-900/30 rounded-lg bg-red-900/10">
+                    <div className="flex items-start gap-3 min-w-0">
                       <div className="p-2 bg-red-900/30 rounded-lg mt-0.5">
                         <AlertCircle className="w-4 h-4 text-red-400" />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <h3 className="font-semibold text-white">Delete Account</h3>
                         <p className="text-sm text-zinc-400 mt-1">
                           Delete your account and all of your data in SaaS.
@@ -300,7 +300,7 @@ export default function ProfilePage() {
                     <Button
                       variant="destructive"
                       onClick={() => setDeleteDialogOpen(true)}
-                      className="bg-red-600 hover:bg-red-700 text-white shrink-0"
+                      className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto sm:shrink-0"
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
                       Delete Account
