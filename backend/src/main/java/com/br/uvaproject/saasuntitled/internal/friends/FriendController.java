@@ -3,7 +3,7 @@ package com.br.uvaproject.saasuntitled.internal.friends;
 import com.br.uvaproject.saasuntitled.internal.friends.dto.FriendRequestDTO;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
-import com.br.uvaproject.saasuntitled.internal.users.UserService;
+import com.br.uvaproject.saasuntitled.internal.security.AuthenticatedUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,14 +18,14 @@ import java.util.UUID;
 public class FriendController {
 
     private final FriendService friendService;
-    private final UserService userService;
+    private final AuthenticatedUserService authenticatedUserService;
 
     @PostMapping("/{friendId}")
     public ResponseEntity<Void> sendFriendRequest(
             @PathVariable UUID friendId,
             Authentication authentication
     ) {
-        User user = userService.getMe(authentication.getName());
+        User user = authenticatedUserService.getUser(authentication);
         friendService.sendFriendRequest(user, friendId);
         return ResponseEntity.ok().build();
     }
@@ -35,7 +35,7 @@ public class FriendController {
             @PathVariable UUID requestId,
             Authentication authentication
     ) {
-        User user = userService.getMe(authentication.getName());
+        User user = authenticatedUserService.getUser(authentication);
         friendService.acceptFriendRequest(user, requestId);
         return ResponseEntity.ok().build();
     }
@@ -44,7 +44,7 @@ public class FriendController {
     public ResponseEntity<List<FriendRequestDTO>> listPendingRequests(
             Authentication authentication
     ) {
-        User user = userService.getMe(authentication.getName());
+        User user = authenticatedUserService.getUser(authentication);
         List<FriendRequestDTO> requests = friendService.listPendingRequests(user);
         return ResponseEntity.ok(requests);
     }
@@ -53,7 +53,7 @@ public class FriendController {
     public ResponseEntity<List<UserSearchResponseDTO>> listFriends(
             Authentication authentication
     ) {
-        User user = userService.getMe(authentication.getName());
+        User user = authenticatedUserService.getUser(authentication);
         List<UserSearchResponseDTO> friends = friendService.listFriends(user);
         return ResponseEntity.ok(friends);
     }
@@ -63,7 +63,7 @@ public class FriendController {
             @PathVariable UUID friendId,
             Authentication authentication
     ) {
-        User user = userService.getMe(authentication.getName());
+        User user = authenticatedUserService.getUser(authentication);
         friendService.removeFriend(user, friendId);
         return ResponseEntity.noContent().build();
     }

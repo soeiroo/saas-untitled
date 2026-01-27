@@ -1,5 +1,6 @@
 package com.br.uvaproject.saasuntitled.internal.users;
 
+import com.br.uvaproject.saasuntitled.internal.security.AuthenticatedUserService;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
@@ -17,10 +18,11 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final AuthenticatedUserService authenticatedUserService;
 
     @GetMapping("/me")
     public ResponseEntity<UserResponseDTO> getMe(Authentication authentication) {
-        User user = userService.getMe(authentication.getName());
+        User user = authenticatedUserService.getUser(authentication);
         return ResponseEntity.ok(UserMapper.toResponse(user));
     }
 
@@ -29,13 +31,15 @@ public class UserController {
             Authentication authentication,
             @RequestBody UserUpdateDTO dto
     ) {
-        userService.updateMe(authentication.getName(), dto);
+        User user = authenticatedUserService.getUser(authentication);
+        userService.updateMe(user.getEmail(), dto);
         return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<Void> deleteMe(Authentication authentication) {
-        userService.deleteMe(authentication.getName());
+        User user = authenticatedUserService.getUser(authentication);
+        userService.deleteMe(user.getEmail());
         return ResponseEntity.noContent().build();
     }
 
@@ -44,8 +48,7 @@ public class UserController {
             @RequestParam String query,
             Authentication authentication
     ) {
-        User user = userService.getMe(authentication.getName());
-
+        User user = authenticatedUserService.getUser(authentication);
         return ResponseEntity.ok(
                 userService.searchUsersExcludingFriends(query, user)
         );
