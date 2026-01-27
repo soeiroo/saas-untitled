@@ -1,0 +1,20 @@
+.sidebar {
+  width: 3.7rem;
+}
+.sidebar:hover {
+  width: 16rem;
+}
+.sidebar-label {
+  display: none;
+}
+.sidebar:hover .sidebar-label {
+  display: inline;
+}
+@media (min-width: 1024px) {
+  .sidebar {
+    width: 3.7rem;
+  }
+  .sidebar:hover {
+    width: 16rem;
+  }
+}

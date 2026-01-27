@@ -9,18 +9,13 @@ function getAuthToken() {
   return null;
 }
 
-function buildAuthHeaders() {
-  const authToken = getAuthToken();
-  const headers: Record<string, string> = {};
-  if (authToken) headers.Authorization = `Bearer ${authToken}`;
-  return headers;
-}
+export const token = getAuthToken();
 
 export async function getSubscriptions(): Promise<Subscription[]> {
   const response = await fetch(`${API_URL}/api/subscriptions`, {
     credentials: 'include',
     headers: {
-      ...buildAuthHeaders(),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
   if (!response.ok) throw new Error('Erro ao buscar assinaturas');
@@ -33,7 +28,7 @@ export async function addSubscription(data: Omit<Subscription, 'id' | 'userId'>)
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      ...buildAuthHeaders(),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     credentials: 'include',
     body: JSON.stringify(data),
@@ -48,7 +43,7 @@ export async function updateSubscription(id: string, data: Partial<Omit<Subscrip
     headers: {
       'Content-Type': 'application/json',
       'Accept': 'application/json',
-      ...buildAuthHeaders(),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     credentials: 'include',
     body: JSON.stringify(data),
@@ -62,7 +57,7 @@ export async function deleteSubscription(id: string): Promise<void> {
     method: 'DELETE',
     credentials: 'include',
     headers: {
-      ...buildAuthHeaders(),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
   });
   if (!response.ok) throw new Error('Erro ao deletar assinatura');

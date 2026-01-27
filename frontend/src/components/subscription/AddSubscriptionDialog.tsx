@@ -50,7 +50,7 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <Button className="bg-purple-600 hover:bg-purple-700">
+        <Button className="bg-purple-600 hover:bg-purple-700 cursor-pointer">
           <Plus className="mr-2 h-4 w-4" />
           Nova Assinatura
         </Button>
