@@ -8,12 +8,11 @@ import { EditSubscriptionDialog } from '@/components/subscription/EditSubscripti
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
-import { Badge } from '@/components/ui/badge';
-import { DollarSign, Bell, TrendingUp, Search, LayoutDashboard, CreditCard, BarChart3, Settings, Sparkles, Loader2 } from 'lucide-react';
+import { DollarSign, Bell, TrendingUp, Search, Sparkles, Loader2 } from 'lucide-react';
+import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
-import Link from 'next/link';
 import { getCurrentUser } from '@/api/user';
 import type { User } from '@/types/user';
 
@@ -131,14 +130,14 @@ export default function HomePage() {
     return daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
   }).length;
 
-  const nearestRenewalDays = (() => {
-    if (!subscriptions.length) return null;
-    const futureDays = subscriptions
-      .map(sub => Math.ceil((new Date(sub.renewalDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
-      .filter(days => days >= 0);
-    if (!futureDays.length) return null;
-    return Math.min(...futureDays);
-  })();
+  // const nearestRenewalDays = (() => {
+  //   if (!subscriptions.length) return null;
+  //   const futureDays = subscriptions
+  //     .map(sub => Math.ceil((new Date(sub.renewalDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)))
+  //     .filter(days => days >= 0);
+  //   if (!futureDays.length) return null;
+  //   return Math.min(...futureDays);
+  // })();
 
   const filteredSubscriptions = subscriptions.filter(sub => {
     const query = searchQuery.trim().toLowerCase();
@@ -155,41 +154,8 @@ export default function HomePage() {
       <div className="relative">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
         <div className="relative flex">
-          <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur">
-            <div className="flex items-center gap-3 mb-8">
-                <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
-                <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-              </div>
-              <div>
-                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">SaaS</p>
-                <p className="text-base font-semibold">Assinaturas Pro</p>
-              </div>
-            </div>
-            <nav className="space-y-2 text-sm">
-              <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/20">
-                <span className="flex items-center gap-2"><LayoutDashboard className="h-4 w-4" />Overview</span>
-                <span className="text-xs text-emerald-400">Atual</span>
-              </button>
-              <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60">
-                <span className="flex items-center gap-2"><CreditCard className="h-4 w-4" />Assinaturas</span>
-                <span className="text-xs">Em breve</span>
-              </button>
-              <button className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60">
-                <span className="flex items-center gap-2"><BarChart3 className="h-4 w-4" />Relatórios</span>
-                <span className="text-xs">Em breve</span>
-              </button>
-              <Link href="/profile" className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-zinc-400 hover:text-white hover:bg-zinc-800/60">
-                <span className="flex items-center gap-2"><Settings className="h-4 w-4" />Configurações</span>
-              </Link>
-          </nav>
-            <div className="mt-auto pt-6">
-              <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-zinc-900/40 p-4">
-                <p className="text-xs text-zinc-500">Plano atual</p>
-                <p className="text-sm font-semibold">Starter</p>
-                <p className="text-xs text-emerald-400 mt-1">Upgrade disponível</p>
-              </div>
-            </div>
-        </aside>
+          
+          <Sidebar activePage="overview" />
 
           <main className="flex-1 lg:pl-6">
             <MobileAppMenu title="Assinaturas Pro" />
@@ -199,38 +165,15 @@ export default function HomePage() {
                   <h1 className="text-3xl md:text-4xl font-semibold">
                     Oi{currentUser?.name ? `, ${currentUser.name.split(' ')[0]}` : ''}!
                   </h1>
-                  <p className="text-zinc-500">Aqui estão suas assinaturas e próximos vencimentos</p>
+                  <p className="text-zinc-500">Aqui estão suas assinaturas</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <Badge className="bg-gradient-to-r from-emerald-500/10 to-purple-500/10 text-emerald-200 border border-emerald-500/30">
-                    {nearestRenewalDays === null
-                      ? 'Sem renovações próximas'
-                      : `Próxima renovação em ${nearestRenewalDays} dias`}
-                  </Badge>
-                  <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">Total: {subscriptions.length}</Badge>
+                  {/* <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">Total: {subscriptions.length}</Badge> */}
                   <div className="hidden lg:block">
                     <LogoutButton floating={false} className="relative" />
                   </div>
                 </div>
               </header>
-
-              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
-                <div className="relative w-full md:max-w-sm">
-                  <Search className="h-4 w-4 text-zinc-500 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder="Buscar por nome, categoria ou plano"
-                    className="pl-9 bg-zinc-900/80 border-zinc-800 text-zinc-100"
-                  />
-                </div>
-                <div className="flex items-center gap-3">
-                  <div className="rounded-xl px-3 py-2 text-xs text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-purple-400" />
-                    Insights atualizados hoje
-                  </div>
-                </div>
-              </div>
 
               {error && (
                 <Alert variant="destructive" className="mb-6">
@@ -277,12 +220,32 @@ export default function HomePage() {
                 </Card>
               </section>
 
+              <div className="flex flex-col items-center mb-8 gap-4 w-full">
+                <div className="relative w-full max-w-2xl flex justify-center">
+                  <Search className="h-5 w-5 text-zinc-500 absolute left-5 top-1/2 -translate-y-1/2" />
+                  <Input
+                    value={searchQuery}
+                    onChange={(event) => setSearchQuery(event.target.value)}
+                    placeholder="Buscar por nome, categoria ou plano"
+                    className="pl-14 py-5 text-lg bg-zinc-900/80 border-zinc-800 text-zinc-100 rounded-2xl w-full shadow-md"
+                  />
+                </div>
+                <div className="flex items-center gap-3 mt-2">
+                  <div className="rounded-xl px-3 py-2 text-xs text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
+                    <Sparkles className="h-4 w-4 text-purple-400" />
+                    Insights atualizados hoje
+                  </div>
+                  <div>
+                    <AddSubscriptionDialog onAdd={handleAddSubscription} />
+                  </div>
+                </div>
+              </div>
+
               <section className="flex flex-wrap items-center justify-between gap-4 mb-6">
                 <div>
-                  <p className="text-sm text-zinc-500">Ações rápidas</p>
-                  <p className="text-base">Gerencie suas assinaturas</p>
+                  {/* <p className="text-sm text-zinc-500">Ações rápidas</p> */}
+                  {/* <p className="text-base">Gerencie suas assinaturas</p> */}
                 </div>
-                <AddSubscriptionDialog onAdd={handleAddSubscription} />
               </section>
 
               {(isFetchingSubscriptions || isMutatingSubscriptions) && subscriptions.length > 0 && (
