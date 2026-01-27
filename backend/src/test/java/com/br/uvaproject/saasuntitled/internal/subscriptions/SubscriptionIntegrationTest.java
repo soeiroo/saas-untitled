@@ -4,6 +4,7 @@ import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCre
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
+import com.br.uvaproject.saasuntitled.internal.friends.UserFriendRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -43,6 +44,9 @@ class SubscriptionIntegrationTest {
     private SubscriptionRepository subscriptionRepository;
 
     @Autowired
+    private UserFriendRepository userFriendRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
@@ -51,6 +55,7 @@ class SubscriptionIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        userFriendRepository.deleteAll();
         subscriptionRepository.deleteAll();
         userRepository.deleteAll();
 

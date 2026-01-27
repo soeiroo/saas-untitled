@@ -1,6 +1,8 @@
 package com.br.uvaproject.saasuntitled.internal.users;
 
 import com.br.uvaproject.saasuntitled.internal.users.dto.UserUpdateDTO;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.SubscriptionRepository;
+import com.br.uvaproject.saasuntitled.internal.friends.UserFriendRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -30,6 +32,12 @@ class UserIntegrationTest {
     private UserRepository userRepository;
 
     @Autowired
+    private SubscriptionRepository subscriptionRepository;
+
+    @Autowired
+    private UserFriendRepository userFriendRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     @Autowired
@@ -37,6 +45,8 @@ class UserIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        userFriendRepository.deleteAll();
+        subscriptionRepository.deleteAll();
         userRepository.deleteAll();
 
         User user = new User();
