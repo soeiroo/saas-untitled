@@ -40,8 +40,11 @@ public class SubscriptionService {
                 .toList();
     }
 
-    public void update(User user, UUID subscriptionId, SubscriptionUpdateDTO dto) {
-
+    public SubscriptionResponseDTO update(
+            User user,
+            UUID subscriptionId,
+            SubscriptionUpdateDTO dto
+    ) {
         Subscription subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
 
@@ -53,8 +56,11 @@ public class SubscriptionService {
 
         SubscriptionMapper.updateEntityFromDTO(subscription, dto);
 
-        subscriptionRepository.save(subscription);
+        Subscription updated = subscriptionRepository.save(subscription);
+
+        return SubscriptionMapper.toResponse(updated);
     }
+
 
     public void delete(User user, UUID subscriptionId) {
 

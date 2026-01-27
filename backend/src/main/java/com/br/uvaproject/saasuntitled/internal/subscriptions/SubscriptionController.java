@@ -32,7 +32,7 @@ public class SubscriptionController {
         SubscriptionResponseDTO response =
                 subscriptionService.create(user, dto);
 
-        URI location = URI.create("/api/subscriptions/" + response.id());
+        URI location = URI.create("/api/subscriptions");
 
         return ResponseEntity
                 .created(location)
@@ -49,16 +49,17 @@ public class SubscriptionController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Void> update(
-            Authentication authentication,
-            @PathVariable UUID id,
-            @RequestBody SubscriptionUpdateDTO dto
+    public ResponseEntity<SubscriptionResponseDTO> update(
+        Authentication authentication,
+        @PathVariable UUID id,
+        @RequestBody SubscriptionUpdateDTO dto
     ) {
         User user = authenticatedUserService.getUser(authentication);
 
-        subscriptionService.update(user, id, dto);
+        SubscriptionResponseDTO response =
+                subscriptionService.update(user, id, dto);
 
-        return ResponseEntity.noContent().build();
+        return ResponseEntity.ok(response);
     }
 
     @DeleteMapping("/{id}")
