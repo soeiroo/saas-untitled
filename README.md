@@ -17,3 +17,7 @@ docker compose up --build
 ```
 
 This will run frontend and backend as well.
+
+## Preview
+
+<img width="1920" height="1080" alt="Screenshot_27-janv _13-12-10_firefox" src="https://github.com/user-attachments/assets/4d6bbd81-c3a4-4e12-8304-e485067f783b" />
