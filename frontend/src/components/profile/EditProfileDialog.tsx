@@ -76,58 +76,62 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[500px] bg-zinc-900 border-zinc-800">
         <DialogHeader>
-          <DialogTitle>Editar Perfil</DialogTitle>
-          <DialogDescription>Atualize suas informações de perfil.</DialogDescription>
+          <DialogTitle className="text-white">Editar Perfil</DialogTitle>
+          <DialogDescription className="text-zinc-400">
+            Atualize suas informações de perfil.
+          </DialogDescription>
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-4 py-4">
             <div className="space-y-2">
-              <Label htmlFor="name">Nome</Label>
+              <Label htmlFor="name" className="text-zinc-300">Nome</Label>
               <Input
                 id="name"
                 {...form.register('name')}
+                className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
               />
               {form.formState.errors.name && (
-                <p className="text-sm text-destructive">{form.formState.errors.name.message}</p>
+                <p className="text-sm text-red-400">{form.formState.errors.name.message}</p>
               )}
             </div>
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email" className="text-zinc-300">Email</Label>
               <Input
                 id="email"
                 type="email"
                 {...form.register('email')}
+                className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
               />
               {form.formState.errors.email && (
-                <p className="text-sm text-destructive">{form.formState.errors.email.message}</p>
+                <p className="text-sm text-red-400">{form.formState.errors.email.message}</p>
               )}
             </div>
 
             {isEmailChanged && (
               <div className="space-y-2">
-                <Label htmlFor="currentPassword">Senha atual</Label>
+                <Label htmlFor="currentPassword" className="text-zinc-300">Senha atual</Label>
                 <div className="relative">
                   <Input
                     id="currentPassword"
                     type={showPassword ? 'text' : 'password'}
                     autoComplete="current-password"
                     {...form.register('currentPassword')}
-                    className="pr-10"
+                    className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500 pr-10"
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword((prev) => !prev)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-200"
                     aria-label={showPassword ? 'Ocultar senha' : 'Mostrar senha'}
                   >
                     {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
                   </button>
                 </div>
-                <p className="text-xs text-muted-foreground">Obrigatória para manter sua sessão ao trocar o email.</p>
+                <p className="text-xs text-zinc-400">Obrigatória para manter sua sessão ao trocar o email.</p>
                 {form.formState.errors.currentPassword && (
-                  <p className="text-sm text-destructive">{form.formState.errors.currentPassword.message}</p>
+                  <p className="text-sm text-red-400">{form.formState.errors.currentPassword.message}</p>
                 )}
               </div>
             )}
@@ -137,12 +141,14 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
               type="button" 
               variant="outline" 
               onClick={() => onOpenChange(false)}
+              className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
             >
               Cancelar
             </Button>
             <Button 
               type="submit" 
               disabled={form.formState.isSubmitting}
+              className="bg-emerald-600 hover:bg-emerald-700"
             >
               {form.formState.isSubmitting ? 'Salvando...' : 'Salvar'}
             </Button>

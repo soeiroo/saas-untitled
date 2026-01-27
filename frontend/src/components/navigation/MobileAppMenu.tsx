@@ -47,13 +47,14 @@ export default function MobileAppMenu({
   };
 
   return (
-    <div className="lg:hidden sticky top-0 z-50 border-b bg-background/80 backdrop-blur">
+    <div className="lg:hidden sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
       <div className="flex items-center justify-between px-4 py-3">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
+              className="text-zinc-200 hover:bg-zinc-800/60"
               aria-label="Abrir menu"
             >
               <Menu className="h-5 w-5" />
@@ -61,16 +62,19 @@ export default function MobileAppMenu({
           </SheetTrigger>
 
           <div className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-2xl border bg-card" />
+            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+              <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
+            </div>
             <div className="leading-tight">
-              <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">Menu</p>
-              <p className="text-sm font-semibold">{title}</p>
+              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Menu</p>
+              <p className="text-sm font-semibold text-white">{title}</p>
             </div>
           </div>
 
           <Button
             variant="ghost"
             size="icon"
+            className="text-zinc-200 hover:bg-zinc-800/60"
             aria-label="Sair"
             onClick={handleLogout}
           >
@@ -79,20 +83,22 @@ export default function MobileAppMenu({
 
           <SheetContent
             side="top"
-            className="border-b bg-background p-4"
+            className="bg-zinc-950 border-b border-zinc-800 p-4"
           >
             <div className="max-w-md mx-auto">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-2xl border bg-card" />
+                  <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/30 flex items-center justify-center">
+                    <div className="h-5 w-5 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
+                  </div>
                   <div>
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">{title}</p>
-                    <p className="text-sm text-muted-foreground">Navigation</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{title}</p>
+                    <p className="text-sm text-zinc-300">Navigation</p>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-3xl bg-card border p-2">
+              <div className="rounded-3xl bg-zinc-900/60 border border-zinc-800 p-2">
                 {navItems.map((item) => {
                   const isActive = pathname === item.href;
                   const Icon = item.icon;
@@ -104,17 +110,17 @@ export default function MobileAppMenu({
                         className={cn(
                           'flex items-center justify-between gap-3 rounded-2xl px-3 py-3 text-sm transition',
                           isActive
-                            ? 'bg-accent text-accent-foreground'
-                            : 'text-muted-foreground hover:bg-muted hover:text-foreground',
+                            ? 'bg-emerald-500/15 text-emerald-200 border border-emerald-500/20'
+                            : 'text-zinc-300 hover:bg-zinc-800/60 hover:text-white',
                         )}
                         onClick={() => setOpen(false)}
                       >
                         <span className="flex items-center gap-3">
-                          <Icon className={cn('h-4 w-4', isActive ? 'text-foreground' : 'text-muted-foreground')} />
+                          <Icon className={cn('h-4 w-4', isActive ? 'text-emerald-300' : 'text-zinc-400')} />
                           {item.label}
                         </span>
                         {item.badge && (
-                          <span className={cn('text-xs', isActive ? 'text-foreground' : 'text-muted-foreground')}>
+                          <span className={cn('text-xs', isActive ? 'text-emerald-300' : 'text-zinc-500')}>
                             {item.badge}
                           </span>
                         )}
@@ -124,9 +130,9 @@ export default function MobileAppMenu({
                 })}
               </div>
 
-              <div className="mt-4 rounded-2xl border bg-card p-4">
-                <p className="text-xs text-muted-foreground">Dica</p>
-                <p className="text-sm text-muted-foreground mt-1">Use o menu para navegar no celular.</p>
+              <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <p className="text-xs text-zinc-500">Dica</p>
+                <p className="text-sm text-zinc-300 mt-1">Use o menu para navegar no celular.</p>
               </div>
             </div>
           </SheetContent>

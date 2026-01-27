@@ -53,34 +53,39 @@ export default function DashboardShell({
   }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SidebarProvider defaultOpen>
-        <Sidebar variant="inset">
+    <div className="min-h-screen bg-zinc-950 text-white">
+      <div className="relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
+        <div className="relative">
+          <SidebarProvider defaultOpen>
+            <Sidebar variant="inset" className="border-zinc-800 bg-zinc-900/70 backdrop-blur">
               <SidebarHeader className="p-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-2xl border bg-card flex items-center justify-center" />
+                  <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+                    <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
+                  </div>
                   <div className="min-w-0">
-                    <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">SaaS</p>
-                    <p className="text-base font-semibold truncate">Assinaturas Pro</p>
+                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">SaaS</p>
+                    <p className="text-base font-semibold text-white truncate">Assinaturas Pro</p>
                   </div>
                 </div>
 
                 {currentUser && (
-                  <div className="mt-4 rounded-2xl border bg-card p-3">
+                  <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-950/40 p-3">
                     <div className="flex items-center gap-3">
-                      <div className="h-9 w-9 rounded-2xl border bg-background flex items-center justify-center">
-                        <UserIcon className="h-4 w-4 text-muted-foreground" />
+                      <div className="h-9 w-9 rounded-2xl bg-zinc-900 border border-zinc-800 flex items-center justify-center">
+                        <UserIcon className="h-4 w-4 text-zinc-300" />
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-medium truncate">{currentUser.name}</p>
-                        <p className="text-xs text-muted-foreground truncate">{currentUser.email}</p>
+                        <p className="text-sm font-medium text-white truncate">{currentUser.name}</p>
+                        <p className="text-xs text-zinc-400 truncate">{currentUser.email}</p>
                       </div>
                     </div>
                   </div>
                 )}
               </SidebarHeader>
 
-              <SidebarSeparator />
+              <SidebarSeparator className="bg-zinc-800/80" />
 
               <SidebarContent className="px-2">
                 <SidebarMenu>
@@ -109,10 +114,10 @@ export default function DashboardShell({
               </SidebarContent>
 
               <SidebarFooter className="p-3">
-                <div className="rounded-2xl border bg-card p-4">
-                  <p className="text-xs text-muted-foreground">Plano atual</p>
-                  <p className="text-sm font-semibold">Starter</p>
-                  <p className="text-xs text-muted-foreground mt-1">Upgrade disponível</p>
+                <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/70 to-zinc-900/30 p-4">
+                  <p className="text-xs text-zinc-500">Plano atual</p>
+                  <p className="text-sm font-semibold text-white">Starter</p>
+                  <p className="text-xs text-emerald-400 mt-1">Upgrade disponível</p>
                 </div>
                 <div className="mt-2">
                   <LogoutButton floating={false} className="w-full" />
@@ -120,21 +125,29 @@ export default function DashboardShell({
               </SidebarFooter>
             </Sidebar>
 
-            <SidebarInset>
+            <SidebarInset className="bg-transparent">
               <div className="px-4 md:px-6 py-6">
                 <div className="flex items-start md:items-center justify-between gap-4 mb-6">
                   <div className="flex items-start md:items-center gap-3">
-                    <SidebarTrigger className="md:hidden" />
+                    <SidebarTrigger className="md:hidden text-zinc-200 hover:bg-zinc-800/60" />
                     <div>
                       <h1 className="text-2xl md:text-3xl font-semibold">{title}</h1>
-                      {subtitle && <p className="text-sm text-muted-foreground mt-1">{subtitle}</p>}
+                      {subtitle && <p className="text-sm text-zinc-500 mt-1">{subtitle}</p>}
                     </div>
                   </div>
 
                   {rightBadges && rightBadges.length > 0 && (
                     <div className="hidden md:flex flex-wrap items-center justify-end gap-2">
                       {rightBadges.map((b) => (
-                        <Badge key={b.label} variant={b.variant ?? 'outline'}>
+                        <Badge
+                          key={b.label}
+                          variant={b.variant ?? 'outline'}
+                          className={
+                            (b.variant ?? 'outline') === 'outline'
+                              ? 'bg-zinc-900/70 text-zinc-300 border border-zinc-800'
+                              : undefined
+                          }
+                        >
                           {b.label}
                         </Badge>
                       ))}
@@ -145,7 +158,9 @@ export default function DashboardShell({
                 {children}
               </div>
             </SidebarInset>
-      </SidebarProvider>
+          </SidebarProvider>
+        </div>
+      </div>
     </div>
   );
 }

@@ -23,12 +23,12 @@ export default function LogoutButton({ className = "", floating = true }: Logout
         px-4 py-2
         rounded-xl
         font-semibold text-sm
-        bg-card
-        text-foreground
-        border
-        shadow-sm
+        bg-zinc-900/80
+        text-zinc-200
+        border border-zinc-800
+        shadow-md shadow-black/30
         transition-all duration-300
-        hover:bg-accent
+        hover:scale-105 hover:border-purple-500/50 hover:text-white hover:shadow-purple-500/20
         active:scale-95
         ${className}
       `}
