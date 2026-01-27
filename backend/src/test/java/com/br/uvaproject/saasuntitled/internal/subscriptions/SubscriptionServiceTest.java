@@ -109,16 +109,22 @@ class SubscriptionServiceTest {
         when(subscriptionRepository.findById(id))
                 .thenReturn(Optional.of(subscription));
 
+        when(subscriptionRepository.save(any(Subscription.class)))
+                .thenAnswer(invocation -> invocation.getArgument(0));
+
         SubscriptionUpdateDTO dto = validUpdateDTO();
 
-        assertDoesNotThrow(() ->
-                subscriptionService.update(user, id, dto)
-        );
+        SubscriptionResponseDTO response =
+        subscriptionService.update(user, id, dto);
+
+        assertNotNull(response);
+        assertEquals(id, response.id());
+        assertEquals("Netflix Updated", response.name());
+        assertEquals(new BigDecimal("39.90"), response.price());
 
         verify(subscriptionRepository).save(subscription);
-        assertEquals("Netflix Updated", subscription.getName());
-        assertEquals(new BigDecimal("39.90"), subscription.getPrice());
     }
+
 
     @Test
     void updateSubscription_NotOwner_Throws() {
