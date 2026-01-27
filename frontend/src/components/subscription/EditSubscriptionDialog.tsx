@@ -59,71 +59,66 @@ export function EditSubscriptionDialog({
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
-      <DialogContent className="bg-zinc-900 border-zinc-800">
+      <DialogContent>
         <DialogHeader>
-          <DialogTitle className="text-white">Editar Assinatura</DialogTitle>
-          <DialogDescription className="text-zinc-400">Atualize os detalhes da assinatura.</DialogDescription>
+          <DialogTitle>Editar Assinatura</DialogTitle>
+          <DialogDescription>Atualize os detalhes da assinatura.</DialogDescription>
         </DialogHeader>
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
-            <Label htmlFor="edit-name" className="text-zinc-300">Nome do Serviço</Label>
+            <Label htmlFor="edit-name">Nome do Serviço</Label>
             <Input
               id="edit-name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="bg-zinc-800 border-zinc-700 text-white"
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-price" className="text-zinc-300">Valor Mensal (R$)</Label>
+            <Label htmlFor="edit-price">Valor Mensal (R$)</Label>
             <Input
               id="edit-price"
               type="number"
               step="0.01"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
-              className="bg-zinc-800 border-zinc-700 text-white"
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-renewalDate" className="text-zinc-300">Data de Renovação</Label>
+            <Label htmlFor="edit-renewalDate">Data de Renovação</Label>
             <Input
               id="edit-renewalDate"
               type="date"
               value={renewalDate}
               onChange={(e) => setRenewalDate(e.target.value)}
-              className="bg-zinc-800 border-zinc-700 text-white"
               required
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-category" className="text-zinc-300">Categoria</Label>
+            <Label htmlFor="edit-category">Categoria</Label>
             <Input
               id="edit-category"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="bg-zinc-800 border-zinc-700 text-white"
             />
           </div>          
           <div className="space-y-2">
-            <Label htmlFor="edit-plan" className="text-zinc-300">Plano (Opcional)</Label>
+            <Label htmlFor="edit-plan">Plano (Opcional)</Label>
             <Input
               id="edit-plan"
               value={plan}
               onChange={(e) => setPlan(e.target.value)}
               placeholder="Premium, Standard, etc."
-              className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="edit-period" className="text-zinc-300">Período</Label>
+            <Label htmlFor="edit-period">Período</Label>
             <select
               id="edit-period"
               value={period}
               onChange={(e) => setPeriod(e.target.value)}
-              className="bg-zinc-800 border-zinc-700 text-white rounded px-2 py-1 w-full"
+              className="h-9 w-full rounded-md border border-input bg-input-background px-3 py-1 text-sm"
               required
             >
               <option value="Mensal">Mensal</option>
@@ -133,14 +128,14 @@ export function EditSubscriptionDialog({
             </select>
           </div>
           <div className="space-y-2">
-            <Label className="text-zinc-300">Ícone</Label>
+            <Label>Ícone</Label>
             <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto overflow-y-hidden">
               {subscriptionIcons.map((i) => (
                 <button
                   type="button"
                   key={i.name}
-                  className={`border rounded p-1 bg-zinc-800 ${icon === i.name ? '' : ''}`}
-                  style={{ borderColor: icon === i.name ? i.color : '#27272a', boxShadow: icon === i.name ? `0 0 0 2px ${i.color}55` : 'none' }}
+                  className={`border rounded p-1 bg-input-background ${icon === i.name ? '' : ''}`}
+                  style={{ borderColor: icon === i.name ? i.color : 'var(--color-border)', boxShadow: icon === i.name ? `0 0 0 2px ${i.color}55` : 'none' }}
                   onClick={() => setIcon(i.name)}
                   aria-label={i.name}
                 >
@@ -152,14 +147,12 @@ export function EditSubscriptionDialog({
             </div>
           </div>
           <div className="flex gap-2 pt-4">
-            <Button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700">
-              Salvar
-            </Button>
+            <Button type="submit" className="flex-1">Salvar</Button>
             <Button 
               type="button" 
               variant="outline" 
               onClick={onClose}
-              className="flex-1 bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
+              className="flex-1"
             >
               Cancelar
             </Button>
