@@ -31,9 +31,9 @@ export default function MobileAppMenu({
   const navItems = useMemo<NavItem[]>(
     () =>
       items ?? [
-        { href: '/overview', label: 'Overview', icon: LayoutDashboard, badge: 'Current' },
-        { href: '/assinaturas', label: 'Assinaturas', icon: CreditCard },
+        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, badge: 'Current' },
         { href: '/profile', label: 'Account', icon: Settings },
+        { href: '/dashboard', label: 'Plan & Billing', icon: CreditCard, badge: 'Soon' },
       ],
     [items],
   );
