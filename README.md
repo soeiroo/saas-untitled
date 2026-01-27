@@ -14,7 +14,6 @@ Run this at the root of the project:
 
 ```
 docker compose up --build
-
 ```
 
-This will run frontend and backend as well
+This will run frontend and backend as well.
