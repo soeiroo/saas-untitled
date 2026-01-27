@@ -10,6 +10,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Table(name = "subscriptions")
@@ -54,8 +55,9 @@ public class Subscription {
 
     private LocalDateTime updatedAt;
 
-    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL)
-    private List<SubscriptionFriend> friends;
+    @Builder.Default
+    @OneToMany(mappedBy = "subscription", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SubscriptionFriend> friends = new ArrayList<>();
 
     @PrePersist
     public void prePersist() {
