@@ -9,7 +9,6 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { toast } from 'sonner';
 import { Eye, EyeOff } from 'lucide-react';
 import { useState } from 'react';
 
@@ -62,8 +61,7 @@ export function ChangePasswordDialog({ open, onOpenChange, onSave }: ChangePassw
       });
       form.reset();
       onOpenChange(false);
-    } catch (error) {
-      // Error já tratado no componente pai
+    } catch {
     }
   };
 

@@ -69,8 +69,7 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
 
       await onSave(payload);
       onOpenChange(false);
-    } catch (error) {
-      // Error já tratado no componente pai
+    } catch {
     }
   };
 

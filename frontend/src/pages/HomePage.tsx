@@ -34,12 +34,10 @@ export default function HomePage() {
       setIsFetchingSubscriptions(true);
       setError('');
       try {
-        // Best-effort: show greeting even if subscriptions load fails.
         try {
           const me = await getCurrentUser();
           setCurrentUser(me);
         } catch {
-          // ignore
         }
         const subs = await getSubscriptions();
         setSubscriptions(subs);
@@ -57,12 +55,6 @@ export default function HomePage() {
     }
     fetchSubs();
   }, []);
-
-  // useEffect(() => {
-  //   if (subscriptions.length > 0) {
-  //     localStorage.setItem('subscriptions', JSON.stringify(subscriptions));
-  //   }
-  // }, [subscriptions]);
 
 
   const handleAddSubscription = async (newSub: Omit<Subscription, 'id' | 'userId' >) => {

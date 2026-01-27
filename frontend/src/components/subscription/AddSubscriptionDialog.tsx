@@ -133,7 +133,6 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
                       >
                         <style>
                           {`
-                            /* Hide scrollbar for Chrome, Safari and Opera */
                             .hide-scrollbar::-webkit-scrollbar {
                               display: none;
                             }

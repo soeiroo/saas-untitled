@@ -34,8 +34,27 @@ function extractTokenFromHeaders(response: Response): string | null {
   return null;
 }
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null;
+}
+
+function getStringField(value: unknown, key: string): string | undefined {
+  if (!isRecord(value)) return undefined;
+  const maybe = value[key];
+  return typeof maybe === 'string' ? maybe : undefined;
+}
+
+function isUser(value: unknown): value is User {
+  if (!isRecord(value)) return false;
+  return (
+    typeof value.id === 'string' &&
+    typeof value.name === 'string' &&
+    typeof value.email === 'string'
+  );
+}
+
 async function parseJsonSafely<T>(response: Response): Promise<T | undefined> {
-  // Some backends reply with 204 No Content or an empty body even on success.
+  // Às vezes vem 204 ou body vazio mesmo dando certo.
   if (response.status === 204) return undefined;
   const text = await response.text();
   if (!text) return undefined;
@@ -60,8 +79,7 @@ export async function getCurrentUser(): Promise<User> {
       try {
         const errorData = await parseJsonSafely<{ message?: string }>(response);
         errorMessage = errorData?.message || errorMessage;
-      } catch (e) {
-        // Ignorar erro de parsing
+      } catch {
       }
     }
     throw new Error(errorMessage);
@@ -69,7 +87,6 @@ export async function getCurrentUser(): Promise<User> {
 
   const data = await parseJsonSafely<User>(response);
   if (!data) {
-    // Success but no JSON body
     throw new Error('Resposta inválida do servidor');
   }
   return data;
@@ -94,23 +111,20 @@ export async function updateCurrentUser(data: UpdateUserData): Promise<User> {
       try {
         const errorData = await parseJsonSafely<{ message?: string }>(response);
         errorMessage = errorData?.message || errorMessage;
-      } catch (e) {
-        // Ignorar erro de parsing
+      } catch {
       }
     }
     throw new Error(errorMessage);
   }
 
-  // If backend returns a refreshed token via headers, store it.
   const headerToken = extractTokenFromHeaders(response);
   if (headerToken) setAuthToken(headerToken);
 
-  // Backend may return updated user JSON OR no content OR { user, token }.
-  const body = await parseJsonSafely<any>(response);
-  const bodyToken: string | undefined = body?.token || body?.accessToken;
+  const body = await parseJsonSafely<unknown>(response);
+  const bodyToken: string | undefined = getStringField(body, 'token') || getStringField(body, 'accessToken');
   if (bodyToken) setAuthToken(bodyToken);
 
-  // If email was changed and backend didn't refresh token, re-login to get a new one.
+  // Se trocou o email e não veio token novo, tenta logar de novo.
   if (data.email && data.currentPassword && !headerToken && !bodyToken) {
     try {
       const loginResponse = await fetch(`${API_URL}/auth/login`, {
@@ -122,21 +136,20 @@ export async function updateCurrentUser(data: UpdateUserData): Promise<User> {
         body: JSON.stringify({ email: data.email, password: data.currentPassword }),
       });
       if (loginResponse.ok) {
-        const loginBody = await parseJsonSafely<any>(loginResponse);
-        const nextToken: string | undefined = loginBody?.token || loginBody?.accessToken;
+        const loginBody = await parseJsonSafely<unknown>(loginResponse);
+        const nextToken: string | undefined = getStringField(loginBody, 'token') || getStringField(loginBody, 'accessToken');
         if (nextToken) setAuthToken(nextToken);
       }
     } catch {
-      // If re-login fails, keep the user updated but token might be invalid.
+      // se falhar, paciência: user atualiza, mas o token pode ficar velho.
     }
   }
 
-  const updatedUser: User | undefined = body?.user ?? body;
-  if (updatedUser && typeof updatedUser === 'object' && 'email' in updatedUser) {
-    return updatedUser as User;
+  const updatedUser: unknown = isRecord(body) && 'user' in body ? body.user : body;
+  if (isUser(updatedUser)) {
+    return updatedUser;
   }
 
-  // No body: fetch fresh user (and rely on stored token, if any).
   return getCurrentUser();
 }
 
@@ -155,8 +168,7 @@ export async function deleteCurrentUser(): Promise<void> {
       try {
         const errorData = await parseJsonSafely<{ message?: string }>(response);
         errorMessage = errorData?.message || errorMessage;
-      } catch (e) {
-        // Ignorar erro de parsing
+      } catch {
       }
     }
     throw new Error(errorMessage);

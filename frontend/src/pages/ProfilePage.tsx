@@ -127,7 +127,6 @@ export default function ProfilePage() {
       <div className="relative">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
         <div className="relative flex">
-          {/* Sidebar */}
           <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur">
             <Link href="/dashboard" className="flex items-center gap-2 text-zinc-400 hover:text-white mb-8">
               <ArrowLeft className="w-4 h-4" />
@@ -147,11 +146,9 @@ export default function ProfilePage() {
             </nav>
           </aside>
 
-          {/* Main Content */}
           <main className="flex-1">
             <MobileAppMenu title="Account Settings" />
             <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-              {/* Page Header */}
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
                   <div className="p-2 bg-zinc-800 rounded-lg">
@@ -164,7 +161,6 @@ export default function ProfilePage() {
                 </div>
               </div>
 
-              {/* Profile Picture Section */}
               <Card className="bg-zinc-900/80 border-zinc-800">
                 <CardContent className="pt-6">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
@@ -199,10 +195,8 @@ export default function ProfilePage() {
                 </CardContent>
               </Card>
 
-              {/* Form Section */}
               <Card className="bg-zinc-900/80 border-zinc-800">
                 <CardContent className="pt-6 space-y-6">
-                  {/* Name Fields */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-zinc-300 mb-2">First Name</label>
@@ -224,7 +218,6 @@ export default function ProfilePage() {
                     </div>
                   </div>
 
-                  {/* Email Field */}
                   <div>
                     <label className="block text-sm font-medium text-zinc-300 mb-2">Email Address</label>
                     <input
@@ -235,7 +228,6 @@ export default function ProfilePage() {
                     />
                   </div>
 
-                  {/* Save Button */}
                   <div className="flex flex-col sm:flex-row gap-2 pt-4">
                     <Button
                       className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto"
@@ -247,7 +239,6 @@ export default function ProfilePage() {
                 </CardContent>
               </Card>
 
-              {/* Security Section */}
               <Card className="bg-zinc-900/80 border-zinc-800">
                 <CardHeader>
                   <div className="flex items-center gap-2">
@@ -279,7 +270,6 @@ export default function ProfilePage() {
                 </CardContent>
               </Card>
 
-              {/* Danger Zone */}
               <Card className="bg-zinc-900/80 border-red-900/50">
                 <CardContent className="pt-6">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 p-4 border border-red-900/30 rounded-lg bg-red-900/10">
@@ -313,7 +303,6 @@ export default function ProfilePage() {
         </div>
       </div>
 
-      {/* Dialogs */}
       <EditProfileDialog
         user={user}
         open={editProfileOpen}
