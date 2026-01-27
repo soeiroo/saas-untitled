@@ -1,22 +1,13 @@
 'use client';
 
 import { useState } from 'react';
-import { Plus } from 'lucide-react';
-
 import { subscriptionIcons } from '@/data/subscriptionIcons';
-import type { Subscription } from '@/types/subscription';
-
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from '../ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, DialogDescription } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
+import { Plus } from 'lucide-react';
+import type { Subscription } from '@/types/subscription';
 
 interface AddSubscriptionDialogProps {
   onAdd: (subscription: Omit<Subscription, 'id' | 'userId'>) => void;
@@ -32,33 +23,28 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
   const [plan, setPlan] = useState('');
   const [period, setPeriod] = useState('Mensal');
 
-  const resetForm = () => {
-    setName('');
-    setPrice('');
-    setRenewalDate('');
-    setCategory('');
-    setIcon(subscriptionIcons[0].name);
-    setPlan('');
-    setPeriod('Mensal');
-  };
-
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !price || !renewalDate) return;
-
-    onAdd({
-      name,
-      price: parseFloat(price),
-      renewalDate,
-      category: category || 'Outros',
-      icon,
-      plan,
-      period,
-      createdAt: new Date().toISOString(),
-    });
-
-    resetForm();
-    setOpen(false);
+    if (name && price && renewalDate) {
+      onAdd({
+        name,
+        price: parseFloat(price),
+        renewalDate,
+        category: category || 'Outros',
+        icon,
+        plan,
+        period,
+        createdAt: new Date().toISOString(),
+      });
+      setName('');
+      setPrice('');
+      setRenewalDate('');
+      setCategory('');
+      setIcon(subscriptionIcons[0].name);
+      setPlan('');
+      setPeriod('Mensal');
+      setOpen(false);
+    }
   };
 
   return (
@@ -69,13 +55,11 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
           Nova Assinatura
         </Button>
       </DialogTrigger>
-
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Adicionar Assinatura</DialogTitle>
           <DialogDescription>Preencha os campos abaixo para adicionar uma nova assinatura.</DialogDescription>
         </DialogHeader>
-
         <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nome do Serviço</Label>
@@ -87,7 +71,6 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
               required
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="price">Valor Mensal (R$)</Label>
             <Input
@@ -104,7 +87,6 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
               style={{ MozAppearance: 'textfield' }}
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="renewalDate">Data de Renovação</Label>
             <Input
@@ -115,8 +97,7 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
               required
             />
           </div>
-
-          <div className="space-y-2">
+                    <div className="space-y-2">
             <Label htmlFor="plan">Plano (Opcional)</Label>
             <Input
               id="plan"
@@ -125,7 +106,6 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
               placeholder="Premium, Standard, etc."
             />
           </div>
-
           <div className="space-y-2">
             <Label htmlFor="period">Período</Label>
             <select
@@ -142,40 +122,36 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
               <option value="Outro">Outro</option>
             </select>
           </div>
-
-          <div className="space-y-2">
-            <Label>Ícone</Label>
-            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
-              {subscriptionIcons.map((i) => (
-                <button
-                  type="button"
-                  key={i.name}
-                  className="border rounded p-1 bg-input-background"
-                  style={{
-                    borderColor: icon === i.name ? i.color : 'var(--color-border)',
-                    boxShadow: icon === i.name ? `0 0 0 2px ${i.color}55` : 'none',
-                  }}
-                  onClick={() => setIcon(i.name)}
-                  aria-label={i.name}
-                >
-                  <span
-                    style={{
-                      background: i.color + '22',
-                      borderRadius: '50%',
-                      display: 'inline-flex',
-                      width: 32,
-                      height: 32,
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                    }}
-                  >
-                    <img src={i.url} alt={i.name} className="w-7 h-7 object-contain" />
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-
+                    <div className="space-y-2">
+                      <Label>Ícone</Label>
+                      <div
+                        className="flex flex-wrap gap-2 max-h-32 overflow-y-auto"
+                        style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+                      >
+                        <style>
+                          {`
+                            /* Hide scrollbar for Chrome, Safari and Opera */
+                            .hide-scrollbar::-webkit-scrollbar {
+                              display: none;
+                            }
+                          `}
+                        </style>
+                        {subscriptionIcons.map((i) => (
+                          <button
+                            type="button"
+                            key={i.name}
+                            className={`border rounded p-1 bg-input-background ${icon === i.name ? '' : ''}`}
+                            style={{ borderColor: icon === i.name ? i.color : 'var(--color-border)', boxShadow: icon === i.name ? `0 0 0 2px ${i.color}55` : 'none' }}
+                            onClick={() => setIcon(i.name)}
+                            aria-label={i.name}
+                          >
+                            <span style={{ background: i.color + '22', borderRadius: '50%', display: 'inline-flex', width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}>
+                              <img src={i.url} alt={i.name} className="w-7 h-7 object-contain" />
+                            </span>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
           <div className="space-y-2">
             <Label htmlFor="category">Categoria (Opcional)</Label>
             <Input
@@ -185,18 +161,12 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
               placeholder="Streaming, Música, etc."
             />
           </div>
-
           <div className="flex gap-2 pt-4">
-            <Button type="submit" className="flex-1">
-              Adicionar
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => {
-                resetForm();
-                setOpen(false);
-              }}
+            <Button type="submit" className="flex-1">Adicionar</Button>
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={() => setOpen(false)}
               className="flex-1"
             >
               Cancelar
