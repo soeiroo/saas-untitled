@@ -48,7 +48,7 @@ export default function MobileAppMenu({
 
   return (
     <div className="lg:hidden sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
-      <div className="flex items-center justify-between gap-2 px-4 py-3 min-h-[56px]">
+      <div className="flex items-center gap-3 px-4 py-3 min-h-[56px]">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
@@ -61,31 +61,21 @@ export default function MobileAppMenu({
             </Button>
           </SheetTrigger>
 
-          <div className="flex items-center gap-2">
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center shrink-0">
               <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
             </div>
-            <div className="leading-tight">
+            <div className="leading-tight min-w-0">
               <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Menu</p>
-              <p className="text-sm font-semibold text-white">{title}</p>
+              <p className="text-sm font-semibold text-white truncate">{title}</p>
             </div>
           </div>
-
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-zinc-200 hover:bg-zinc-800/60 shrink-0 size-11"
-            aria-label="Sair"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-6 w-6" />
-          </Button>
 
           <SheetContent
             side="top"
             className="bg-zinc-950 border-b border-zinc-800 p-4"
           >
-            <div className="max-w-md mx-auto">
+            <div className="w-full">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/30 flex items-center justify-center">
@@ -128,6 +118,21 @@ export default function MobileAppMenu({
                     </SheetClose>
                   );
                 })}
+              </div>
+
+              <div className="mt-3">
+                <SheetClose asChild>
+                  <Button
+                    variant="ghost"
+                    className="w-full justify-between rounded-2xl border border-zinc-800 bg-zinc-900/40 px-3 py-3 text-sm text-zinc-300 hover:bg-zinc-800/60 hover:text-white"
+                    onClick={handleLogout}
+                  >
+                    <span className="flex items-center gap-3">
+                      <LogOut className="h-4 w-4 text-zinc-400" />
+                      Sair
+                    </span>
+                  </Button>
+                </SheetClose>
               </div>
 
               <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4">
