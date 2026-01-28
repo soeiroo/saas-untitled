@@ -5,7 +5,7 @@ import com.br.uvaproject.saasuntitled.internal.friends.UserFriendRepository;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.Subscription;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.SubscriptionRepository;
 import com.br.uvaproject.saasuntitled.internal.users.User;
-import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.friends.dto.SubscriptionFriendResponseDTO;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -184,11 +184,14 @@ class SubscriptionFriendServiceTest {
         when(subscriptionFriendRepository.findBySubscriptionId(subscription.getId()))
                 .thenReturn(List.of(sf));
 
-        List<UserSearchResponseDTO> result =
-                service.listFriends(subscription.getId(), owner);
+        List<SubscriptionFriendResponseDTO> result =
+            service.listFriends(subscription.getId(), owner);
 
         assertEquals(1, result.size());
-        assertEquals(friend.getId(), result.get(0).id());
+
+        SubscriptionFriendResponseDTO dto = result.get(0);
+        assertEquals(friend.getId(), dto.id());
+        assertEquals(new BigDecimal("10.00"), dto.price());
     }
 
     @Test

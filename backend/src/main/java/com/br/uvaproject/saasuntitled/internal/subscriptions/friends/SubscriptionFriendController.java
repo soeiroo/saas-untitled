@@ -1,8 +1,8 @@
 package com.br.uvaproject.saasuntitled.internal.subscriptions.friends;
 
 import com.br.uvaproject.saasuntitled.internal.security.AuthenticatedUserService;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.friends.dto.SubscriptionFriendResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.users.User;
-import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,13 +36,12 @@ public class SubscriptionFriendController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UserSearchResponseDTO>> listFriends(
+    public ResponseEntity<List<SubscriptionFriendResponseDTO>> listFriends(
             Authentication authentication,
             @PathVariable UUID subscriptionId
     ) {
         User user = authenticatedUserService.getUser(authentication);
-        List<UserSearchResponseDTO> friends = service.listFriends(subscriptionId, user);
-        return ResponseEntity.ok(friends);
+        return ResponseEntity.ok(service.listFriends(subscriptionId, user));
     }
     
     @PutMapping("/{friendId}/price")
