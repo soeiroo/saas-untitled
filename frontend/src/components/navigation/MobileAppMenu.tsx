@@ -47,35 +47,42 @@ export default function MobileAppMenu({
   };
 
   return (
-    <div className="lg:hidden sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
-      <div className="flex items-center gap-3 px-3 py-2 min-h-[52px] sm:px-4 sm:py-3 sm:min-h-[56px]">
-        <Sheet open={open} onOpenChange={setOpen}>
-          <SheetTrigger asChild>
-            <Button
-              variant="ghost"
-              size="icon"
-              className="text-zinc-200 hover:bg-zinc-800/60 shrink-0 size-10 sm:size-11"
-              aria-label="Abrir menu"
-            >
-              <Menu className="h-6 w-6" />
-            </Button>
-          </SheetTrigger>
-
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center shrink-0">
-              <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-            </div>
-            <div className="leading-tight min-w-0 max-w-[150px] sm:max-w-none">
-              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 hidden sm:block">Menu</p>
-              <p className="text-xs sm:text-sm font-semibold text-white truncate">{title}</p>
+    <div className="lg:hidden">
+      <Sheet open={open} onOpenChange={setOpen}>
+        <div className="sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
+          <div className="flex items-center gap-3 px-3 py-2 min-h-[52px] sm:px-4 sm:py-3 sm:min-h-[56px]">
+            <div className="flex min-w-0 flex-1 items-center gap-2">
+              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center shrink-0">
+                <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
+              </div>
+              <div className="leading-tight min-w-0 max-w-[150px] sm:max-w-none">
+                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 hidden sm:block">Menu</p>
+                <p className="text-xs sm:text-sm font-semibold text-white truncate">{title}</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          <SheetContent
-            side="top"
-            className="bg-zinc-950 border-b border-zinc-800 p-4 flex flex-col"
-          >
-            <div className="w-full flex flex-col min-h-[55vh] sm:min-h-[60vh]">
+        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800/70 bg-zinc-950/80 backdrop-blur">
+          <div className="flex items-center justify-center px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
+            <SheetTrigger asChild>
+              <Button
+                variant="ghost"
+                size="icon"
+                className="text-zinc-200 hover:bg-zinc-800/60 size-11"
+                aria-label="Abrir menu"
+              >
+                <Menu className="h-6 w-6" />
+              </Button>
+            </SheetTrigger>
+          </div>
+        </div>
+
+        <SheetContent
+          side="top"
+          className="bg-zinc-950 border-b border-zinc-800 p-4 flex flex-col h-dvh"
+        >
+          <div className="w-full flex-1 flex flex-col overflow-y-auto">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/30 flex items-center justify-center">
@@ -139,10 +146,9 @@ export default function MobileAppMenu({
                   </Button>
                 </SheetClose>
               </div>
-            </div>
-          </SheetContent>
-        </Sheet>
-      </div>
+          </div>
+        </SheetContent>
+      </Sheet>
     </div>
   );
 }
