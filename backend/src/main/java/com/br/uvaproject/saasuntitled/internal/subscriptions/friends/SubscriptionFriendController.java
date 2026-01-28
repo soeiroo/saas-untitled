@@ -39,6 +39,7 @@ public class SubscriptionFriendController {
         List<UserSearchResponseDTO> friends = service.listFriends(subscriptionId, user);
         return ResponseEntity.ok(friends);
     }
+    
     @DeleteMapping("/{friendId}")
     public ResponseEntity<Void> removeFriend(
             Authentication authentication,
