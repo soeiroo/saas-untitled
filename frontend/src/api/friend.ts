@@ -9,17 +9,19 @@ function getAuthToken() {
   return null;
 }
 
-function buildAuthHeaders() {
+function buildAuthHeaders(): HeadersInit {
   const token = getAuthToken();
-  return token ? { Authorization: `Bearer ${token}` } : {};
+  const headers: Record<string, string> = {};
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
+  }
+  return headers;
 }
 
 export async function searchUsers(query: string): Promise<UserSearchResult[]> {
   const response = await fetch(`${API_URL}/api/users/search?query=${encodeURIComponent(query)}`, {
     method: 'GET',
-    headers: {
-      ...buildAuthHeaders(),
-    },
+    headers: buildAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -32,9 +34,7 @@ export async function searchUsers(query: string): Promise<UserSearchResult[]> {
 export async function getFriends(): Promise<Friend[]> {
   const response = await fetch(`${API_URL}/api/friends`, {
     method: 'GET',
-    headers: {
-      ...buildAuthHeaders(),
-    },
+    headers: buildAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -47,9 +47,7 @@ export async function getFriends(): Promise<Friend[]> {
 export async function sendFriendRequest(friendId: string): Promise<void> {
   const response = await fetch(`${API_URL}/api/friends/${friendId}`, {
     method: 'POST',
-    headers: {
-      ...buildAuthHeaders(),
-    },
+    headers: buildAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -60,9 +58,7 @@ export async function sendFriendRequest(friendId: string): Promise<void> {
 export async function acceptFriendRequest(requestId: string): Promise<void> {
   const response = await fetch(`${API_URL}/api/friends/accept/${requestId}`, {
     method: 'POST',
-    headers: {
-      ...buildAuthHeaders(),
-    },
+    headers: buildAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -73,9 +69,7 @@ export async function acceptFriendRequest(requestId: string): Promise<void> {
 export async function getFriendRequests(): Promise<FriendRequest[]> {
   const response = await fetch(`${API_URL}/api/friends/requests`, {
     method: 'GET',
-    headers: {
-      ...buildAuthHeaders(),
-    },
+    headers: buildAuthHeaders(),
   });
 
   if (!response.ok) {
@@ -88,9 +82,7 @@ export async function getFriendRequests(): Promise<FriendRequest[]> {
 export async function deleteFriend(id: string): Promise<void> {
   const response = await fetch(`${API_URL}/api/friends/${id}`, {
     method: 'DELETE',
-    headers: {
-      ...buildAuthHeaders(),
-    },
+    headers: buildAuthHeaders(),
   });
 
   if (!response.ok) {
