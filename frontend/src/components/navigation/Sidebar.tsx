@@ -53,7 +53,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             <span className="text-xs text-emerald-400 sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-3">Atual</span>
           )}
         </Link>
-        <button
+        <Link
+          href="/assinaturas"
           className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
             activePage === 'subscriptions'
               ? 'bg-emerald-500/10 text-emerald-200'
@@ -65,8 +66,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             <CreditCard className="h-4 w-4 flex-shrink-0" />
             <span className="sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Assinaturas</span>
           </span>
-          <span className="text-xs sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-3">Em breve</span>
-        </button>
+          {activePage === 'subscriptions' && (
+            <span className="text-xs text-emerald-400 sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-3">Atual</span>
+          )}
+        </Link>
         <button
           className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
             activePage === 'reports'

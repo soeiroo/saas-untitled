@@ -19,7 +19,7 @@ export default function Page() {
         
     return (
       <AuthGuard requireAuth>
-        <HomePage />
+        <HomePage activePage="overview" />
       </AuthGuard>
     );
 }

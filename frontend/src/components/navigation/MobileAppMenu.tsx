@@ -32,9 +32,9 @@ export default function MobileAppMenu({
     () =>
       items ?? [
         { href: '/dashboard', label: 'Visão geral', icon: LayoutDashboard, badge: 'Atual' },
+        { href: '/assinaturas', label: 'Assinaturas', icon: CreditCard },
         { href: '/friends', label: 'Amigos', icon: Contact },
         { href: '/profile', label: 'Conta', icon: Settings },
-        { href: '/dashboard', label: 'Plano e cobrança', icon: CreditCard, badge: 'Em breve' },
       ],
     [items],
   );

@@ -16,7 +16,11 @@ import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { getCurrentUser } from '@/api/user';
 import type { User } from '@/types/user';
 
-export default function HomePage() {
+type HomePageProps = {
+  activePage?: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
+};
+
+export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
@@ -155,7 +159,7 @@ export default function HomePage() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
         <div className="relative flex">
           
-          <Sidebar activePage="overview" />
+          <Sidebar activePage={activePage} />
 
           <main className="flex-1 lg:pl-6">
             <MobileAppMenu title="Assinaturas Pro" />
