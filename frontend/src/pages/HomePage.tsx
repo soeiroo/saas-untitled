@@ -266,10 +266,10 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
               )}
 
               {isFetchingSubscriptions && subscriptions.length === 0 ? (
-                <Card className="bg-zinc-900/80 border-zinc-800 p-10 text-center shadow-lg shadow-black/20">
-                  <p className="text-zinc-400 text-base mb-1">Carregando assinaturas…</p>
-                  <p className="text-zinc-500 text-sm">Só um instante</p>
-                </Card>
+                <div className="mb-4 flex items-center gap-2 text-xs text-zinc-400">
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                  <span>Carregando assinaturas…</span>
+                </div>
               ) : filteredSubscriptions.length === 0 ? (
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
                   <p className="text-zinc-400 text-lg mb-2">
