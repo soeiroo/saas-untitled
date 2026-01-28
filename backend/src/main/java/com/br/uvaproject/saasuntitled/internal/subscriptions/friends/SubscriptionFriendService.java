@@ -80,6 +80,26 @@ public class SubscriptionFriendService {
                 .toList();
     }
 
+    @Transactional
+    public void updateFriendPrice(
+            User user,
+            UUID subscriptionId,
+            UUID friendId,
+            BigDecimal price
+    ) {
+        SubscriptionFriend sf = subscriptionFriendRepository
+                .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
+                .orElseThrow(() ->
+                        new EntityNotFoundException("Amigo não está na assinatura")
+                );
+
+        if (!sf.getSubscription().getUser().getId().equals(user.getId())) {
+            throw new EntityNotFoundException("Assinatura não encontrada");
+        }
+
+        sf.setPrice(price);
+    }
+
     public void removeFriendFromSubscription(
             User user,
             UUID subscriptionId,

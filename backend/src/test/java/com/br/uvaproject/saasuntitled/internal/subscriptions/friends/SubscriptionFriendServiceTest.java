@@ -281,4 +281,76 @@ class SubscriptionFriendServiceTest {
 
         assertEquals("Assinatura não encontrada", ex.getMessage());
     }
+
+    @Test
+    void updateFriendPrice_Success() {
+        SubscriptionFriend sf = new SubscriptionFriend();
+        sf.setSubscription(subscription);
+        sf.setFriend(friend);
+        sf.setPrice(null);
+
+        when(subscriptionFriendRepository
+                .findBySubscriptionIdAndFriendId(subscription.getId(), friend.getId()))
+                .thenReturn(Optional.of(sf));
+
+        BigDecimal newPrice = new BigDecimal("29.90");
+
+        assertDoesNotThrow(() ->
+                service.updateFriendPrice(
+                    owner,
+                    subscription.getId(),
+                    friend.getId(),
+                    newPrice
+                )
+        );
+
+        assertEquals(newPrice, sf.getPrice());
+    }
+
+    @Test
+    void updateFriendPrice_NotFound() {
+        when(subscriptionFriendRepository
+                .findBySubscriptionIdAndFriendId(subscription.getId(), friend.getId()))
+                .thenReturn(Optional.empty());
+
+        EntityNotFoundException ex = assertThrows(
+                EntityNotFoundException.class,
+                () -> service.updateFriendPrice(
+                        owner,
+                        subscription.getId(),
+                        friend.getId(),
+                        new BigDecimal("15.00")
+                )
+        );
+
+        assertEquals("Amigo não está na assinatura", ex.getMessage());
+    }
+
+    @Test
+    void updateFriendPrice_NotOwner() {
+        User other = new User();
+        other.setId(UUID.randomUUID());
+
+        subscription.setUser(other);
+
+        SubscriptionFriend sf = new SubscriptionFriend();
+        sf.setSubscription(subscription);
+        sf.setFriend(friend);
+
+        when(subscriptionFriendRepository
+                .findBySubscriptionIdAndFriendId(subscription.getId(), friend.getId()))
+                .thenReturn(Optional.of(sf));
+
+        EntityNotFoundException ex = assertThrows(
+                EntityNotFoundException.class,
+                () -> service.updateFriendPrice(
+                        owner,
+                        subscription.getId(),
+                        friend.getId(),
+                        new BigDecimal("20.00")
+                )
+        );
+
+        assertEquals("Assinatura não encontrada", ex.getMessage());
+    }
 }

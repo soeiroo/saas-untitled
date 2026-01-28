@@ -45,6 +45,20 @@ public class SubscriptionFriendController {
         return ResponseEntity.ok(friends);
     }
     
+    @PutMapping("/{friendId}/price")
+    public ResponseEntity<Void> updateFriendPrice(
+            Authentication authentication,
+            @PathVariable UUID subscriptionId,
+            @PathVariable UUID friendId,
+            @RequestBody(required = false) Map<String, BigDecimal> body
+    ) {
+        User user = authenticatedUserService.getUser(authentication);
+        BigDecimal price = body != null ? body.get("price") : null;
+
+        service.updateFriendPrice(user, subscriptionId, friendId, price);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{friendId}")
     public ResponseEntity<Void> removeFriend(
             Authentication authentication,
