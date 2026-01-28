@@ -1,0 +1,108 @@
+import '@/styles/sidebar.css';
+import { LayoutDashboard, CreditCard, BarChart3, Settings, Contact } from 'lucide-react';
+import Link from 'next/link';
+import React from 'react';
+
+interface SidebarProps {
+  activePage: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
+  return (
+    <aside className="sidebar group hidden lg:flex lg:flex-col lg:w-20 hover:lg:w-64 transition-all duration-300 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-2 hover:px-5 py-6 backdrop-blur overflow-hidden">
+      <div className="flex flex-col items-center justify-center min-h-16 mb-8">
+        <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center mx-auto">
+          <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
+        </div>
+        <div className="sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 mt-2">
+          <p className="text-base font-semibold sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Assinaturas Pro</p>
+        </div>
+      </div>
+      <nav className="flex flex-col gap-2 text-sm">
+        <Link
+          href="/dashboard"
+          className={`flex items-center rounded-lg border transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
+            activePage === 'overview'
+              ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60 border-transparent'
+          }`}
+          style={{ minHeight: '3rem' }}
+        >
+          <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
+            <LayoutDashboard className="h-4 w-4 flex-shrink-0" />
+            <span className="sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Visão geral</span>
+          </span>
+          {activePage === 'overview' && (
+            <span className="text-xs text-emerald-400 sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-3">Atual</span>
+          )}
+        </Link>
+        <Link
+          href="/friends"
+          className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
+            activePage === 'friends'
+              ? 'bg-emerald-500/10 text-emerald-200'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+          }`}
+          style={{ minHeight: '3rem' }}
+        >
+          <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
+            <Contact className="h-4 w-4 flex-shrink-0" />
+            <span className="sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Amigos</span>
+          </span>
+          {activePage === 'friends' && (
+            <span className="text-xs text-emerald-400 sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-3">Atual</span>
+          )}
+        </Link>
+        <button
+          className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
+            activePage === 'subscriptions'
+              ? 'bg-emerald-500/10 text-emerald-200'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+          }`}
+          style={{ minHeight: '3rem' }}
+        >
+          <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
+            <CreditCard className="h-4 w-4 flex-shrink-0" />
+            <span className="sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Assinaturas</span>
+          </span>
+          <span className="text-xs sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-3">Em breve</span>
+        </button>
+        <button
+          className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
+            activePage === 'reports'
+              ? 'bg-emerald-500/10 text-emerald-200'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+          }`}
+          style={{ minHeight: '3rem' }}
+        >
+          <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
+            <BarChart3 className="h-4 w-4 flex-shrink-0" />
+            <span className="sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Relatórios</span>
+          </span>
+          <span className="text-xs sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 pr-3">Em breve</span>
+        </button>
+        <Link
+          href="/profile"
+          className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-[70%] group-hover:w-full transition-all duration-300 ${
+            activePage === 'settings'
+              ? 'bg-emerald-500/10 text-emerald-200'
+              : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
+          }`}
+          style={{ minHeight: '3rem' }}
+        >
+          <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
+            <Settings className="h-4 w-4 flex-shrink-0" />
+            <span className="sidebar-label opacity-0 group-hover:opacity-100 transition-opacity duration-200 whitespace-nowrap">Configurações</span>
+          </span>
+        </Link>
+      </nav>
+      <div className="mt-auto pt-6">
+        <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-zinc-900/40 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+          <p className="text-xs text-zinc-500">Plano atual</p>
+          <p className="text-sm font-semibold">Starter</p>
+          <p className="text-xs text-emerald-400 mt-1">Upgrade disponível</p>
+        </div>
+      </div>
+    </aside>
+  );
+};

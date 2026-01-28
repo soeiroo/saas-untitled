@@ -4,6 +4,7 @@ import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCre
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import com.br.uvaproject.saasuntitled.internal.users.UserRepository;
+import com.br.uvaproject.saasuntitled.internal.friends.UserFriendRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -43,6 +44,9 @@ class SubscriptionIntegrationTest {
     private SubscriptionRepository subscriptionRepository;
 
     @Autowired
+    private UserFriendRepository userFriendRepository;
+
+    @Autowired
     private BCryptPasswordEncoder passwordEncoder;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
@@ -51,6 +55,7 @@ class SubscriptionIntegrationTest {
 
     @BeforeEach
     void setUp() {
+        userFriendRepository.deleteAll();
         subscriptionRepository.deleteAll();
         userRepository.deleteAll();
 
@@ -111,7 +116,7 @@ class SubscriptionIntegrationTest {
 
     @Test
     @WithMockUser(username = "test@example.com", roles = "USER")
-    void updateSubscription_ShouldReturnNoContent() throws Exception {
+    void updateSubscription_ShouldReturnOk() throws Exception {
 
         SubscriptionCreateDTO createDTO = new SubscriptionCreateDTO(
                 "Netflix",
@@ -148,13 +153,10 @@ class SubscriptionIntegrationTest {
         mockMvc.perform(put("/api/subscriptions/" + subscriptionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(updateDTO)))
-                .andExpect(status().isNoContent());
-
-        mockMvc.perform(get("/api/subscriptions"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].name").value("Netflix Updated"))
-                .andExpect(jsonPath("$[0].price").value(39.90))
-                .andExpect(jsonPath("$[0].category").value("Streaming Updated"));
+                .andExpect(jsonPath("$.name").value("Netflix Updated"))
+                .andExpect(jsonPath("$.price").value(39.90))
+                .andExpect(jsonPath("$.category").value("Streaming Updated"));
     }
 
 
