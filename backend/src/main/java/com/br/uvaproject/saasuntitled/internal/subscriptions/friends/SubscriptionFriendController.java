@@ -1,8 +1,8 @@
 package com.br.uvaproject.saasuntitled.internal.subscriptions.friends;
 
 import com.br.uvaproject.saasuntitled.internal.security.AuthenticatedUserService;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.friends.dto.SubscriptionFriendResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.users.User;
-import com.br.uvaproject.saasuntitled.internal.users.dto.UserSearchResponseDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 import java.util.List;
+import java.util.Map;
+import java.math.BigDecimal;
 
 @RestController
 @RequestMapping("/api/subscriptions/{subscriptionId}/friends")
@@ -23,23 +25,39 @@ public class SubscriptionFriendController {
     public ResponseEntity<Void> addFriend(
             Authentication authentication,
             @PathVariable UUID subscriptionId,
-            @PathVariable UUID friendId
+            @PathVariable UUID friendId,
+            @RequestBody(required = false) Map<String, BigDecimal> body
     ) {
         User user = authenticatedUserService.getUser(authentication);
-        service.addFriendToSubscription(user, subscriptionId, friendId);
+        BigDecimal price = body != null ? body.get("price") : null;
+
+        service.addFriendToSubscription(user, subscriptionId, friendId, price);
         return ResponseEntity.ok().build();
     }
 
     @GetMapping
-    public ResponseEntity<List<UserSearchResponseDTO>> listFriends(
+    public ResponseEntity<List<SubscriptionFriendResponseDTO>> listFriends(
             Authentication authentication,
             @PathVariable UUID subscriptionId
     ) {
         User user = authenticatedUserService.getUser(authentication);
-        List<UserSearchResponseDTO> friends = service.listFriends(subscriptionId, user);
-        return ResponseEntity.ok(friends);
+        return ResponseEntity.ok(service.listFriends(subscriptionId, user));
     }
     
+    @PutMapping("/{friendId}/price")
+    public ResponseEntity<Void> updateFriendPrice(
+            Authentication authentication,
+            @PathVariable UUID subscriptionId,
+            @PathVariable UUID friendId,
+            @RequestBody(required = false) Map<String, BigDecimal> body
+    ) {
+        User user = authenticatedUserService.getUser(authentication);
+        BigDecimal price = body != null ? body.get("price") : null;
+
+        service.updateFriendPrice(user, subscriptionId, friendId, price);
+        return ResponseEntity.ok().build();
+    }
+
     @DeleteMapping("/{friendId}")
     public ResponseEntity<Void> removeFriend(
             Authentication authentication,
