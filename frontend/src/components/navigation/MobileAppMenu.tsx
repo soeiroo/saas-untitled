@@ -31,9 +31,9 @@ export default function MobileAppMenu({
   const navItems = useMemo<NavItem[]>(
     () =>
       items ?? [
-        { href: '/dashboard', label: 'Dashboard', icon: LayoutDashboard, badge: 'Current' },
-        { href: '/profile', label: 'Account', icon: Settings },
-        { href: '/dashboard', label: 'Plan & Billing', icon: CreditCard, badge: 'Soon' },
+        { href: '/dashboard', label: 'Visão geral', icon: LayoutDashboard, badge: 'Atual' },
+        { href: '/profile', label: 'Conta', icon: Settings },
+        { href: '/dashboard', label: 'Plano e cobrança', icon: CreditCard, badge: 'Em breve' },
       ],
     [items],
   );
@@ -71,16 +71,6 @@ export default function MobileAppMenu({
             </div>
           </div>
 
-          <Button
-            variant="ghost"
-            size="icon"
-            className="text-zinc-200 hover:bg-zinc-800/60"
-            aria-label="Sair"
-            onClick={handleLogout}
-          >
-            <LogOut className="h-5 w-5" />
-          </Button>
-
           <SheetContent
             side="left"
             className="bg-zinc-950 border-r border-zinc-800/80 p-0"
@@ -97,25 +87,11 @@ export default function MobileAppMenu({
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-3xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-2.5">
-                  <div className="flex items-center justify-between gap-3 text-zinc-200">
-                    <div className="flex items-center gap-3">
-                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-zinc-950/70 border border-zinc-800/70">
-                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                      </span>
-                      <div className="leading-tight">
-                        <p className="text-xs text-zinc-400">Verificar e-mail</p>
-                        <p className="text-sm font-medium text-white">Para transações seguras</p>
-                      </div>
-                    </div>
-                    <span className="text-xs text-zinc-500">›</span>
-                  </div>
-                </div>
               </div>
 
               <div className="flex-1 overflow-y-auto px-5 py-4">
                 <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Navegação</div>
-                <div className="mt-3 grid grid-cols-2 gap-3">
+                <div className="mt-3 flex flex-col gap-3">
                   {navItems.map((item) => {
                     const isActive = pathname === item.href;
                     const Icon = item.icon;

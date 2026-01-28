@@ -99,7 +99,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
       <div className="mt-auto pt-6">
         <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900/80 to-zinc-900/40 p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <p className="text-xs text-zinc-500">Plano atual</p>
-          <p className="text-sm font-semibold">Starter</p>
+          <p className="text-sm font-semibold">Inicial</p>
           <p className="text-xs text-emerald-400 mt-1">Upgrade disponível</p>
         </div>
       </div>

@@ -100,7 +100,7 @@ export default function ProfilePage() {
           <div className="relative flex">
             <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur" />
             <main className="flex-1">
-              <MobileAppMenu title="Account Settings" />
+              <MobileAppMenu title="Configurações da conta" />
               <div className="max-w-6xl mx-auto px-4 py-8">
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
                   <p className="text-zinc-400 text-lg mb-2">Carregando perfil...</p>
@@ -130,24 +130,24 @@ export default function ProfilePage() {
           <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur">
             <Link href="/dashboard" className="flex items-center gap-2 text-zinc-400 hover:text-white mb-8">
               <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
+              <span>Voltar</span>
             </Link>
             
             <nav className="space-y-2 text-sm">
               <div className="px-3 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700 text-white flex items-center gap-2">
                 <UserIcon className="w-4 h-4 text-emerald-400" />
-                <span>Account</span>
+                <span>Conta</span>
               </div>
               <button className="w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-800/30 hover:text-white transition">
                 <span className="flex items-center gap-2">
-                  <span>Plan & Billing</span>
+                  <span>Plano e cobrança</span>
                 </span>
               </button>
             </nav>
           </aside>
 
           <main className="flex-1">
-            <MobileAppMenu title="Account Settings" />
+            <MobileAppMenu title="Configurações da conta" />
             <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
               <div className="flex flex-col gap-2">
                 <div className="flex items-center gap-2">
@@ -155,8 +155,8 @@ export default function ProfilePage() {
                     <UserIcon className="w-5 h-5 text-emerald-400" />
                   </div>
                   <div>
-                    <h1 className="text-2xl font-semibold text-white">Account Settings</h1>
-                    <p className="text-sm text-zinc-400">Here you can update information about your account</p>
+                    <h1 className="text-2xl font-semibold text-white">Configurações da conta</h1>
+                    <p className="text-sm text-zinc-400">Aqui você pode atualizar as informações da sua conta.</p>
                   </div>
                 </div>
               </div>
@@ -171,12 +171,12 @@ export default function ProfilePage() {
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-semibold text-white mb-2">Upload a profile picture</h3>
+                        <h3 className="font-semibold text-white mb-2">Envie uma foto de perfil</h3>
                         <p className="text-sm text-zinc-400 mb-4">
-                          to personalize your workspace and help collaborators identify you.
+                          para personalizar seu espaço de trabalho e facilitar a identificação pelos colaboradores.
                         </p>
                         <p className="text-xs text-zinc-500">
-                          The recommended size is 400x400px and less than 1 MB.
+                          O tamanho recomendado é 400x400px e menos de 1 MB.
                         </p>
                       </div>
                     </div>
@@ -188,7 +188,7 @@ export default function ProfilePage() {
                         className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 w-full sm:w-auto"
                       >
                         <Pencil className="w-4 h-4 mr-2" />
-                        Change Profile
+                        Alterar perfil
                       </Button>
                     </div>
                   </div>
@@ -199,7 +199,7 @@ export default function ProfilePage() {
                 <CardContent className="pt-6 space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
-                      <label className="block text-sm font-medium text-zinc-300 mb-2">First Name</label>
+                      <label className="block text-sm font-medium text-zinc-300 mb-2">Nome</label>
                       <input
                         type="text"
                         value={user.name.split(' ')[0]}
@@ -208,7 +208,7 @@ export default function ProfilePage() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-zinc-300 mb-2">Last Name</label>
+                      <label className="block text-sm font-medium text-zinc-300 mb-2">Sobrenome</label>
                       <input
                         type="text"
                         value={user.name.split(' ').slice(1).join(' ')}
@@ -219,7 +219,7 @@ export default function ProfilePage() {
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">Email Address</label>
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">Endereço de e-mail</label>
                     <input
                       type="email"
                       value={user.email}
@@ -233,7 +233,7 @@ export default function ProfilePage() {
                       className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto"
                       onClick={() => setEditProfileOpen(true)}
                     >
-                      Save Changes
+                      Salvar alterações
                     </Button>
                   </div>
                 </CardContent>
@@ -243,12 +243,12 @@ export default function ProfilePage() {
                 <CardHeader>
                   <div className="flex items-center gap-2">
                     <Shield className="w-5 h-5 text-purple-400" />
-                    <CardTitle className="text-white">Security</CardTitle>
+                    <CardTitle className="text-white">Segurança</CardTitle>
                   </div>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-zinc-300 mb-2">Password</label>
+                    <label className="block text-sm font-medium text-zinc-300 mb-2">Senha</label>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
                       <input
                         type="password"
@@ -263,7 +263,7 @@ export default function ProfilePage() {
                         onClick={() => setChangePasswordOpen(true)}
                       >
                         <Key className="w-4 h-4 mr-2" />
-                        Change
+                        Alterar
                       </Button>
                     </div>
                   </div>
@@ -278,12 +278,12 @@ export default function ProfilePage() {
                         <AlertCircle className="w-4 h-4 text-red-400" />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-semibold text-white">Delete Account</h3>
+                        <h3 className="font-semibold text-white">Excluir conta</h3>
                         <p className="text-sm text-zinc-400 mt-1">
-                          Delete your account and all of your data in SaaS.
+                          Exclua sua conta e todos os seus dados no SaaS.
                         </p>
                         <p className="text-xs text-red-400 mt-1">
-                          This action is permanent and irreversible.
+                          Esta ação é permanente e irreversível.
                         </p>
                       </div>
                     </div>
@@ -293,7 +293,7 @@ export default function ProfilePage() {
                       className="bg-red-600 hover:bg-red-700 text-white w-full sm:w-auto sm:shrink-0"
                     >
                       <Trash2 className="w-4 h-4 mr-2" />
-                      Delete Account
+                      Excluir conta
                     </Button>
                   </div>
                 </CardContent>
@@ -321,19 +321,19 @@ export default function ProfilePage() {
           <AlertDialogHeader>
             <AlertDialogTitle className="text-white flex items-center gap-2">
               <AlertCircle className="w-5 h-5 text-red-500" />
-              Delete your account?
+              Excluir sua conta?
             </AlertDialogTitle>
             <AlertDialogDescription className="text-zinc-400">
-              This will permanently delete your account and all of your data. This action cannot be undone.
+              Isso excluirá permanentemente sua conta e todos os seus dados. Esta ação não pode ser desfeita.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
-            <AlertDialogCancel className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">Cancel</AlertDialogCancel>
+            <AlertDialogCancel className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">Cancelar</AlertDialogCancel>
             <AlertDialogAction
               onClick={handleDeleteAccount}
               className="bg-red-600 hover:bg-red-700 text-white"
             >
-              Delete Account
+              Excluir conta
             </AlertDialogAction>
           </AlertDialogFooter>
         </AlertDialogContent>

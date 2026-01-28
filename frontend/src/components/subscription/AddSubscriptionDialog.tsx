@@ -105,7 +105,7 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
               id="plan"
               value={plan}
               onChange={(e) => setPlan(e.target.value)}
-              placeholder="Premium, Standard, etc."
+              placeholder="Premium, Padrão, etc."
               className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
             />
           </div>
