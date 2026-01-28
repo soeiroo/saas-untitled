@@ -10,6 +10,7 @@ import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -53,7 +54,6 @@ class SubscriptionFriendServiceTest {
         subscription.setId(UUID.randomUUID());
         subscription.setUser(owner);
     }
-
     @Test
     void addFriendToSubscription_Success() {
         when(subscriptionRepository.findById(subscription.getId()))
@@ -66,11 +66,19 @@ class SubscriptionFriendServiceTest {
                 .findBySubscriptionIdAndFriendId(subscription.getId(), friend.getId()))
                 .thenReturn(Optional.empty());
 
+        BigDecimal price = new BigDecimal("19.90");
+
         assertDoesNotThrow(() ->
-                service.addFriendToSubscription(owner, subscription.getId(), friend.getId())
+                service.addFriendToSubscription(
+                        owner,
+                        subscription.getId(),
+                        friend.getId(),
+                        price
+                )
         );
 
-        verify(subscriptionFriendRepository).save(any(SubscriptionFriend.class));
+        verify(subscriptionFriendRepository)
+                .save(argThat(sf -> price.equals(sf.getPrice())));
     }
 
     @Test
@@ -80,7 +88,12 @@ class SubscriptionFriendServiceTest {
 
         EntityNotFoundException ex = assertThrows(
                 EntityNotFoundException.class,
-                () -> service.addFriendToSubscription(owner, subscription.getId(), friend.getId())
+                () -> service.addFriendToSubscription(
+                        owner,
+                        subscription.getId(),
+                        friend.getId(),
+                        null
+                )
         );
 
         assertEquals("Assinatura não encontrada", ex.getMessage());
@@ -98,7 +111,12 @@ class SubscriptionFriendServiceTest {
 
         EntityNotFoundException ex = assertThrows(
                 EntityNotFoundException.class,
-                () -> service.addFriendToSubscription(owner, subscription.getId(), friend.getId())
+                () -> service.addFriendToSubscription(
+                        owner,
+                        subscription.getId(),
+                        friend.getId(),
+                        null
+                )
         );
 
         assertEquals("Assinatura não encontrada", ex.getMessage());
@@ -117,7 +135,12 @@ class SubscriptionFriendServiceTest {
 
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,
-                () -> service.addFriendToSubscription(owner, subscription.getId(), friend.getId())
+                () -> service.addFriendToSubscription(
+                        owner,
+                        subscription.getId(),
+                        friend.getId(),
+                        null
+                )
         );
 
         assertEquals("Usuário não é seu amigo", ex.getMessage());
@@ -137,7 +160,12 @@ class SubscriptionFriendServiceTest {
 
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,
-                () -> service.addFriendToSubscription(owner, subscription.getId(), friend.getId())
+                () -> service.addFriendToSubscription(
+                        owner,
+                        subscription.getId(),
+                        friend.getId(),
+                        null
+                )
         );
 
         assertEquals("Amigo já está na assinatura", ex.getMessage());
@@ -148,6 +176,7 @@ class SubscriptionFriendServiceTest {
         SubscriptionFriend sf = new SubscriptionFriend();
         sf.setSubscription(subscription);
         sf.setFriend(friend);
+        sf.setPrice(new BigDecimal("10.00"));
 
         when(subscriptionRepository.findById(subscription.getId()))
                 .thenReturn(Optional.of(subscription));
@@ -199,7 +228,11 @@ class SubscriptionFriendServiceTest {
                 .thenReturn(Optional.of(sf));
 
         assertDoesNotThrow(() ->
-                service.removeFriendFromSubscription(owner, subscription.getId(), friend.getId())
+                service.removeFriendFromSubscription(
+                        owner,
+                        subscription.getId(),
+                        friend.getId()
+                )
         );
 
         verify(subscriptionFriendRepository).delete(sf);
@@ -213,7 +246,11 @@ class SubscriptionFriendServiceTest {
 
         EntityNotFoundException ex = assertThrows(
                 EntityNotFoundException.class,
-                () -> service.removeFriendFromSubscription(owner, subscription.getId(), friend.getId())
+                () -> service.removeFriendFromSubscription(
+                        owner,
+                        subscription.getId(),
+                        friend.getId()
+                )
         );
 
         assertEquals("Amigo não está na assinatura", ex.getMessage());
@@ -235,7 +272,11 @@ class SubscriptionFriendServiceTest {
 
         EntityNotFoundException ex = assertThrows(
                 EntityNotFoundException.class,
-                () -> service.removeFriendFromSubscription(owner, subscription.getId(), friend.getId())
+                () -> service.removeFriendFromSubscription(
+                        owner,
+                        subscription.getId(),
+                        friend.getId()
+                )
         );
 
         assertEquals("Assinatura não encontrada", ex.getMessage());

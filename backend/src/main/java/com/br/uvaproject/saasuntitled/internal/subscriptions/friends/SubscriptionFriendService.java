@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.math.BigDecimal;
 
 @Service
 @RequiredArgsConstructor
@@ -24,9 +25,10 @@ public class SubscriptionFriendService {
     private final UserFriendRepository userFriendRepository;
 
     public void addFriendToSubscription(
-            User user,
-            UUID subscriptionId,
-            UUID friendId
+        User user,
+        UUID subscriptionId,
+        UUID friendId,
+        BigDecimal price
     ) {
         Subscription subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
@@ -43,7 +45,8 @@ public class SubscriptionFriendService {
             throw new IllegalStateException("Usuário não é seu amigo");
         }
 
-        subscriptionFriendRepository.findBySubscriptionIdAndFriendId(subscriptionId, friendId)
+        subscriptionFriendRepository
+                .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
                 .ifPresent(f -> {
                     throw new IllegalStateException("Amigo já está na assinatura");
                 });
@@ -54,6 +57,7 @@ public class SubscriptionFriendService {
         User friend = new User();
         friend.setId(friendId);
         sf.setFriend(friend);
+        sf.setPrice(price);
 
         subscriptionFriendRepository.save(sf);
     }
