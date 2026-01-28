@@ -48,13 +48,13 @@ export default function MobileAppMenu({
 
   return (
     <div className="lg:hidden sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
-      <div className="flex items-center gap-3 px-4 py-3 min-h-[56px]">
+      <div className="flex items-center gap-3 px-3 py-2 min-h-[52px] sm:px-4 sm:py-3 sm:min-h-[56px]">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="text-zinc-200 hover:bg-zinc-800/60 shrink-0 size-11"
+              className="text-zinc-200 hover:bg-zinc-800/60 shrink-0 size-10 sm:size-11"
               aria-label="Abrir menu"
             >
               <Menu className="h-6 w-6" />
@@ -62,12 +62,12 @@ export default function MobileAppMenu({
           </SheetTrigger>
 
           <div className="flex min-w-0 flex-1 items-center gap-2">
-            <div className="h-9 w-9 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center shrink-0">
-              <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
+            <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center shrink-0">
+              <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
             </div>
-            <div className="leading-tight min-w-0">
-              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Menu</p>
-              <p className="text-sm font-semibold text-white truncate">{title}</p>
+            <div className="leading-tight min-w-0 max-w-[150px] sm:max-w-none">
+              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 hidden sm:block">Menu</p>
+              <p className="text-xs sm:text-sm font-semibold text-white truncate">{title}</p>
             </div>
           </div>
 
