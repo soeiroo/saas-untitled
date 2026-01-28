@@ -48,16 +48,16 @@ export default function MobileAppMenu({
 
   return (
     <div className="lg:hidden sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex items-center justify-between gap-2 px-4 py-3 min-h-[56px]">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
               variant="ghost"
               size="icon"
-              className="text-zinc-200 hover:bg-zinc-800/60"
+              className="text-zinc-200 hover:bg-zinc-800/60 shrink-0 size-11"
               aria-label="Abrir menu"
             >
-              <Menu className="h-5 w-5" />
+              <Menu className="h-6 w-6" />
             </Button>
           </SheetTrigger>
 
@@ -74,11 +74,11 @@ export default function MobileAppMenu({
           <Button
             variant="ghost"
             size="icon"
-            className="text-zinc-200 hover:bg-zinc-800/60"
+            className="text-zinc-200 hover:bg-zinc-800/60 shrink-0 size-11"
             aria-label="Sair"
             onClick={handleLogout}
           >
-            <LogOut className="h-5 w-5" />
+            <LogOut className="h-6 w-6" />
           </Button>
 
           <SheetContent
