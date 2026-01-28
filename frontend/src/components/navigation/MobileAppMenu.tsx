@@ -3,7 +3,7 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Menu, LayoutDashboard, Settings, CreditCard, LogOut } from 'lucide-react';
+import { Menu, LayoutDashboard, Settings, CreditCard, LogOut, Contact } from 'lucide-react';
 
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -32,6 +32,7 @@ export default function MobileAppMenu({
     () =>
       items ?? [
         { href: '/dashboard', label: 'Visão geral', icon: LayoutDashboard, badge: 'Atual' },
+        { href: '/friends', label: 'Amigos', icon: Contact },
         { href: '/profile', label: 'Conta', icon: Settings },
         { href: '/dashboard', label: 'Plano e cobrança', icon: CreditCard, badge: 'Em breve' },
       ],
