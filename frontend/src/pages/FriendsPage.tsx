@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getFriends, addFriend, deleteFriend } from '@/api/friend';
+import { getFriends, getFriendRequests, acceptFriendRequest, deleteFriend } from '@/api/friend';
 import { AddFriendDialog } from '@/components/friend/AddFriendDialog';
 import { FriendCard } from '@/components/friend/FriendCard';
 import { Card } from '@/components/ui/card';
@@ -9,7 +9,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Users, Search, Sparkles, Loader2 } from 'lucide-react';
 import { Sidebar } from '@/components/navigation/Sidebar';
-import type { Friend } from '@/types/friend';
+import type { Friend, FriendRequest } from '@/types/friend';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { getCurrentUser } from '@/api/user';
@@ -17,6 +17,7 @@ import type { User } from '@/types/user';
 
 export default function FriendsPage() {
   const [friends, setFriends] = useState<Friend[]>([]);
+  const [requests, setRequests] = useState<FriendRequest[]>([]);
   const [isFetchingFriends, setIsFetchingFriends] = useState(false);
 //   const [isMutatingFriends, setIsMutatingFriends] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
@@ -34,8 +35,12 @@ export default function FriendsPage() {
           setCurrentUser(me);
         } catch {
         }
-        const friendsList = await getFriends();
+        const [friendsList, pendingRequests] = await Promise.all([
+          getFriends(),
+          getFriendRequests(),
+        ]);
         setFriends(friendsList);
+        setRequests(pendingRequests);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -51,22 +56,34 @@ export default function FriendsPage() {
     fetchFriends();
   }, []);
 
-  const handleAddFriend = async (newFriend: Omit<Friend, 'id' | 'userId' | 'addedAt'>) => {
-    // setIsMutatingFriends(true);
+  const refreshFriends = async () => {
+    try {
+      const [friendsList, pendingRequests] = await Promise.all([
+        getFriends(),
+        getFriendRequests(),
+      ]);
+      setFriends(friendsList);
+      setRequests(pendingRequests);
+    } catch {
+    }
+  };
+
+  const handleAcceptRequest = async (requestId: string) => {
     setError('');
     try {
-      const created = await addFriend(newFriend);
-      setFriends(prev => [...prev, created]);
+      await acceptFriendRequest(requestId);
+      const [friendsList, pendingRequests] = await Promise.all([
+        getFriends(),
+        getFriendRequests(),
+      ]);
+      setFriends(friendsList);
+      setRequests(pendingRequests);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
-      } else if (typeof err === 'string') {
-        setError(err);
       } else {
-        setError('Erro ao adicionar amigo');
+        setError('Erro ao aceitar pedido');
       }
-    } finally {
-    //   setIsMutatingFriends(false);
     }
   };
 
@@ -135,6 +152,35 @@ export default function FriendsPage() {
                 </Alert>
               )}
 
+              {requests.length > 0 && (
+                <Card className="bg-zinc-900/80 border-zinc-800 p-5 shadow-lg shadow-black/20 mb-6">
+                  <div className="flex items-center gap-2 mb-3">
+                    <Users className="h-4 w-4 text-emerald-400" />
+                    <h2 className="text-sm font-semibold text-white">Pedidos de amizade</h2>
+                  </div>
+                  <div className="space-y-2">
+                    {requests.map((request) => (
+                      <div
+                        key={request.requestId}
+                        className="flex items-center justify-between gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-2"
+                      >
+                        <div className="min-w-0">
+                          <p className="text-sm font-medium text-white truncate">{request.name}</p>
+                          <p className="text-xs text-zinc-500 truncate">{request.email}</p>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => handleAcceptRequest(request.requestId)}
+                          className="text-xs px-3 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition"
+                        >
+                          Aceitar
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                </Card>
+              )}
+
               {/* <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
                 <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
                   <div className="flex items-center justify-between">
@@ -182,7 +228,7 @@ export default function FriendsPage() {
                 </div>
                 <div className="flex items-center gap-3 mt-2">
                   <div className="cursor-pointer">
-                    <AddFriendDialog onAdd={handleAddFriend} />
+                    <AddFriendDialog onRequestSent={refreshFriends} />
                   </div>
                 </div>
               </div>

@@ -11,6 +11,8 @@ interface FriendCardProps {
 
 export const FriendCard: React.FC<FriendCardProps> = ({ friend, onDelete, onSecondaryAction }) => {
   const timeAgo = () => {
+    if (!friend.addedAt) return 'Amizade confirmada';
+
     const now = new Date();
     const added = new Date(friend.addedAt);
     const diffMs = now.getTime() - added.getTime();
@@ -37,7 +39,7 @@ export const FriendCard: React.FC<FriendCardProps> = ({ friend, onDelete, onSeco
         <div className="flex-1 min-w-0">
           <h3 className="text-lg font-semibold text-white mb-1 truncate">{friend.name}</h3>
           <p className="text-sm text-zinc-400 truncate mb-2">{friend.email}</p>
-          <p className="text-xs text-zinc-500">Amigo desde {timeAgo()}</p>
+          <p className="text-xs text-zinc-500">{timeAgo()}</p>
         </div>
       </div>
       <div className="flex gap-2 mt-4">
