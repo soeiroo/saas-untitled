@@ -24,20 +24,20 @@ public class SubscriptionFriendService {
     private final UserFriendRepository userFriendRepository;
 
     public void addFriendToSubscription(
-            User currentUser,
+            User user,
             UUID subscriptionId,
             UUID friendId
     ) {
         Subscription subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
 
-        if (!subscription.getUser().getId().equals(currentUser.getId())) {
+        if (!subscription.getUser().getId().equals(user.getId())) {
             throw new EntityNotFoundException("Assinatura não encontrada");
         }
 
         boolean areFriends =
-                userFriendRepository.findByUserIdAndFriendId(currentUser.getId(), friendId).isPresent()
-             || userFriendRepository.findByUserIdAndFriendId(friendId, currentUser.getId()).isPresent();
+                userFriendRepository.findByUserIdAndFriendId(user.getId(), friendId).isPresent()
+             || userFriendRepository.findByUserIdAndFriendId(friendId, user.getId()).isPresent();
 
         if (!areFriends) {
             throw new IllegalStateException("Usuário não é seu amigo");
@@ -61,12 +61,12 @@ public class SubscriptionFriendService {
     @Transactional(readOnly = true)
     public List<UserSearchResponseDTO> listFriends(
             UUID subscriptionId,
-            User currentUser
+            User user
     ) {
         Subscription subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
 
-        if (!subscription.getUser().getId().equals(currentUser.getId())) {
+        if (!subscription.getUser().getId().equals(user.getId())) {
             throw new EntityNotFoundException("Assinatura não encontrada");
         }
 
@@ -77,7 +77,7 @@ public class SubscriptionFriendService {
     }
 
     public void removeFriendFromSubscription(
-            User currentUser,
+            User user,
             UUID subscriptionId,
             UUID friendId
     ) {
@@ -85,7 +85,7 @@ public class SubscriptionFriendService {
                 .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
                 .orElseThrow(() -> new EntityNotFoundException("Amigo não está na assinatura"));
 
-        if (!sf.getSubscription().getUser().getId().equals(currentUser.getId())) {
+        if (!sf.getSubscription().getUser().getId().equals(user.getId())) {
             throw new EntityNotFoundException("Assinatura não encontrada");
         }
 
