@@ -120,7 +120,12 @@ export default function MobileAppMenu({
                 })}
               </div>
 
-              <div className="mt-3">
+              <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4">
+                <p className="text-xs text-zinc-500">Dica</p>
+                <p className="text-sm text-zinc-300 mt-1">Use o menu para navegar no celular.</p>
+              </div>
+
+              <div className="mt-4">
                 <SheetClose asChild>
                   <Button
                     variant="ghost"
@@ -133,11 +138,6 @@ export default function MobileAppMenu({
                     </span>
                   </Button>
                 </SheetClose>
-              </div>
-
-              <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4">
-                <p className="text-xs text-zinc-500">Dica</p>
-                <p className="text-sm text-zinc-300 mt-1">Use o menu para navegar no celular.</p>
               </div>
             </div>
           </SheetContent>
