@@ -52,8 +52,6 @@ function SheetContent({
 }: React.ComponentProps<typeof SheetPrimitive.Content> & {
   side?: "top" | "right" | "bottom" | "left";
 }) {
-  const isTop = side === "top";
-
   return (
     <SheetPortal>
       <SheetOverlay />
@@ -74,24 +72,9 @@ function SheetContent({
         {...props}
       >
         {children}
-        <SheetPrimitive.Close
-          aria-label={isTop ? "Fechar menu" : "Fechar"}
-          className={cn(
-            "ring-offset-background focus:ring-ring data-[state=open]:bg-secondary opacity-80 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none",
-            isTop
-              ? "absolute top-2 left-1/2 -translate-x-1/2 flex h-10 w-16 items-center justify-center rounded-full"
-              : "absolute top-4 right-4 rounded-md",
-          )}
-        >
-          {isTop ? (
-            <span
-              aria-hidden
-              className="block h-1 w-10 rounded-full bg-zinc-500/80"
-            />
-          ) : (
-            <XIcon className="size-4" />
-          )}
-          <span className="sr-only">Fechar</span>
+        <SheetPrimitive.Close className="ring-offset-background focus:ring-ring data-[state=open]:bg-secondary absolute top-4 right-4 rounded-xs opacity-70 transition-opacity hover:opacity-100 focus:ring-2 focus:ring-offset-2 focus:outline-hidden disabled:pointer-events-none">
+          <XIcon className="size-4" />
+          <span className="sr-only">Close</span>
         </SheetPrimitive.Close>
       </SheetPrimitive.Content>
     </SheetPortal>

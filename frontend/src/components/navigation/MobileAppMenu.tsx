@@ -47,108 +47,129 @@ export default function MobileAppMenu({
   };
 
   return (
-    <div className="lg:hidden">
-      <Sheet open={open} onOpenChange={setOpen}>
-        <div className="sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
-          <div className="flex items-center gap-3 px-3 py-2 min-h-[52px] sm:px-4 sm:py-3 sm:min-h-[56px]">
-            <div className="flex min-w-0 flex-1 items-center gap-2">
-              <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center shrink-0">
-                <div className="h-3.5 w-3.5 sm:h-4 sm:w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-              </div>
-              <div className="leading-tight min-w-0 max-w-[150px] sm:max-w-none">
-                <p className="text-xs uppercase tracking-[0.2em] text-zinc-500 hidden sm:block">Menu</p>
-                <p className="text-xs sm:text-sm font-semibold text-white truncate">{title}</p>
-              </div>
+    <div className="lg:hidden sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
+      <div className="flex items-center justify-between px-4 py-3">
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger asChild>
+            <Button
+              variant="ghost"
+              size="icon"
+              className="text-zinc-200 hover:bg-zinc-800/60"
+              aria-label="Abrir menu"
+            >
+              <Menu className="h-5 w-5" />
+            </Button>
+          </SheetTrigger>
+
+          <div className="flex items-center gap-2">
+            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
+              <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
+            </div>
+            <div className="leading-tight">
+              <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Menu</p>
+              <p className="text-sm font-semibold text-white">{title}</p>
             </div>
           </div>
-        </div>
 
-        <div className="fixed bottom-0 left-0 right-0 z-50 border-t border-zinc-800/70 bg-zinc-950/80 backdrop-blur">
-          <div className="flex items-center justify-center px-3 py-2 pb-[max(0.5rem,env(safe-area-inset-bottom))]">
-            <SheetTrigger asChild>
-              <Button
-                variant="ghost"
-                size="icon"
-                className="text-zinc-200 hover:bg-zinc-800/60 size-11"
-                aria-label="Abrir menu"
-              >
-                <Menu className="h-6 w-6" />
-              </Button>
-            </SheetTrigger>
-          </div>
-        </div>
+          <Button
+            variant="ghost"
+            size="icon"
+            className="text-zinc-200 hover:bg-zinc-800/60"
+            aria-label="Sair"
+            onClick={handleLogout}
+          >
+            <LogOut className="h-5 w-5" />
+          </Button>
 
-        <SheetContent
-          side="top"
-          className="bg-zinc-950 border-b border-zinc-800 p-4 flex flex-col h-dvh"
-        >
-          <div className="w-full flex-1 flex flex-col overflow-y-auto">
-              <div className="flex items-center justify-between mb-4">
+          <SheetContent
+            side="left"
+            className="bg-zinc-950 border-r border-zinc-800/80 p-0"
+          >
+            <div className="flex h-full flex-col">
+              <div className="px-5 pt-6 pb-4 border-b border-zinc-800/70">
                 <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/30 flex items-center justify-center">
+                  <div className="h-11 w-11 rounded-3xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/30 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
                     <div className="h-5 w-5 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
                   </div>
                   <div>
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{title}</p>
-                    <p className="text-sm text-zinc-300">Navigation</p>
+                    <p className="text-sm text-zinc-300">Menu principal</p>
+                  </div>
+                </div>
+
+                <div className="mt-4 rounded-3xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-2.5">
+                  <div className="flex items-center justify-between gap-3 text-zinc-200">
+                    <div className="flex items-center gap-3">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-2xl bg-zinc-950/70 border border-zinc-800/70">
+                        <span className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
+                      </span>
+                      <div className="leading-tight">
+                        <p className="text-xs text-zinc-400">Verificar e-mail</p>
+                        <p className="text-sm font-medium text-white">Para transações seguras</p>
+                      </div>
+                    </div>
+                    <span className="text-xs text-zinc-500">›</span>
                   </div>
                 </div>
               </div>
 
-              <div className="rounded-3xl bg-zinc-900/60 border border-zinc-800 p-2">
-                {navItems.map((item) => {
-                  const isActive = pathname === item.href;
-                  const Icon = item.icon;
+              <div className="flex-1 overflow-y-auto px-5 py-4">
+                <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Navegação</div>
+                <div className="mt-3 grid grid-cols-2 gap-3">
+                  {navItems.map((item) => {
+                    const isActive = pathname === item.href;
+                    const Icon = item.icon;
 
-                  return (
-                    <SheetClose asChild key={item.href + item.label}>
-                      <Link
-                        href={item.href}
-                        className={cn(
-                          'flex items-center justify-between gap-3 rounded-2xl px-3 py-3 text-sm transition',
-                          isActive
-                            ? 'bg-emerald-500/15 text-emerald-200 border border-emerald-500/20'
-                            : 'text-zinc-300 hover:bg-zinc-800/60 hover:text-white',
-                        )}
-                        onClick={() => setOpen(false)}
+                    return (
+                      <SheetClose asChild key={item.href + item.label}>
+                        <Link
+                          href={item.href}
+                          className={cn(
+                            'flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm transition',
+                            isActive
+                              ? 'bg-emerald-500/15 text-emerald-200 border-emerald-500/30 shadow-lg shadow-emerald-500/10'
+                              : 'bg-zinc-900/60 text-zinc-300 border-zinc-800/80 hover:bg-zinc-800/70 hover:text-white',
+                          )}
+                          onClick={() => setOpen(false)}
+                        >
+                          <Icon className={cn('h-4 w-4', isActive ? 'text-emerald-300' : 'text-zinc-400')} />
+                          <span className="truncate">{item.label}</span>
+                        </Link>
+                      </SheetClose>
+                    );
+                  })}
+                </div>
+
+                <div className="mt-6">
+                  <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Conta</div>
+                  <div className="mt-3 rounded-3xl border border-zinc-800/80 bg-zinc-900/60 p-3">
+                    <SheetClose asChild>
+                      <button
+                        type="button"
+                        className="flex w-full items-center justify-between gap-3 rounded-2xl px-3 py-3 text-sm text-zinc-300 hover:bg-zinc-800/70 hover:text-white transition"
+                        onClick={handleLogout}
                       >
                         <span className="flex items-center gap-3">
-                          <Icon className={cn('h-4 w-4', isActive ? 'text-emerald-300' : 'text-zinc-400')} />
-                          {item.label}
+                          <LogOut className="h-4 w-4 text-zinc-400" />
+                          Sair da conta
                         </span>
-                        {item.badge && (
-                          <span className={cn('text-xs', isActive ? 'text-emerald-300' : 'text-zinc-500')}>
-                            {item.badge}
-                          </span>
-                        )}
-                      </Link>
+                        <span className="text-xs text-zinc-500">Agora</span>
+                      </button>
                     </SheetClose>
-                  );
-                })}
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-4 rounded-2xl border border-zinc-800 bg-zinc-900/40 p-4">
-                <p className="text-xs text-zinc-500">Dica</p>
-                <p className="text-sm text-zinc-300 mt-1">Use o menu para navegar no celular.</p>
+              <div className="px-5 pb-6">
+                <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/40 p-4">
+                  <p className="text-xs text-zinc-500">Dica rápida</p>
+                  <p className="text-sm text-zinc-300 mt-1">Use o menu lateral para acessar tudo no celular.</p>
+                </div>
               </div>
-
-              <div className="mt-auto pt-4">
-                <SheetClose asChild>
-                  <Button
-                    variant="ghost"
-                    className="w-full justify-between rounded-2xl border border-zinc-800 bg-zinc-900/40 px-3 py-3 text-sm text-zinc-300 hover:bg-zinc-800/60 hover:text-white"
-                    onClick={handleLogout}
-                  >
-                    <span className="flex items-center gap-3">
-                      <LogOut className="h-4 w-4 text-zinc-400" />
-                      Sair
-                    </span>
-                  </Button>
-                </SheetClose>
-              </div>
-          </div>
-        </SheetContent>
-      </Sheet>
+            </div>
+          </SheetContent>
+        </Sheet>
+      </div>
     </div>
   );
 }
