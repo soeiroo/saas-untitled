@@ -5,6 +5,7 @@ import com.br.uvaproject.saasuntitled.internal.users.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -28,6 +29,9 @@ public class SubscriptionFriend {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "friend_id", nullable = false)
     private User friend;
+
+    @Column(nullable = true)
+    private BigDecimal price;
 
     private LocalDateTime createdAt;
 
