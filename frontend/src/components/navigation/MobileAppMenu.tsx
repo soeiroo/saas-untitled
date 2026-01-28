@@ -73,9 +73,9 @@ export default function MobileAppMenu({
 
           <SheetContent
             side="top"
-            className="bg-zinc-950 border-b border-zinc-800 p-4"
+            className="bg-zinc-950 border-b border-zinc-800 p-4 flex flex-col"
           >
-            <div className="w-full">
+            <div className="w-full flex flex-col min-h-[55vh] sm:min-h-[60vh]">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/30 flex items-center justify-center">
@@ -125,7 +125,7 @@ export default function MobileAppMenu({
                 <p className="text-sm text-zinc-300 mt-1">Use o menu para navegar no celular.</p>
               </div>
 
-              <div className="mt-4">
+              <div className="mt-auto pt-4">
                 <SheetClose asChild>
                   <Button
                     variant="ghost"
