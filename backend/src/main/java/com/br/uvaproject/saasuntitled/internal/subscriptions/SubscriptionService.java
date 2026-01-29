@@ -40,6 +40,15 @@ public class SubscriptionService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<SubscriptionResponseDTO> findSharedWithMe(User user) {
+        return subscriptionRepository
+                .findSubscriptionsWhereUserIsFriend(user.getId())
+                .stream()
+                .map(SubscriptionMapper::toResponse)
+                .toList();
+    }
+
     public SubscriptionResponseDTO update(
             User user,
             UUID subscriptionId,

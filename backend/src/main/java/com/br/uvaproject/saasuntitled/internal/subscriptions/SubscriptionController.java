@@ -48,6 +48,14 @@ public class SubscriptionController {
         return ResponseEntity.ok(subscriptionService.findMine(user));
     }
 
+    @GetMapping("/shared")
+    public ResponseEntity<List<SubscriptionResponseDTO>> getSharedWithMe(
+            Authentication authentication
+    ) {
+        User user = authenticatedUserService.getUser(authentication);
+        return ResponseEntity.ok(subscriptionService.findSharedWithMe(user));
+    }
+
     @PutMapping("/{id}")
     public ResponseEntity<SubscriptionResponseDTO> update(
         Authentication authentication,

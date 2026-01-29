@@ -98,6 +98,31 @@ class SubscriptionServiceTest {
     }
 
     @Test
+    void findSharedWithMe_ReturnsSubscriptions() {
+        Subscription s1 = new Subscription();
+        s1.setName("Netflix");
+        s1.setUser(new User());
+
+        Subscription s2 = new Subscription();
+        s2.setName("Spotify");
+        s2.setUser(new User());
+
+        when(subscriptionRepository.findSubscriptionsWhereUserIsFriend(user.getId()))
+                .thenReturn(List.of(s1, s2));
+
+        List<SubscriptionResponseDTO> result =
+                subscriptionService.findSharedWithMe(user);
+
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Netflix", result.get(0).name());
+        assertEquals("Spotify", result.get(1).name());
+
+        verify(subscriptionRepository)
+            .findSubscriptionsWhereUserIsFriend(user.getId());
+    }
+
+    @Test
     void updateSubscription_Success() {
         UUID id = UUID.randomUUID();
 
