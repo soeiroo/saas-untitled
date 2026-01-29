@@ -9,7 +9,7 @@ The system allows users to:
 
 ## How to run it locally
 
-You can use docker/docker compose
+You can use docker/docker compose<br>
 Run this at the root of the project:
 
 ```
