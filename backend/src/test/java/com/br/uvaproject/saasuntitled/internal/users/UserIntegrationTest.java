@@ -53,6 +53,7 @@ class UserIntegrationTest {
         user.setEmail("test@example.com");
         user.setName("Test User");
         user.setPasswordHash(passwordEncoder.encode("123456"));
+        user.setProfilePicture("profile_photo.jpg");
 
         userRepository.save(user);
     }
@@ -78,7 +79,7 @@ class UserIntegrationTest {
     void updateMe_ShouldUpdateUserAndReturnNoContent() throws Exception {
 
         UserUpdateDTO dto =
-                new UserUpdateDTO("new@example.com", "New Name", "newpass");
+                new UserUpdateDTO("new@example.com", "New Name", "newpass", "new_profile_photo.jpg");
 
         mockMvc.perform(put("/api/users/me")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -95,7 +96,7 @@ class UserIntegrationTest {
     @Test
     @WithMockUser(username = "nonexistent@example.com", roles = "USER")
     void updateMe_NotFound_ShouldReturn404() throws Exception {
-        UserUpdateDTO dto = new UserUpdateDTO("new@example.com", "New Name", "newpass");
+        UserUpdateDTO dto = new UserUpdateDTO("new@example.com", "New Name", "newpass", "new_profile_photo.jpg");
 
         mockMvc.perform(put("/api/users/me")
                         .contentType(MediaType.APPLICATION_JSON)

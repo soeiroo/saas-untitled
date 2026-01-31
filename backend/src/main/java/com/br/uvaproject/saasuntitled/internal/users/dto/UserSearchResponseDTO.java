@@ -5,5 +5,6 @@ import java.util.UUID;
 public record UserSearchResponseDTO(
         UUID id,
         String name,
-        String email
+        String email,
+        String profilePicture
 ) {}

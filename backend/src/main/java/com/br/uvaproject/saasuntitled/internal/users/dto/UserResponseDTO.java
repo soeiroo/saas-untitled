@@ -7,6 +7,7 @@ public record UserResponseDTO(
         UUID id,
         String email,
         String name,
+        String profilePicture,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {}

@@ -12,6 +12,7 @@ public class UserMapper {
                 user.getId(),
                 user.getEmail(),
                 user.getName(),
+                user.getProfilePicture(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );
@@ -22,6 +23,7 @@ public class UserMapper {
                 .email(dto.email())
                 .passwordHash(passwordHash)
                 .name(dto.name())
+                .profilePicture(dto.profilePicture())
                 .build();
     }
 
@@ -29,7 +31,8 @@ public class UserMapper {
         return new UserSearchResponseDTO(
                 user.getId(),
                 user.getName(),
-                user.getEmail()
+                user.getEmail(),
+                user.getProfilePicture()
         );
     }
 }
