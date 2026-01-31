@@ -247,9 +247,6 @@ export default function DashboardPage() {
                   <p className="text-xs text-zinc-500 mt-2">contatos cadastrados</p>
 
                   <div className="mt-6 flex flex-col gap-2">
-                    <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
-                      <Link href="/friends">Gerenciar amigos</Link>
-                    </Button>
                     <Button asChild variant="outline" className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">
                       <Link href="/assinaturas">Ver assinaturas</Link>
                     </Button>
