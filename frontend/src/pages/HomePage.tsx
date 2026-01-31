@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { getSubscriptions, getSharedSubscriptions, addSubscription, updateSubscription, deleteSubscription } from '@/api/subscription';
 import { AddSubscriptionDialog } from '@/components/subscription/AddSubscriptionDialog';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
@@ -8,6 +8,7 @@ import { EditSubscriptionDialog } from '@/components/subscription/EditSubscripti
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DollarSign, Bell, TrendingUp, Search, Sparkles, Loader2 } from 'lucide-react';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Subscription } from '@/types/subscription';
@@ -24,12 +25,17 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
-  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
+  const [mySubscriptions, setMySubscriptions] = useState<Subscription[]>([]);
+  const [sharedSubscriptions, setSharedSubscriptions] = useState<Subscription[]>([]);
   const [isFetchingSubscriptions, setIsFetchingSubscriptions] = useState(false);
   const [isMutatingSubscriptions, setIsMutatingSubscriptions] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+  const [debouncedSearch, setDebouncedSearch] = useState('');
+  const [activeTab, setActiveTab] = useState<'all' | 'mine' | 'shared'>('all');
+  const [categoryFilter, setCategoryFilter] = useState('all');
+  const [sortBy, setSortBy] = useState<'renewal-asc' | 'price-desc' | 'price-asc' | 'name-asc'>('renewal-asc');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
@@ -46,9 +52,8 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
           getSubscriptions(),
           getSharedSubscriptions(),
         ]);
-        const merged = [...subs, ...sharedSubs];
-        const uniqueById = Array.from(new Map(merged.map(sub => [sub.id, sub])).values());
-        setSubscriptions(uniqueById);
+        setMySubscriptions(subs);
+        setSharedSubscriptions(sharedSubs);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -64,13 +69,20 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
     fetchSubs();
   }, []);
 
+  useEffect(() => {
+    const handle = setTimeout(() => {
+      setDebouncedSearch(searchQuery.trim().toLowerCase());
+    }, 250);
+    return () => clearTimeout(handle);
+  }, [searchQuery]);
+
 
   const handleAddSubscription = async (newSub: Omit<Subscription, 'id' | 'userId' >) => {
     setIsMutatingSubscriptions(true);
     setError('');
     try {
       const created = await addSubscription(newSub);
-      setSubscriptions(prev => [...prev, created]);
+      setMySubscriptions(prev => [...prev, created]);
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -90,7 +102,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
     setError('');
     try {
       await deleteSubscription(id);
-      setSubscriptions(prev => prev.filter(sub => sub.id !== id));
+      setMySubscriptions(prev => prev.filter(sub => sub.id !== id));
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -115,7 +127,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
     setError('');
     try {
       const result = await updateSubscription(updated.id, updated);
-      setSubscriptions(prev => prev.map(sub => sub.id === result.id ? result : sub));
+      setMySubscriptions(prev => prev.map(sub => sub.id === result.id ? result : sub));
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -129,10 +141,25 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
     }
   };
 
-  const totalMonthly = subscriptions.reduce((sum, sub) => sum + sub.price, 0);
+  const allSubscriptions = useMemo(
+    () => [...mySubscriptions, ...sharedSubscriptions],
+    [mySubscriptions, sharedSubscriptions],
+  );
+  const sharedIds = useMemo(
+    () => new Set(sharedSubscriptions.map(sub => sub.id)),
+    [sharedSubscriptions],
+  );
+
+  const totalMonthly = mySubscriptions.reduce((sum, sub) => sum + sub.price, 0);
   const totalYearly = totalMonthly * 12;
 
-  const upcomingRenewals = subscriptions.filter(sub => {
+  const baseSubscriptions = useMemo(() => {
+    if (activeTab === 'mine') return mySubscriptions;
+    if (activeTab === 'shared') return sharedSubscriptions;
+    return allSubscriptions;
+  }, [activeTab, mySubscriptions, sharedSubscriptions, allSubscriptions]);
+
+  const upcomingRenewals = baseSubscriptions.filter(sub => {
     const daysUntilRenewal = Math.ceil(
       (new Date(sub.renewalDate).getTime() - new Date().getTime()) / (1000 * 60 * 60 * 24)
     );
@@ -148,15 +175,34 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   //   return Math.min(...futureDays);
   // })();
 
-  const filteredSubscriptions = subscriptions.filter(sub => {
-    const query = searchQuery.trim().toLowerCase();
-    if (!query) return true;
-    return (
-      sub.name.toLowerCase().includes(query) ||
-      sub.category.toLowerCase().includes(query) ||
-      sub.plan.toLowerCase().includes(query)
-    );
-  });
+  const categories = useMemo(
+    () => Array.from(new Set(allSubscriptions.map(sub => sub.category).filter(Boolean))).sort(),
+    [allSubscriptions],
+  );
+
+  const filteredSubscriptions = baseSubscriptions
+    .filter(sub => {
+      if (categoryFilter !== 'all' && sub.category !== categoryFilter) return false;
+      if (!debouncedSearch) return true;
+      return (
+        sub.name.toLowerCase().includes(debouncedSearch) ||
+        sub.category.toLowerCase().includes(debouncedSearch) ||
+        sub.plan.toLowerCase().includes(debouncedSearch)
+      );
+    })
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'price-desc':
+          return b.price - a.price;
+        case 'price-asc':
+          return a.price - b.price;
+        case 'name-asc':
+          return a.name.localeCompare(b.name);
+        case 'renewal-asc':
+        default:
+          return new Date(a.renewalDate).getTime() - new Date(b.renewalDate).getTime();
+      }
+    });
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
@@ -190,7 +236,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 </Alert>
               )}
 
-              <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
                   <div className="flex items-center justify-between">
                     <div>
@@ -222,30 +268,97 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Cobranças Próximas</p>
                       <p className="text-3xl text-white">{upcomingRenewals}</p>
-                      <p className="text-zinc-500 text-xs mt-1">Próximos 7 dias</p>
+                      <p className="text-zinc-500 text-xs mt-1">Na aba atual</p>
                     </div>
                     <Bell className="h-10 w-10 text-yellow-500" />
+                  </div>
+                </Card>
+
+                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <p className="text-zinc-400 text-sm mb-1">Compartilhadas</p>
+                      <p className="text-3xl text-white">{sharedSubscriptions.length}</p>
+                      <p className="text-zinc-500 text-xs mt-1">Recebidas de amigos</p>
+                    </div>
+                    <Sparkles className="h-10 w-10 text-purple-400" />
                   </div>
                 </Card>
               </section>
 
               <div className="flex flex-col items-center mb-8 gap-4 w-full">
-                <div className="relative w-full max-w-2xl flex justify-center">
-                  <Search className="h-5 w-5 text-zinc-500 absolute left-5 top-1/2 -translate-y-1/2" />
-                  <Input
-                    value={searchQuery}
-                    onChange={(event) => setSearchQuery(event.target.value)}
-                    placeholder="Buscar por nome, categoria ou plano"
-                    className="pl-14 py-5 text-lg bg-zinc-900/80 border-zinc-800 text-zinc-100 rounded-2xl w-full shadow-md"
-                  />
-                </div>
-                <div className="flex items-center gap-3 mt-2">
-                  <div className="rounded-xl px-3 py-2 text-xs text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
-                    <Sparkles className="h-4 w-4 text-purple-400" />
-                    Insights atualizados hoje
+                <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4">
+                  <Tabs
+                    value={activeTab}
+                    onValueChange={(value) => setActiveTab(value as 'all' | 'mine' | 'shared')}
+                    className="w-full lg:w-auto"
+                  >
+                    <TabsList className="bg-zinc-900/80 border border-zinc-800">
+                      <TabsTrigger value="all" className="text-zinc-200">
+                        Todas
+                        <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
+                          {allSubscriptions.length}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger value="mine" className="text-zinc-200">
+                        Minhas
+                        <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
+                          {mySubscriptions.length}
+                        </span>
+                      </TabsTrigger>
+                      <TabsTrigger value="shared" className="text-zinc-200">
+                        Compartilhadas
+                        <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
+                          {sharedSubscriptions.length}
+                        </span>
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
+
+                  <div className="flex items-center gap-3">
+                    <div className="rounded-xl px-3 py-2 text-xs text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
+                      <Sparkles className="h-4 w-4 text-purple-400" />
+                      Insights atualizados hoje
+                    </div>
+                    <div>
+                      <AddSubscriptionDialog onAdd={handleAddSubscription} />
+                    </div>
                   </div>
-                  <div>
-                    <AddSubscriptionDialog onAdd={handleAddSubscription} />
+                </div>
+
+                <div className="w-full flex flex-col lg:flex-row items-center gap-4">
+                  <div className="relative w-full">
+                    <Search className="h-5 w-5 text-zinc-500 absolute left-5 top-1/2 -translate-y-1/2" />
+                    <Input
+                      value={searchQuery}
+                      onChange={(event) => setSearchQuery(event.target.value)}
+                      placeholder="Buscar por nome, categoria ou plano"
+                      className="pl-14 py-5 text-lg bg-zinc-900/80 border-zinc-800 text-zinc-100 rounded-2xl w-full shadow-md"
+                    />
+                  </div>
+                  <div className="flex w-full lg:w-auto gap-3">
+                    <select
+                      value={categoryFilter}
+                      onChange={(event) => setCategoryFilter(event.target.value)}
+                      className="w-full lg:w-56 bg-zinc-900/80 border border-zinc-800 text-zinc-100 rounded-2xl px-4 py-3 shadow-md"
+                    >
+                      <option value="all">Todas as categorias</option>
+                      {categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
+                    <select
+                      value={sortBy}
+                      onChange={(event) => setSortBy(event.target.value as typeof sortBy)}
+                      className="w-full lg:w-48 bg-zinc-900/80 border border-zinc-800 text-zinc-100 rounded-2xl px-4 py-3 shadow-md"
+                    >
+                      <option value="renewal-asc">Próxima cobrança</option>
+                      <option value="price-desc">Maior preço</option>
+                      <option value="price-asc">Menor preço</option>
+                      <option value="name-asc">Nome A-Z</option>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -257,7 +370,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 </div>
               </section>
 
-              {(isFetchingSubscriptions || isMutatingSubscriptions) && subscriptions.length > 0 && (
+              {(isFetchingSubscriptions || isMutatingSubscriptions) && allSubscriptions.length > 0 && (
                 <div className="mb-4 flex items-center gap-2 text-xs text-zinc-400">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
                   <span>
@@ -270,19 +383,30 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 </div>
               )}
 
-              {isFetchingSubscriptions && subscriptions.length === 0 ? (
-                <div className="mb-4 flex items-center gap-2 text-xs text-zinc-400">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span>Carregando assinaturas…</span>
+              {isFetchingSubscriptions && allSubscriptions.length === 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {Array.from({ length: 6 }).map((_, idx) => (
+                    <Card
+                      key={`skeleton-${idx}`}
+                      className="bg-zinc-900/60 border-zinc-800 p-5 shadow-lg shadow-black/20 animate-pulse"
+                    >
+                      <div className="h-10 w-10 rounded-full bg-zinc-800 mb-4" />
+                      <div className="h-4 w-3/4 bg-zinc-800 rounded mb-2" />
+                      <div className="h-3 w-1/2 bg-zinc-800 rounded mb-4" />
+                      <div className="h-3 w-2/3 bg-zinc-800 rounded" />
+                    </Card>
+                  ))}
                 </div>
               ) : filteredSubscriptions.length === 0 ? (
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
                   <p className="text-zinc-400 text-lg mb-2">
-                    {subscriptions.length === 0 ? 'Nenhuma assinatura cadastrada' : 'Nenhum resultado encontrado'}
+                    {baseSubscriptions.length === 0 ? 'Nenhuma assinatura encontrada' : 'Nenhum resultado encontrado'}
                   </p>
                   <p className="text-zinc-500">
-                    {subscriptions.length === 0
-                      ? 'Clique em "Nova Assinatura" para começar'
+                    {baseSubscriptions.length === 0
+                      ? activeTab === 'shared'
+                        ? 'Assim que alguém compartilhar, elas aparecem aqui.'
+                        : 'Clique em "Nova Assinatura" para começar'
                       : 'Tente outro termo de busca'}
                   </p>
                 </Card>
@@ -292,8 +416,9 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <SubscriptionCard
                       key={subscription.id}
                       subscription={subscription}
-                      onDelete={handleDeleteSubscription}
-                      onEdit={handleEditSubscription}
+                      isShared={sharedIds.has(subscription.id)}
+                      onDelete={sharedIds.has(subscription.id) ? undefined : handleDeleteSubscription}
+                      onEdit={sharedIds.has(subscription.id) ? undefined : handleEditSubscription}
                     />
                   ))}
                 </div>

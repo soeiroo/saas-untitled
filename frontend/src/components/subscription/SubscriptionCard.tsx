@@ -11,11 +11,12 @@ import type { Subscription } from '@/types/subscription';
 
 interface SubscriptionCardProps {
   subscription: Subscription;
-  onDelete: (id: string) => void;
-  onEdit: (subscription: Subscription) => void;
+  onDelete?: (id: string) => void;
+  onEdit?: (subscription: Subscription) => void;
+  isShared?: boolean;
 }
 
-export function SubscriptionCard({ subscription, onDelete, onEdit }: SubscriptionCardProps) {
+export function SubscriptionCard({ subscription, onDelete, onEdit, isShared = false }: SubscriptionCardProps) {
   const daysUntilRenewal = differenceInDays(new Date(subscription.renewalDate), new Date());
   const isUpcoming = daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
 
@@ -42,6 +43,11 @@ export function SubscriptionCard({ subscription, onDelete, onEdit }: Subscriptio
               <Badge variant="outline" className="border-zinc-700 text-zinc-400">
                 {subscription.category}
               </Badge>
+              {isShared && (
+                <Badge variant="outline" className="border-emerald-500/40 text-emerald-300">
+                  Compartilhada
+                </Badge>
+              )}
               {subscription.plan && (
                 <Badge variant="outline" className="border-zinc-700 text-zinc-400">
                   {subscription.plan}
@@ -55,24 +61,30 @@ export function SubscriptionCard({ subscription, onDelete, onEdit }: Subscriptio
             </div>
           </div>
         </div>
-        <div className="flex gap-1">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onEdit(subscription)}
-            className="text-zinc-400 hover:text-white hover:bg-zinc-800"
-          >
-            <Pencil className="h-4 w-4" />
-          </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => onDelete(subscription.id)}
-            className="text-red-400 hover:text-red-300 hover:bg-red-950/30"
-          >
-            <Trash className="h-4 w-4" />
-          </Button>
-        </div>
+        {(onEdit || onDelete) && (
+          <div className="flex gap-1">
+            {onEdit && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onEdit(subscription)}
+                className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+              >
+                <Pencil className="h-4 w-4" />
+              </Button>
+            )}
+            {onDelete && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onDelete(subscription.id)}
+                className="text-red-400 hover:text-red-300 hover:bg-red-950/50"
+              >
+                <Trash className="h-4 w-4" />
+              </Button>
+            )}
+          </div>
+        )}
       </div>
 
       <div className="space-y-2">
@@ -100,6 +112,9 @@ export function SubscriptionCard({ subscription, onDelete, onEdit }: Subscriptio
                 : `Cobrança em ${daysUntilRenewal} ${daysUntilRenewal === 1 ? 'dia' : 'dias'}`}
             </span>
           </div>
+        )}
+        {isShared && (
+          <p className="text-xs text-zinc-500 mt-3">Somente leitura</p>
         )}
       </div>
     </Card>
