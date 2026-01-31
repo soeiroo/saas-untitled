@@ -214,8 +214,8 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
 
           <main className="flex-1 lg:pl-6">
             <MobileAppMenu title="Assinaturas Pro" />
-            <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 relative">
-              <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8">
+            <div className="max-w-6xl mx-auto px-4 lg:px-6 py-8 sm:py-10 relative">
+              <header className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-center md:justify-between mb-6 sm:mb-8">
                 <div className="space-y-2">
                   <h1 className="text-3xl md:text-4xl font-semibold text-white">
                     Assinaturas
@@ -229,9 +229,9 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 </div>
               </header>
 
-              <Card className="relative overflow-hidden mb-8 bg-zinc-900/70 border-zinc-800">
+              <Card className="relative overflow-hidden mb-6 sm:mb-8 bg-zinc-900/70 border-zinc-800">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_45%),radial-gradient(circle_at_85%_10%,_rgba(139,92,246,0.14),_transparent_40%)]" />
-                <div className="relative px-6 py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div className="relative px-5 py-5 sm:px-6 sm:py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4 sm:gap-6">
                   <div className="space-y-2">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Assinaturas</p>
                     <h2 className="text-2xl md:text-3xl font-semibold text-white">Gerencie tudo em um só lugar</h2>
@@ -301,8 +301,8 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 </Card>
               </section>
 
-              <div className="flex flex-col items-center mb-8 gap-4 w-full">
-                <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4">
+              <div className="flex flex-col items-center mb-6 sm:mb-8 gap-4 sm:gap-5 w-full">
+                <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-5">
                   <Tabs
                     value={activeTab}
                     onValueChange={(value) => setActiveTab(value as 'all' | 'mine' | 'shared')}
@@ -338,7 +338,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                   </div>
                 </div>
 
-                <div className="w-full flex flex-col lg:flex-row items-center gap-4">
+                <div className="w-full flex flex-col lg:flex-row items-center gap-4 sm:gap-5">
                   <div className="relative w-full">
                     <Search className="h-5 w-5 text-zinc-500 absolute left-5 top-1/2 -translate-y-1/2" />
                     <Input
@@ -348,7 +348,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       className="pl-14 py-5 text-lg bg-zinc-900/80 border-zinc-800 text-zinc-100 rounded-2xl w-full shadow-md"
                     />
                   </div>
-                  <div className="flex w-full lg:w-auto gap-3">
+                  <div className="flex w-full lg:w-auto gap-3 sm:gap-4">
                     <select
                       value={categoryFilter}
                       onChange={(event) => setCategoryFilter(event.target.value)}
@@ -396,7 +396,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
               )}
 
               {isFetchingSubscriptions && allSubscriptions.length === 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
                   {Array.from({ length: 6 }).map((_, idx) => (
                     <Card
                       key={`skeleton-${idx}`}
