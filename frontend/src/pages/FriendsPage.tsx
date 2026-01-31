@@ -194,10 +194,9 @@ export default function FriendsPage() {
             <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 relative">
               <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8">
                 <div className="space-y-2">
-                  <h1 className="text-3xl md:text-4xl font-semibold">
-                    Oi{currentUser?.name ? `, ${currentUser.name.split(' ')[0]}` : ''}!
+                  <h1 className="text-3xl md:text-4xl font-semibold text-white">
+                    Amigos
                   </h1>
-                  <p className="text-zinc-500">Construa seu círculo e compartilhe assinaturas.</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   <div className="hidden lg:block">
@@ -211,7 +210,7 @@ export default function FriendsPage() {
                 <div className="relative px-6 py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="space-y-2">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Rede</p>
-                    <h2 className="text-2xl md:text-3xl font-semibold">Gerencie suas conexões</h2>
+                    <h2 className="text-2xl md:text-3xl font-semibold text-white">Gerencie suas conexões</h2>
                     <p className="text-sm text-zinc-400 max-w-lg">
                       Aceite convites, organize contatos e compartilhe serviços com segurança.
                     </p>

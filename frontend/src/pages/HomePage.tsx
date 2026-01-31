@@ -217,10 +217,9 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
             <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 relative">
               <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8">
                 <div className="space-y-2">
-                  <h1 className="text-3xl md:text-4xl font-semibold">
-                    Oi{currentUser?.name ? `, ${currentUser.name.split(' ')[0]}` : ''}!
+                  <h1 className="text-3xl md:text-4xl font-semibold text-white">
+                    Assinaturas
                   </h1>
-                  <p className="text-zinc-500">Aqui estão suas assinaturas</p>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   {/* <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">Total: {subscriptions.length}</Badge> */}
@@ -235,7 +234,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 <div className="relative px-6 py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="space-y-2">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Assinaturas</p>
-                    <h2 className="text-2xl md:text-3xl font-semibold">Gerencie tudo em um só lugar</h2>
+                    <h2 className="text-2xl md:text-3xl font-semibold text-white">Gerencie tudo em um só lugar</h2>
                     <p className="text-sm text-zinc-400 max-w-lg">
                       Organize seus planos, acompanhe gastos e compartilhe serviços com facilidade.
                     </p>

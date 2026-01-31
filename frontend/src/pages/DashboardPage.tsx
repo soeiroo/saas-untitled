@@ -97,10 +97,11 @@ export default function DashboardPage() {
             <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 relative">
               <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8">
                 <div className="space-y-2">
-                  <h1 className="text-3xl md:text-4xl font-semibold">
+                  <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">Bem-vindo</p>
+                  <h1 className="text-3xl md:text-4xl font-semibold text-white">
                     Olá{currentUser?.name ? `, ${currentUser.name.split(' ')[0]}` : ''}!
+                    <span className="block text-base font-normal text-emerald-300/80 mt-1">Tudo pronto para hoje</span>
                   </h1>
-                  <p className="text-zinc-500">Resumo inteligente do seu SaaS em um só lugar.</p>
                 </div>
                 <div className="hidden lg:block">
                   <LogoutButton floating={false} className="relative" />
@@ -112,7 +113,7 @@ export default function DashboardPage() {
                 <div className="relative px-6 py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="space-y-2">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Visão geral</p>
-                    <h2 className="text-2xl md:text-3xl font-semibold">Seu painel está em dia</h2>
+                    <h2 className="text-2xl md:text-3xl font-semibold text-white">Seu painel está em dia</h2>
                     <p className="text-sm text-zinc-400 max-w-lg">
                       Acompanhe gastos, renovações e relações em um layout limpo e com foco no essencial.
                     </p>
