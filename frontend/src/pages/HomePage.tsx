@@ -14,8 +14,6 @@ import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
-import { getCurrentUser } from '@/api/user';
-import type { User } from '@/types/user';
 
 type HomePageProps = {
   activePage?: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
@@ -36,18 +34,12 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   const [activeTab, setActiveTab] = useState<'all' | 'mine' | 'shared'>('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState<'renewal-asc' | 'price-desc' | 'price-asc' | 'name-asc'>('renewal-asc');
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
 
   useEffect(() => {
     async function fetchSubs() {
       setIsFetchingSubscriptions(true);
       setError('');
       try {
-        try {
-          const me = await getCurrentUser();
-          setCurrentUser(me);
-        } catch {
-        }
         const [subs, sharedSubs] = await Promise.all([
           getSubscriptions(),
           getSharedSubscriptions(),

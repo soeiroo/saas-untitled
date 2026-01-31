@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Users, Search, Sparkles, Loader2 } from 'lucide-react';
-import { toast } from '@/components/ui/sonner';
+import { toast } from 'sonner';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Friend, FriendRequest } from '@/types/friend';
 import type { Subscription } from '@/types/subscription';
