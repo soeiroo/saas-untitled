@@ -24,8 +24,8 @@ export default function AuthGuard({
     if (!requireAuth && pathname === '/') {
       if (token) {
         router.replace(redirectAuthenticatedTo);
-      } else {
-        router.replace(redirectUnauthenticatedTo);
+        } else {
+          setIsChecking(false);
       }
       return;
     }
