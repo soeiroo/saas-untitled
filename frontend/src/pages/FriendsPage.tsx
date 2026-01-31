@@ -10,6 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Users, Search, Sparkles, Loader2 } from 'lucide-react';
+import { toast } from '@/components/ui/sonner';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Friend, FriendRequest } from '@/types/friend';
 import type { Subscription } from '@/types/subscription';
@@ -155,6 +156,7 @@ export default function FriendsPage() {
     setActionError('');
     try {
       await shareSubscriptionWithFriend(selectedSubscriptionId, actionFriend.id, parsedPrice);
+      toast.success('Assinatura compartilhada com sucesso.');
       setActionSuccess('Assinatura compartilhada com sucesso.');
       setActionFriend(null);
       setSharePrice('');
