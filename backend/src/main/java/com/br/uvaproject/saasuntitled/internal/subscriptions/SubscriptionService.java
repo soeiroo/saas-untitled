@@ -45,17 +45,16 @@ public class SubscriptionService {
     @Transactional(readOnly = true)
     public List<SubscriptionResponseDTO> findSharedWithMe(User user) {
         return subscriptionFriendRepository
-            .findByFriendId(user.getId())
-            .stream()
-            .map(sf -> SubscriptionMapper.toResponse(sf.getSubscription(), sf.getPrice()))
-            .toList();
+                .findByFriendId(user.getId())
+                .stream()
+                .map(sf -> SubscriptionMapper.toResponse(sf.getSubscription(), sf.getPrice()))
+                .toList();
     }
 
     public SubscriptionResponseDTO update(
             User user,
             UUID subscriptionId,
-            SubscriptionUpdateDTO dto
-    ) {
+            SubscriptionUpdateDTO dto) {
         Subscription subscription = subscriptionRepository.findById(subscriptionId)
                 .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
 
@@ -71,7 +70,6 @@ public class SubscriptionService {
 
         return SubscriptionMapper.toResponse(updated);
     }
-
 
     public void delete(User user, UUID subscriptionId) {
 

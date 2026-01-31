@@ -6,16 +6,16 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record SubscriptionResponseDTO(
-        UUID id,
-        UUID userId,
-        String name,
-        BigDecimal price,
-        BigDecimal sharedPrice,
-        LocalDate renewalDate,
-        String category,
-        String plan,
-        String period,
-        String icon,
-        LocalDate createdAt,
-        LocalDateTime updatedAt
-) {}
+                UUID id,
+                UUID userId,
+                String name,
+                BigDecimal price,
+                BigDecimal sharedPrice,
+                LocalDate renewalDate,
+                String category,
+                String plan,
+                String period,
+                String icon,
+                LocalDate createdAt,
+                LocalDateTime updatedAt) {
+}

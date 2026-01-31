@@ -10,8 +10,7 @@ public interface SubscriptionFriendRepository extends JpaRepository<Subscription
 
     Optional<SubscriptionFriend> findBySubscriptionIdAndFriendId(
             UUID subscriptionId,
-            UUID friendId
-    );
+            UUID friendId);
 
     List<SubscriptionFriend> findBySubscriptionId(UUID subscriptionId);
 
