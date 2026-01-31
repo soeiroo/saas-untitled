@@ -4,6 +4,7 @@ import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCre
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.mapper.SubscriptionMapper;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.friends.SubscriptionFriendRepository;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ import java.util.UUID;
 public class SubscriptionService {
 
     private final SubscriptionRepository subscriptionRepository;
+    private final SubscriptionFriendRepository subscriptionFriendRepository;
 
     public SubscriptionResponseDTO create(User user, SubscriptionCreateDTO dto) {
 
@@ -42,11 +44,11 @@ public class SubscriptionService {
 
     @Transactional(readOnly = true)
     public List<SubscriptionResponseDTO> findSharedWithMe(User user) {
-        return subscriptionRepository
-                .findSubscriptionsWhereUserIsFriend(user.getId())
-                .stream()
-                .map(SubscriptionMapper::toResponse)
-                .toList();
+        return subscriptionFriendRepository
+            .findByFriendId(user.getId())
+            .stream()
+            .map(sf -> SubscriptionMapper.toResponse(sf.getSubscription(), sf.getPrice()))
+            .toList();
     }
 
     public SubscriptionResponseDTO update(

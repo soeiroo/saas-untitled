@@ -10,6 +10,7 @@ public record SubscriptionResponseDTO(
         UUID userId,
         String name,
         BigDecimal price,
+        BigDecimal sharedPrice,
         LocalDate renewalDate,
         String category,
         String plan,

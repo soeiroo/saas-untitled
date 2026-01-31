@@ -3,6 +3,7 @@ export interface Subscription {
   userId: string;
   name: string;
   price: number;
+  sharedPrice?: number | null;
   renewalDate: string;
   category: string;
   plan: string;

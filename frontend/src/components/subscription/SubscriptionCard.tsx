@@ -88,13 +88,35 @@ export function SubscriptionCard({ subscription, onDelete, onEdit, isShared = fa
       </div>
 
       <div className="space-y-2">
-        <div className="flex items-center gap-2 text-zinc-400">
-          <DollarSign className="h-4 w-4" />
-          <span className="text-2xl text-white">
-            R$ {subscription.price.toFixed(2).replace('.', ',')}
-          </span>
-          <span className="text-sm">/mês</span>
-        </div>
+        {isShared ? (
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2 text-zinc-400">
+              <DollarSign className="h-4 w-4" />
+              <span className="text-sm">Total:</span>
+              <span className="text-lg text-white font-semibold">
+                R$ {subscription.price.toFixed(2).replace('.', ',')}
+              </span>
+              <span className="text-xs">/mês</span>
+            </div>
+            <div className="flex items-center gap-2 text-emerald-300">
+              <span className="text-sm">Você paga:</span>
+              <span className="text-xl text-white font-semibold">
+                {subscription.sharedPrice != null
+                  ? `R$ ${Number(subscription.sharedPrice).toFixed(2).replace('.', ',')}`
+                  : '—'}
+              </span>
+              <span className="text-xs">/mês</span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 text-zinc-400">
+            <DollarSign className="h-4 w-4" />
+            <span className="text-2xl text-white">
+              R$ {subscription.price.toFixed(2).replace('.', ',')}
+            </span>
+            <span className="text-sm">/mês</span>
+          </div>
+        )}
 
         <div className="flex items-center gap-2 text-zinc-400">
           <Calendar className="h-4 w-4" />

@@ -14,4 +14,6 @@ public interface SubscriptionFriendRepository extends JpaRepository<Subscription
     );
 
     List<SubscriptionFriend> findBySubscriptionId(UUID subscriptionId);
+
+    List<SubscriptionFriend> findByFriendId(UUID friendId);
 }

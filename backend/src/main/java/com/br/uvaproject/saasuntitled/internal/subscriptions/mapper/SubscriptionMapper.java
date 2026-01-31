@@ -13,6 +13,24 @@ public class SubscriptionMapper {
                 sub.getUser().getId(),
                 sub.getName(),
                 sub.getPrice(),
+                null,
+                sub.getRenewalDate(),
+                sub.getCategory(),
+                sub.getPlan(),
+                sub.getPeriod(),
+                sub.getIcon(),
+                sub.getCreatedAt(),
+                sub.getUpdatedAt()
+        );
+    }
+
+    public static SubscriptionResponseDTO toResponse(Subscription sub, java.math.BigDecimal sharedPrice) {
+        return new SubscriptionResponseDTO(
+                sub.getId(),
+                sub.getUser().getId(),
+                sub.getName(),
+                sub.getPrice(),
+                sharedPrice,
                 sub.getRenewalDate(),
                 sub.getCategory(),
                 sub.getPlan(),
