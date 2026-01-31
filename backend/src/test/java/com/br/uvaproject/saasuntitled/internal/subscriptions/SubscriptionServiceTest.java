@@ -3,6 +3,8 @@ package com.br.uvaproject.saasuntitled.internal.subscriptions;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionCreateDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionResponseDTO;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpdateDTO;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.friends.SubscriptionFriend;
+import com.br.uvaproject.saasuntitled.internal.subscriptions.friends.SubscriptionFriendRepository;
 import com.br.uvaproject.saasuntitled.internal.users.User;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
@@ -20,6 +22,7 @@ import static org.mockito.Mockito.*;
 class SubscriptionServiceTest {
 
     private SubscriptionRepository subscriptionRepository;
+    private SubscriptionFriendRepository subscriptionFriendRepository;
     private SubscriptionService subscriptionService;
 
     private User user;
@@ -27,7 +30,8 @@ class SubscriptionServiceTest {
     @BeforeEach
     void setUp() {
         subscriptionRepository = mock(SubscriptionRepository.class);
-        subscriptionService = new SubscriptionService(subscriptionRepository);
+        subscriptionFriendRepository = mock(SubscriptionFriendRepository.class);
+        subscriptionService = new SubscriptionService(subscriptionRepository, subscriptionFriendRepository);
 
         user = new User();
         user.setId(UUID.randomUUID());
@@ -107,8 +111,16 @@ class SubscriptionServiceTest {
         s2.setName("Spotify");
         s2.setUser(new User());
 
-        when(subscriptionRepository.findSubscriptionsWhereUserIsFriend(user.getId()))
-                .thenReturn(List.of(s1, s2));
+        SubscriptionFriend sf1 = new SubscriptionFriend();
+        sf1.setSubscription(s1);
+        sf1.setPrice(new BigDecimal("10.00"));
+
+        SubscriptionFriend sf2 = new SubscriptionFriend();
+        sf2.setSubscription(s2);
+        sf2.setPrice(new BigDecimal("15.00"));
+
+        when(subscriptionFriendRepository.findByFriendId(user.getId()))
+                .thenReturn(List.of(sf1, sf2));
 
         List<SubscriptionResponseDTO> result =
                 subscriptionService.findSharedWithMe(user);
@@ -118,9 +130,10 @@ class SubscriptionServiceTest {
         assertEquals("Netflix", result.get(0).name());
         assertEquals("Spotify", result.get(1).name());
 
-        verify(subscriptionRepository)
-            .findSubscriptionsWhereUserIsFriend(user.getId());
+        verify(subscriptionFriendRepository)
+                .findByFriendId(user.getId());
     }
+
 
     @Test
     void updateSubscription_Success() {
