@@ -10,7 +10,8 @@ public class FriendMapper {
                 uf.getId(),
                 uf.getUser().getId(),
                 uf.getUser().getName(),
-                uf.getUser().getEmail()
+                uf.getUser().getEmail(),
+                uf.getUser().getProfilePicture()
         );
     }
 
@@ -19,7 +20,8 @@ public class FriendMapper {
                 uf.getId(),
                 uf.getFriend().getId(),
                 uf.getFriend().getName(),
-                uf.getFriend().getEmail()
+                uf.getFriend().getEmail(),
+                uf.getFriend().getProfilePicture()
         );
     }
 }

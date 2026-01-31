@@ -6,5 +6,6 @@ public record FriendRequestDTO(
         UUID requestId,
         UUID userId,
         String name,
-        String email
+        String email,
+        String profilePicture
 ) {}

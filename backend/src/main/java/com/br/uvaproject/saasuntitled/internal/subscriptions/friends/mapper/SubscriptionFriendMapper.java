@@ -10,6 +10,7 @@ public class SubscriptionFriendMapper {
                 sf.getFriend().getId(),
                 sf.getFriend().getName(),
                 sf.getFriend().getEmail(),
+                sf.getFriend().getProfilePicture(),
                 sf.getPrice()
         );
     }

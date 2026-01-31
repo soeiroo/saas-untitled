@@ -85,7 +85,7 @@ public class FriendService {
                     User friend = uf.getUser().getId().equals(user.getId())
                             ? uf.getFriend()
                             : uf.getUser();
-                    return new UserSearchResponseDTO(friend.getId(), friend.getName(), friend.getEmail());
+                    return new UserSearchResponseDTO(friend.getId(), friend.getName(), friend.getEmail(), friend.getProfilePicture());
                 })
                 .collect(Collectors.toList());
     }

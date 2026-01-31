@@ -89,6 +89,10 @@ public class UserService {
             user.setName(dto.name());
         }
 
+        if (dto.profilePicture() != null) {
+            user.setProfilePicture(dto.profilePicture());
+        }
+
         if (dto.password() != null) {
             if (dto.password().isBlank()) {
                 throw new IllegalArgumentException("A senha não pode estar vazia");
