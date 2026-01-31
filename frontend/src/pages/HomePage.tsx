@@ -308,7 +308,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     onValueChange={(value) => setActiveTab(value as 'all' | 'mine' | 'shared')}
                     className="w-full lg:w-auto"
                   >
-                    <TabsList className="bg-zinc-900/80 border border-zinc-800 w-full flex-wrap sm:flex-nowrap">
+                    <TabsList className="bg-zinc-900/80 border border-zinc-800 w-full flex-wrap sm:flex-nowrap gap-2 sm:gap-0">
                       <TabsTrigger value="all" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]">
                         Todas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
@@ -330,8 +330,8 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     </TabsList>
                   </Tabs>
 
-                  <div className="flex items-center gap-3">
-                    <div className="rounded-xl px-3 py-2 text-xs text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
+                  <div className="flex items-center gap-3 mt-2 sm:mt-0">
+                    <div className="rounded-xl px-3 py-2 text-xs sm:text-sm text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
                       <Sparkles className="h-4 w-4 text-purple-400" />
                       Insights atualizados hoje
                     </div>
