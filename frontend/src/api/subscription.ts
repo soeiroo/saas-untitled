@@ -76,3 +76,22 @@ export async function deleteSubscription(id: string): Promise<void> {
   });
   if (!response.ok) throw new Error('Erro ao deletar assinatura');
 }
+
+export async function shareSubscriptionWithFriend(
+  subscriptionId: string,
+  friendId: string,
+  price?: number,
+): Promise<void> {
+  const token = getAuthToken();
+  const hasPrice = typeof price === 'number' && !Number.isNaN(price);
+  const response = await fetch(`${API_URL}/api/subscriptions/${subscriptionId}/friends/${friendId}`, {
+    method: 'POST',
+    credentials: 'include',
+    headers: {
+      ...(hasPrice ? { 'Content-Type': 'application/json' } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    ...(hasPrice ? { body: JSON.stringify({ price }) } : {}),
+  });
+  if (!response.ok) throw new Error('Erro ao compartilhar assinatura');
+}

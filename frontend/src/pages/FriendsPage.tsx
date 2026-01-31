@@ -2,14 +2,17 @@
 
 import { useState, useEffect } from 'react';
 import { getFriends, getFriendRequests, acceptFriendRequest, deleteFriend } from '@/api/friend';
+import { getSubscriptions, shareSubscriptionWithFriend } from '@/api/subscription';
 import { AddFriendDialog } from '@/components/friend/AddFriendDialog';
 import { FriendCard } from '@/components/friend/FriendCard';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Users, Search, Sparkles, Loader2 } from 'lucide-react';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Friend, FriendRequest } from '@/types/friend';
+import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { getCurrentUser } from '@/api/user';
@@ -18,12 +21,19 @@ import type { User } from '@/types/user';
 export default function FriendsPage() {
   const [friends, setFriends] = useState<Friend[]>([]);
   const [requests, setRequests] = useState<FriendRequest[]>([]);
+  const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isFetchingFriends, setIsFetchingFriends] = useState(false);
 //   const [isMutatingFriends, setIsMutatingFriends] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
   const [currentUser, setCurrentUser] = useState<User | null>(null);
+  const [actionFriend, setActionFriend] = useState<Friend | null>(null);
+  const [selectedSubscriptionId, setSelectedSubscriptionId] = useState('');
+  const [sharePrice, setSharePrice] = useState('');
+  const [isSharing, setIsSharing] = useState(false);
+  const [actionError, setActionError] = useState('');
+  const [actionSuccess, setActionSuccess] = useState('');
 
   useEffect(() => {
     async function fetchFriends() {
@@ -35,12 +45,14 @@ export default function FriendsPage() {
           setCurrentUser(me);
         } catch {
         }
-        const [friendsList, pendingRequests] = await Promise.all([
+        const [friendsList, pendingRequests, mySubscriptions] = await Promise.all([
           getFriends(),
           getFriendRequests(),
+          getSubscriptions(),
         ]);
         setFriends(friendsList);
         setRequests(pendingRequests);
+        setSubscriptions(mySubscriptions);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -56,14 +68,22 @@ export default function FriendsPage() {
     fetchFriends();
   }, []);
 
+  useEffect(() => {
+    if (actionFriend && !selectedSubscriptionId && subscriptions.length > 0) {
+      setSelectedSubscriptionId(subscriptions[0].id);
+    }
+  }, [actionFriend, selectedSubscriptionId, subscriptions]);
+
   const refreshFriends = async () => {
     try {
-      const [friendsList, pendingRequests] = await Promise.all([
+      const [friendsList, pendingRequests, mySubscriptions] = await Promise.all([
         getFriends(),
         getFriendRequests(),
+        getSubscriptions(),
       ]);
       setFriends(friendsList);
       setRequests(pendingRequests);
+      setSubscriptions(mySubscriptions);
     } catch {
     }
   };
@@ -109,10 +129,50 @@ export default function FriendsPage() {
   };
 
   const handleSecondaryAction = (friend: Friend) => {
-    console.log('Ação secundária para:', friend);
+    setActionFriend(friend);
+    setActionError('');
+    setActionSuccess('');
+    if (!selectedSubscriptionId && subscriptions.length > 0) {
+      setSelectedSubscriptionId(subscriptions[0].id);
+    }
   };
 
-  const filteredFriends = friends.filter(friend => {
+  const handleShareSubscription = async () => {
+    if (!actionFriend) return;
+    if (!selectedSubscriptionId) {
+      setActionError('Selecione uma assinatura para compartilhar.');
+      return;
+    }
+
+    const trimmed = sharePrice.trim();
+    const parsedPrice = trimmed ? Number(trimmed.replace(',', '.')) : undefined;
+    if (trimmed && (parsedPrice === undefined || Number.isNaN(parsedPrice))) {
+      setActionError('Informe um valor válido para a mensalidade compartilhada.');
+      return;
+    }
+
+    setIsSharing(true);
+    setActionError('');
+    try {
+      await shareSubscriptionWithFriend(selectedSubscriptionId, actionFriend.id, parsedPrice);
+      setActionSuccess('Assinatura compartilhada com sucesso.');
+      setActionFriend(null);
+      setSharePrice('');
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setActionError(err.message);
+      } else {
+        setActionError('Erro ao compartilhar assinatura.');
+      }
+    } finally {
+      setIsSharing(false);
+    }
+  };
+
+  const pendingFriendIds = new Set(requests.map(request => request.userId));
+  const visibleFriends = friends.filter(friend => !pendingFriendIds.has(friend.id));
+
+  const filteredFriends = visibleFriends.filter(friend => {
     const query = searchQuery.trim().toLowerCase();
     if (!query) return true;
     return (
@@ -254,10 +314,10 @@ export default function FriendsPage() {
               ) : filteredFriends.length === 0 ? (
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
                   <p className="text-zinc-400 text-lg mb-2">
-                    {friends.length === 0 ? 'Nenhum amigo adicionado' : 'Nenhum resultado encontrado'}
+                    {visibleFriends.length === 0 ? 'Nenhum amigo adicionado' : 'Nenhum resultado encontrado'}
                   </p>
                   <p className="text-zinc-500">
-                    {friends.length === 0
+                    {visibleFriends.length === 0
                       ? 'Clique em "Novo Amigo" para começar'
                       : 'Tente outro termo de busca'}
                   </p>
@@ -278,6 +338,83 @@ export default function FriendsPage() {
           </main>
         </div>
       </div>
+
+      <Dialog
+        open={!!actionFriend}
+        onOpenChange={(open) => {
+          if (!open) {
+            setActionFriend(null);
+            setActionError('');
+            setActionSuccess('');
+            setSharePrice('');
+            setSelectedSubscriptionId('');
+          }
+        }}
+      >
+        <DialogContent className="bg-zinc-900 border-zinc-800 text-white">
+          <DialogHeader>
+            <DialogTitle className="text-xl">Ações com amigo</DialogTitle>
+            <DialogDescription className="text-zinc-400">
+              Compartilhe uma assinatura com {actionFriend?.name}.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div className="space-y-2">
+              <label className="text-sm text-zinc-300">Assinatura</label>
+              <select
+                value={selectedSubscriptionId}
+                onChange={(e) => setSelectedSubscriptionId(e.target.value)}
+                className="w-full bg-zinc-800 border border-zinc-700 text-white rounded px-3 py-2"
+              >
+                <option value="" disabled>
+                  {subscriptions.length === 0 ? 'Nenhuma assinatura disponível' : 'Selecione uma assinatura'}
+                </option>
+                {subscriptions.map((sub) => (
+                  <option key={sub.id} value={sub.id}>
+                    {sub.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="space-y-2">
+              <label className="text-sm text-zinc-300">Valor (opcional)</label>
+              <Input
+                value={sharePrice}
+                onChange={(e) => setSharePrice(e.target.value)}
+                placeholder="Ex: 19,90"
+                className="bg-zinc-800 border-zinc-700 text-white"
+              />
+            </div>
+
+            {actionError && (
+              <p className="text-sm text-red-400">{actionError}</p>
+            )}
+            {actionSuccess && (
+              <p className="text-sm text-emerald-400">{actionSuccess}</p>
+            )}
+          </div>
+
+          <DialogFooter>
+            <button
+              type="button"
+              onClick={() => setActionFriend(null)}
+              className="flex-1 bg-zinc-800 border border-zinc-700 text-zinc-300 hover:bg-zinc-700 rounded-md px-4 py-2"
+            >
+              Cancelar
+            </button>
+            <button
+              type="button"
+              onClick={handleShareSubscription}
+              disabled={isSharing || subscriptions.length === 0}
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-md px-4 py-2 disabled:opacity-60"
+            >
+              {isSharing ? 'Compartilhando...' : 'Compartilhar'}
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }
