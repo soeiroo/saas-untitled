@@ -294,19 +294,19 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     className="w-full lg:w-auto"
                   >
                     <TabsList className="bg-zinc-900/80 border border-zinc-800">
-                      <TabsTrigger value="all" className="text-zinc-200">
+                      <TabsTrigger value="all" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900">
                         Todas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
                           {allSubscriptions.length}
                         </span>
                       </TabsTrigger>
-                      <TabsTrigger value="mine" className="text-zinc-200">
+                      <TabsTrigger value="mine" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900">
                         Minhas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
                           {mySubscriptions.length}
                         </span>
                       </TabsTrigger>
-                      <TabsTrigger value="shared" className="text-zinc-200">
+                      <TabsTrigger value="shared" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900">
                         Compartilhadas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
                           {sharedSubscriptions.length}
