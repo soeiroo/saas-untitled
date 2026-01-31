@@ -214,8 +214,8 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
 
           <main className="flex-1 lg:pl-6">
             <MobileAppMenu title="Assinaturas Pro" />
-            <div className="max-w-6xl mx-auto px-4 lg:px-6 py-8 relative">
-              <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-10">
+            <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 relative">
+              <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8">
                 <div className="space-y-2">
                   <h1 className="text-3xl md:text-4xl font-semibold">
                     Oi{currentUser?.name ? `, ${currentUser.name.split(' ')[0]}` : ''}!
@@ -229,6 +229,22 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                   </div>
                 </div>
               </header>
+
+              <Card className="relative overflow-hidden mb-8 bg-zinc-900/70 border-zinc-800">
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_45%),radial-gradient(circle_at_85%_10%,_rgba(139,92,246,0.14),_transparent_40%)]" />
+                <div className="relative px-6 py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                  <div className="space-y-2">
+                    <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Assinaturas</p>
+                    <h2 className="text-2xl md:text-3xl font-semibold">Gerencie tudo em um só lugar</h2>
+                    <p className="text-sm text-zinc-400 max-w-lg">
+                      Organize seus planos, acompanhe gastos e compartilhe serviços com facilidade.
+                    </p>
+                  </div>
+                  <div className="flex flex-wrap gap-3">
+                    <AddSubscriptionDialog onAdd={handleAddSubscription} />
+                  </div>
+                </div>
+              </Card>
 
               {error && (
                 <Alert variant="destructive" className="mb-6">
