@@ -216,7 +216,7 @@ export default function DashboardPage() {
                       {recentRenewals.map((sub) => (
                         <div
                           key={sub.id}
-                          className="flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3"
+                          className="flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3 transition-colors hover:bg-zinc-800/60 hover:border-zinc-700"
                         >
                           <div>
                             <p className="text-sm font-medium text-white">{sub.name}</p>

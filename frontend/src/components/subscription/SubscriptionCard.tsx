@@ -23,7 +23,7 @@ export function SubscriptionCard({ subscription, onDelete, onEdit, isShared = fa
   const icon = subscriptionIcons.find(i => i.name === subscription.icon) || subscriptionIcons[0];
 
   return (
-    <Card className="bg-zinc-900 border-zinc-800 p-4 hover:border-zinc-700 transition-colors">
+    <Card className="bg-zinc-900 border-zinc-800 p-4 hover:border-zinc-700 transition-all duration-300 hover:-translate-y-1">
       <div className="flex items-start justify-between mb-3">
         <div className="flex-1 flex items-center gap-3">
           <span
