@@ -65,6 +65,15 @@ public class FriendService {
     }
 
     @Transactional(readOnly = true)
+    public List<FriendRequestDTO> listSentPendingRequests(User user) {
+        return userFriendRepository
+                .findByUserIdAndStatus(user.getId(), FriendStatus.PENDING)
+                .stream()
+                .map(FriendMapper::toSentRequestDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
     public List<UserSearchResponseDTO> listFriends(User user) {
         return userFriendRepository.findByStatusAndUserIdOrFriendId(
                         FriendStatus.ACCEPTED,

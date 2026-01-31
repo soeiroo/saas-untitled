@@ -13,4 +13,13 @@ public class FriendMapper {
                 uf.getUser().getEmail()
         );
     }
+
+    public static FriendRequestDTO toSentRequestDTO(UserFriend uf) {
+        return new FriendRequestDTO(
+                uf.getId(),
+                uf.getFriend().getId(),
+                uf.getFriend().getName(),
+                uf.getFriend().getEmail()
+        );
+    }
 }
