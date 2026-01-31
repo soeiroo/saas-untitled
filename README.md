@@ -21,4 +21,9 @@ This will run frontend and backend as well.
 
 ## Preview
 
-<img width="1920" height="1080" alt="Screenshot_27-janv _13-12-10_firefox" src="https://github.com/user-attachments/assets/4d6bbd81-c3a4-4e12-8304-e485067f783b" />
+### Landpage
+<img width="1908" height="1025" alt="Screenshot_31-janv _19-46-05_google-chrome" src="https://github.com/user-attachments/assets/b5304791-80f2-4c1d-b1c2-63cfc7d81203" /><br>
+
+### Dashboard
+<img width="1908" height="1025" alt="Screenshot_31-janv _19-52-22_google-chrome" src="https://github.com/user-attachments/assets/54cd8dc8-6b46-4352-a523-af4a445de235" />
+
