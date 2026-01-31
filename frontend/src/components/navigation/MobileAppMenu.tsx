@@ -49,7 +49,7 @@ export default function MobileAppMenu({
 
   return (
     <div className="lg:hidden sticky top-0 z-50 border-b border-zinc-800/70 bg-zinc-950/70 backdrop-blur">
-      <div className="flex items-center justify-between px-4 py-3">
+      <div className="flex items-center justify-between px-4 py-3 min-w-0">
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
             <Button
@@ -62,13 +62,13 @@ export default function MobileAppMenu({
             </Button>
           </SheetTrigger>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 min-w-0">
             <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
               <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
             </div>
-            <div className="leading-tight">
+            <div className="leading-tight min-w-0">
               <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Menu</p>
-              <p className="text-sm font-semibold text-white">{title}</p>
+              <p className="text-sm font-semibold text-white truncate">{title}</p>
             </div>
           </div>
 

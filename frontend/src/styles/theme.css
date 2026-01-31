@@ -136,6 +136,7 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    overflow-x: hidden;
   }
   /**
   * Default typography styles for HTML elements (h1-h4, p, label, button, input).
