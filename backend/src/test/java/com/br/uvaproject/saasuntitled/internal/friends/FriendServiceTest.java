@@ -138,6 +138,26 @@ class FriendServiceTest {
     }
 
     @Test
+    void listSentPendingRequests_ReturnsDTOs() {
+        UserFriend uf = new UserFriend();
+        uf.setId(UUID.randomUUID());
+        uf.setUser(user);
+        uf.setFriend(friend);
+        uf.setStatus(FriendStatus.PENDING);
+
+        when(userFriendRepository.findByUserIdAndStatus(user.getId(), FriendStatus.PENDING))
+                .thenReturn(List.of(uf));
+
+        List<FriendRequestDTO> requests = friendService.listSentPendingRequests(user);
+
+        assertEquals(1, requests.size());
+        assertEquals(friend.getId(), requests.get(0).userId());
+        assertEquals(friend.getName(), requests.get(0).name());
+        assertEquals(friend.getEmail(), requests.get(0).email());
+    }
+
+
+    @Test
     void listFriends_ReturnsDTOs() {
         UserFriend uf = new UserFriend();
         uf.setId(UUID.randomUUID());

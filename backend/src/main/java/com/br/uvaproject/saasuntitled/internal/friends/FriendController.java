@@ -49,6 +49,16 @@ public class FriendController {
         return ResponseEntity.ok(requests);
     }
 
+    @GetMapping("/requests/sent")
+    public ResponseEntity<List<FriendRequestDTO>> listSentPendingRequests(
+            Authentication authentication
+    ) {
+        User user = authenticatedUserService.getUser(authentication);
+        List<FriendRequestDTO> requestsSent = friendService.listSentPendingRequests(user);
+        return ResponseEntity.ok(requestsSent);
+    }
+
+
     @GetMapping
     public ResponseEntity<List<UserSearchResponseDTO>> listFriends(
             Authentication authentication

@@ -126,6 +126,23 @@ class FriendControllerIntegrationTest {
     }
 
     @Test
+    void listSentPendingRequests_ShouldReturnDTOs() throws Exception {
+        UserFriend uf = new UserFriend();
+        uf.setUser(userA);
+        uf.setFriend(userB);
+        uf.setStatus(FriendStatus.PENDING);
+        userFriendRepository.save(uf);
+
+        mockMvc.perform(get("/api/friends/requests/sent")
+                        .with(user(userA.getEmail()).roles("USER")))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].userId").value(userB.getId().toString()))
+                .andExpect(jsonPath("$[0].name").value(userB.getName()))
+                .andExpect(jsonPath("$[0].email").value(userB.getEmail()));
+    }
+
+
+    @Test
     void listFriends_ShouldReturnAccepted() throws Exception {
         UserFriend uf = new UserFriend();
         uf.setUser(userA);
