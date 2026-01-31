@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { getSubscriptions, addSubscription, updateSubscription, deleteSubscription } from '@/api/subscription';
+import { getSubscriptions, getSharedSubscriptions, addSubscription, updateSubscription, deleteSubscription } from '@/api/subscription';
 import { AddSubscriptionDialog } from '@/components/subscription/AddSubscriptionDialog';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { EditSubscriptionDialog } from '@/components/subscription/EditSubscriptionDialog';
@@ -42,8 +42,13 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
           setCurrentUser(me);
         } catch {
         }
-        const subs = await getSubscriptions();
-        setSubscriptions(subs);
+        const [subs, sharedSubs] = await Promise.all([
+          getSubscriptions(),
+          getSharedSubscriptions(),
+        ]);
+        const merged = [...subs, ...sharedSubs];
+        const uniqueById = Array.from(new Map(merged.map(sub => [sub.id, sub])).values());
+        setSubscriptions(uniqueById);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);

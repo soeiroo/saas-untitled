@@ -21,6 +21,18 @@ export async function getSubscriptions(): Promise<Subscription[]> {
   return response.json();
 }
 
+export async function getSharedSubscriptions(): Promise<Subscription[]> {
+  const token = getAuthToken();
+  const response = await fetch(`${API_URL}/api/subscriptions/shared`, {
+    credentials: 'include',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!response.ok) throw new Error('Erro ao buscar assinaturas compartilhadas');
+  return response.json();
+}
+
 export async function addSubscription(data: Omit<Subscription, 'id' | 'userId'>): Promise<Subscription> {
   const token = getAuthToken();
   const response = await fetch(`${API_URL}/api/subscriptions`, {
