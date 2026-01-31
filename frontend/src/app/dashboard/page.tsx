@@ -1,6 +1,7 @@
 'use client';
 
-import HomePage from '@/pages/HomePage';
+import DashboardPage from '@/pages/DashboardPage';
+import AuthGuard from '@/utils/authGuard';
 import { useRouter } from 'next/dist/client/components/navigation';
 import { useEffect } from 'react';
 
@@ -9,7 +10,6 @@ export default function Page() {
   const router = useRouter();
   
   useEffect(() => {
-      // verificar se o usuário está autenticado
       const token = localStorage.getItem('authToken');
       
       if (!token) {
@@ -17,5 +17,9 @@ export default function Page() {
       }
   }, [router]);
         
-  return <HomePage />;
+    return (
+      <AuthGuard requireAuth>
+        <DashboardPage />
+      </AuthGuard>
+    );
 }

@@ -10,9 +10,9 @@ public interface SubscriptionRepository extends JpaRepository<Subscription, UUID
     List<Subscription> findByUserId(UUID userId);
 
     @Query("""
-        select sf.subscription
-        from SubscriptionFriend sf
-        where sf.friend.id = :userId
-    """)
+                select sf.subscription
+                from SubscriptionFriend sf
+                where sf.friend.id = :userId
+            """)
     List<Subscription> findSubscriptionsWhereUserIsFriend(UUID userId);
 }

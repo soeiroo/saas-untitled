@@ -1,21 +1,7 @@
-'use client';
-
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import AuthGuard from '@/utils/authGuard';
+import LandingPage from '@/components/landing/LandingPage';
 
 export default function Page() {
-    const router = useRouter();
+    return  <AuthGuard requireAuth={false}><LandingPage /></AuthGuard>;
 
-    useEffect(() => {
-        // verificar se o usuário está autenticado
-        const token = localStorage.getItem('authToken');
-        
-        if (token) {
-            router.replace('/dashboard');
-        } else {
-            router.replace('/login');
-        }
-    }, [router]);
-
-    return null;
 }

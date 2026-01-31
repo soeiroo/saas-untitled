@@ -4,8 +4,8 @@ const nextConfig: NextConfig = {
   async rewrites() {
     return [
       {
-        source: '/api/:path*',
-        destination: 'https://saas-untitled.onrender.com/api/:path*',
+        source: '/:path*',
+        destination: 'http://saas-untitled.onrender.com/:path*',      
       },
     ];
   },

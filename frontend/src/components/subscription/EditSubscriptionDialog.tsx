@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { subscriptionIcons } from '@/data/subscriptionIcons';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '../ui/dialog';
 import { Button } from '../ui/button';
 import { Input } from '../ui/input';
@@ -20,15 +21,24 @@ export function EditSubscriptionDialog({
   onClose, 
   onUpdate 
 }: EditSubscriptionDialogProps) {
-  // Use key to reset form when subscription changes, avoiding setState in effect
-  const formKey = subscription?.id || 'new';
-  
-  // Initialize state with current subscription values
-  // The key prop on the form will reset the component when subscription changes
-  const [name, setName] = useState(() => subscription?.name || '');
-  const [price, setPrice] = useState(() => subscription?.price.toString() || '');
-  const [renewalDate, setRenewalDate] = useState(() => subscription?.renewalDate || '');
-  const [category, setCategory] = useState(() => subscription?.category || '');
+
+  const [name, setName] = useState('');
+  const [price, setPrice] = useState('');
+  const [renewalDate, setRenewalDate] = useState('');
+  const [category, setCategory] = useState('');
+  const [icon, setIcon] = useState(subscriptionIcons[0].name);
+  const [plan, setPlan] = useState('');
+  const [period, setPeriod] = useState('Mensal');
+
+  useEffect(() => {
+    setName(subscription?.name || '');
+    setPrice(subscription?.price !== undefined ? subscription.price.toString() : '');
+    setRenewalDate(subscription?.renewalDate || '');
+    setCategory(subscription?.category || '');
+    setIcon(subscription?.icon || subscriptionIcons[0].name);
+    setPlan(subscription?.plan || '');
+    setPeriod(subscription?.period || 'Mensal');
+  }, [subscription, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,7 +48,10 @@ export function EditSubscriptionDialog({
         name,
         price: parseFloat(price),
         renewalDate,
-        category: category || 'Outros'
+        category: category || 'Outros',
+        icon,
+        plan,
+        period,
       });
       onClose();
     }
@@ -51,7 +64,7 @@ export function EditSubscriptionDialog({
           <DialogTitle className="text-white">Editar Assinatura</DialogTitle>
           <DialogDescription className="text-zinc-400">Atualize os detalhes da assinatura.</DialogDescription>
         </DialogHeader>
-        <form key={formKey} onSubmit={handleSubmit} className="space-y-4 mt-4">
+        <form onSubmit={handleSubmit} className="space-y-4 mt-4">
           <div className="space-y-2">
             <Label htmlFor="edit-name" className="text-zinc-300">Nome do Serviço</Label>
             <Input
@@ -93,6 +106,50 @@ export function EditSubscriptionDialog({
               onChange={(e) => setCategory(e.target.value)}
               className="bg-zinc-800 border-zinc-700 text-white"
             />
+          </div>          
+          <div className="space-y-2">
+            <Label htmlFor="edit-plan" className="text-zinc-300">Plano (Opcional)</Label>
+            <Input
+              id="edit-plan"
+              value={plan}
+              onChange={(e) => setPlan(e.target.value)}
+              placeholder="Premium, Padrão, etc."
+              className="bg-zinc-800 border-zinc-700 text-white placeholder:text-zinc-500"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="edit-period" className="text-zinc-300">Período</Label>
+            <select
+              id="edit-period"
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              className="bg-zinc-800 border-zinc-700 text-white rounded px-2 py-1 w-full"
+              required
+            >
+              <option value="Mensal">Mensal</option>
+              <option value="Anual">Anual</option>
+              <option value="Semanal">Semanal</option>
+              <option value="Outro">Outro</option>
+            </select>
+          </div>
+          <div className="space-y-2">
+            <Label className="text-zinc-300">Ícone</Label>
+            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto overflow-y-hidden">
+              {subscriptionIcons.map((i) => (
+                <button
+                  type="button"
+                  key={i.name}
+                  className={`border rounded p-1 bg-zinc-800 ${icon === i.name ? '' : ''}`}
+                  style={{ borderColor: icon === i.name ? i.color : '#27272a', boxShadow: icon === i.name ? `0 0 0 2px ${i.color}55` : 'none' }}
+                  onClick={() => setIcon(i.name)}
+                  aria-label={i.name}
+                >
+                  <span style={{ background: i.color + '22', borderRadius: '50%', display: 'inline-flex', width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}>
+                    <img src={i.url} alt={i.name} className="w-7 h-7 object-contain" />
+                  </span>
+                </button>
+              ))}
+            </div>
           </div>
           <div className="flex gap-2 pt-4">
             <Button type="submit" className="flex-1 bg-purple-600 hover:bg-purple-700">

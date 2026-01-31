@@ -13,14 +13,30 @@ public class SubscriptionMapper {
                 sub.getUser().getId(),
                 sub.getName(),
                 sub.getPrice(),
+                null,
                 sub.getRenewalDate(),
                 sub.getCategory(),
                 sub.getPlan(),
                 sub.getPeriod(),
                 sub.getIcon(),
                 sub.getCreatedAt(),
-                sub.getUpdatedAt()
-        );
+                sub.getUpdatedAt());
+    }
+
+    public static SubscriptionResponseDTO toResponse(Subscription sub, java.math.BigDecimal sharedPrice) {
+        return new SubscriptionResponseDTO(
+                sub.getId(),
+                sub.getUser().getId(),
+                sub.getName(),
+                sub.getPrice(),
+                sharedPrice,
+                sub.getRenewalDate(),
+                sub.getCategory(),
+                sub.getPlan(),
+                sub.getPeriod(),
+                sub.getIcon(),
+                sub.getCreatedAt(),
+                sub.getUpdatedAt());
     }
 
     public static Subscription fromCreateDTO(SubscriptionCreateDTO dto) {
@@ -35,15 +51,23 @@ public class SubscriptionMapper {
                 .createdAt(dto.createdAt())
                 .build();
     }
-    
+
     public static void updateEntityFromDTO(Subscription sub, SubscriptionUpdateDTO dto) {
-        if (dto.name() != null) sub.setName(dto.name());
-        if (dto.price() != null) sub.setPrice(dto.price());
-        if (dto.renewalDate() != null) sub.setRenewalDate(dto.renewalDate());
-        if (dto.category() != null) sub.setCategory(dto.category());
-        if (dto.plan() != null) sub.setPlan(dto.plan());
-        if (dto.period() != null) sub.setPeriod(dto.period());
-        if (dto.icon() != null) sub.setIcon(dto.icon());
-        if (dto.createdAt() != null) sub.setCreatedAt(dto.createdAt());
+        if (dto.name() != null)
+            sub.setName(dto.name());
+        if (dto.price() != null)
+            sub.setPrice(dto.price());
+        if (dto.renewalDate() != null)
+            sub.setRenewalDate(dto.renewalDate());
+        if (dto.category() != null)
+            sub.setCategory(dto.category());
+        if (dto.plan() != null)
+            sub.setPlan(dto.plan());
+        if (dto.period() != null)
+            sub.setPeriod(dto.period());
+        if (dto.icon() != null)
+            sub.setIcon(dto.icon());
+        if (dto.createdAt() != null)
+            sub.setCreatedAt(dto.createdAt());
     }
 }
