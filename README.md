@@ -25,5 +25,9 @@ This will run frontend and backend as well.
 <img width="1908" height="1025" alt="Screenshot_31-janv _19-46-05_google-chrome" src="https://github.com/user-attachments/assets/b5304791-80f2-4c1d-b1c2-63cfc7d81203" /><br>
 
 ### Dashboard
+<img width="1908" height="1025" alt="Screenshot_31-janv _19-54-50_google-chrome" src="https://github.com/user-attachments/assets/6206ecee-ac44-49ac-ae09-65e7d54ac4e3" />
+
+
+### Painel de Assinaturas
 <img width="1908" height="1025" alt="Screenshot_31-janv _19-52-22_google-chrome" src="https://github.com/user-attachments/assets/54cd8dc8-6b46-4352-a523-af4a445de235" />
 
