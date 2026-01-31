@@ -7,5 +7,6 @@ public record SubscriptionFriendResponseDTO(
         UUID id,
         String name,
         String email,
+        String profilePicture,
         BigDecimal price
 ) {}
