@@ -337,9 +337,6 @@ export default function FriendsPage() {
                       className="pl-14 py-5 text-lg bg-zinc-900/80 border-zinc-800 text-zinc-100 rounded-2xl w-full shadow-md"
                     />
                   </div>
-                  <div className="flex items-center gap-3">
-                    <AddFriendDialog onRequestSent={refreshFriends} />
-                  </div>
                 </div>
               </Card>
 

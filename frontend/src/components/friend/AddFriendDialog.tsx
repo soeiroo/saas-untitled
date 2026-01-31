@@ -19,6 +19,7 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({ onRequestSent 
   const [results, setResults] = useState<UserSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
   const handleSearch = async (event?: React.FormEvent) => {
     event?.preventDefault();
@@ -50,12 +51,12 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({ onRequestSent 
 
   const handleSendRequest = async (userId: string) => {
     setError('');
+    setSuccess('');
     try {
       await sendFriendRequest(userId);
       onRequestSent?.();
-      setOpen(false);
-      setQuery('');
-      setResults([]);
+      setResults(prev => prev.filter(user => user.id !== userId));
+      setSuccess('Pedido enviado. Você pode adicionar outro contato.');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -97,6 +98,7 @@ export const AddFriendDialog: React.FC<AddFriendDialogProps> = ({ onRequestSent 
           </div>
 
           {error && <p className="text-sm text-red-400">{error}</p>}
+          {success && <p className="text-sm text-emerald-400">{success}</p>}
 
           <div className="space-y-2">
             {isSearching && (

@@ -335,9 +335,6 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       <Sparkles className="h-4 w-4 text-purple-400" />
                       Insights atualizados hoje
                     </div>
-                    <div>
-                      <AddSubscriptionDialog onAdd={handleAddSubscription} />
-                    </div>
                   </div>
                 </div>
 
