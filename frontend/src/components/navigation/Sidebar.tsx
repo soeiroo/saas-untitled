@@ -21,7 +21,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
       <nav className="flex flex-col gap-2 text-sm">
         <Link
           href="/dashboard"
-          className={`flex items-center rounded-lg border transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
+          className={`sidebar-item flex items-center rounded-lg border transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
             activePage === 'overview'
               ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60 border-transparent'
@@ -38,7 +38,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         </Link>
         <Link
           href="/friends"
-          className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
+          className={`sidebar-item flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
             activePage === 'friends'
               ? 'bg-emerald-500/10 text-emerald-200'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
@@ -55,7 +55,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         </Link>
         <Link
           href="/assinaturas"
-          className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
+          className={`sidebar-item flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
             activePage === 'subscriptions'
               ? 'bg-emerald-500/10 text-emerald-200'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
@@ -71,7 +71,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
           )}
         </Link>
         <button
-          className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
+          className={`sidebar-item flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-full group-hover: transition-all duration-300 ${
             activePage === 'reports'
               ? 'bg-emerald-500/10 text-emerald-200'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
@@ -86,7 +86,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         </button>
         <Link
           href="/profile"
-          className={`flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-[70%] group-hover:w-full transition-all duration-300 ${
+          className={`sidebar-item flex items-center rounded-lg transition-colors duration-200 px-0 py-0 h-12 w-[70%] group-hover:w-full transition-all duration-300 ${
             activePage === 'settings'
               ? 'bg-emerald-500/10 text-emerald-200'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
