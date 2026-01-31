@@ -22,11 +22,7 @@ export default function AuthGuard({
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('authToken') : null;
     if (!requireAuth && pathname === '/') {
-      if (token) {
-        router.replace(redirectAuthenticatedTo);
-        } else {
-          setIsChecking(false);
-      }
+      setIsChecking(false);
       return;
     }
     if (requireAuth && !token) {
