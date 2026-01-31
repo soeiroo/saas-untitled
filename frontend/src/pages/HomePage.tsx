@@ -251,7 +251,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 </Alert>
               )}
 
-              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              <section className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
                   <div className="flex items-center justify-between">
                     <div>
