@@ -79,6 +79,19 @@ export async function getFriendRequests(): Promise<FriendRequest[]> {
   return response.json();
 }
 
+export async function getSentFriendRequests(): Promise<FriendRequest[]> {
+  const response = await fetch(`${API_URL}/api/friends/requests/sent`, {
+    method: 'GET',
+    headers: buildAuthHeaders(),
+  });
+
+  if (!response.ok) {
+    throw new Error('Erro ao buscar solicitações enviadas');
+  }
+
+  return response.json();
+}
+
 export async function deleteFriend(id: string): Promise<void> {
   const response = await fetch(`${API_URL}/api/friends/${id}`, {
     method: 'DELETE',

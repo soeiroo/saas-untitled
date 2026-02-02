@@ -106,9 +106,7 @@ export default function LandingPage() {
                   <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
                     <Link href="/login">Experimentar agora</Link>
                   </Button>
-                  <Button asChild variant="outline" className="bg-zinc-900/60 border-zinc-700 text-white hover:bg-zinc-800">
-                    <Link href="/login">Ver demo</Link>
-                  </Button>
+
                 </div>
                 <div className="flex items-center gap-4 text-xs text-zinc-400">
                   <span className="inline-flex items-center gap-2">
