@@ -3,6 +3,7 @@ export interface Friend {
   name: string;
   email: string;
   avatarUrl?: string;
+  profilePicture?: string;
   addedAt?: string;
 }
 
