@@ -243,7 +243,7 @@ export default function FriendsPage() {
                   >
                     <TabsList className="bg-zinc-900/80 border border-zinc-800 w-full flex-wrap sm:flex-nowrap gap-2 sm:gap-0">
                       <TabsTrigger value="friends" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]">
-                        Meus Amigos
+                        Amigos
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
                           {visibleFriends.length}
                         </span>
@@ -336,9 +336,9 @@ export default function FriendsPage() {
                       <p className="text-zinc-500 text-sm mt-1">Você não tem novos pedidos de amizade no momento.</p>
                     </Card>
                   ) : (
-                    <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {requests.map((request) => (
-                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-3 flex items-center justify-between gap-4">
+                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-3 flex flex-row items-center justify-between gap-4">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 flex items-center justify-center border border-zinc-700/50">
                               <Users className="h-4 w-4 text-zinc-400" />
@@ -371,9 +371,9 @@ export default function FriendsPage() {
                       <p className="text-zinc-500 text-sm mt-1">Seus pedidos de amizade pendentes aparecerão aqui.</p>
                     </Card>
                   ) : (
-                    <div className="grid grid-cols-1 gap-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                       {sentRequests.map((request) => (
-                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-3 flex items-center justify-between gap-4 opacity-75 hover:opacity-100 transition">
+                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-3 flex flex-row items-center justify-between gap-4 opacity-75 hover:opacity-100 transition">
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700/50">
                               <ArrowRight className="h-4 w-4 text-zinc-500" />
@@ -383,7 +383,7 @@ export default function FriendsPage() {
                               <p className="text-xs text-zinc-500 truncate">{request.email}</p>
                             </div>
                           </div>
-                          <span className="text-xs px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-zinc-700/50 cursor-default font-medium">
+                          <span className="text-xs px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-zinc-700/50 cursor-default font-medium whitespace-nowrap">
                             Pendente
                           </span>
                         </Card>
