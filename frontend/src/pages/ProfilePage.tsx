@@ -132,7 +132,7 @@ export default function ProfilePage() {
               <ArrowLeft className="w-4 h-4" />
               <span>Voltar</span>
             </Link>
-            
+
             <nav className="space-y-2 text-sm">
               <div className="px-3 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700 text-white flex items-center gap-2">
                 <UserIcon className="w-4 h-4 text-emerald-400" />
@@ -166,9 +166,13 @@ export default function ProfilePage() {
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
                     <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 min-w-0">
                       <Avatar className="w-24 h-24 border-2 border-emerald-500/20">
-                        <AvatarFallback className="text-2xl bg-gradient-to-br from-emerald-500 to-purple-500 text-white">
-                          {getInitials()}
-                        </AvatarFallback>
+                        {user.profilePicture ? (
+                          <img src={user.profilePicture} alt={user.name} className="h-full w-full object-cover" />
+                        ) : (
+                          <AvatarFallback className="text-2xl bg-gradient-to-br from-emerald-500 to-purple-500 text-white">
+                            {getInitials()}
+                          </AvatarFallback>
+                        )}
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <h3 className="font-semibold text-white mb-2">Envie uma foto de perfil</h3>

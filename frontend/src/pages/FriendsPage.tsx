@@ -340,8 +340,12 @@ export default function FriendsPage() {
                       {requests.map((request) => (
                         <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-3 flex flex-row items-center justify-between gap-4">
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 flex items-center justify-center border border-zinc-700/50">
-                              <Users className="h-4 w-4 text-zinc-400" />
+                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 flex items-center justify-center border border-zinc-700/50 overflow-hidden">
+                              {request.profilePicture ? (
+                                <img src={request.profilePicture} alt={request.name} className="h-full w-full object-cover" />
+                              ) : (
+                                <Users className="h-4 w-4 text-zinc-400" />
+                              )}
                             </div>
                             <div className="min-w-0">
                               <p className="text-sm font-medium text-white truncate">{request.name}</p>
@@ -375,8 +379,12 @@ export default function FriendsPage() {
                       {sentRequests.map((request) => (
                         <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-3 flex flex-row items-center justify-between gap-4 opacity-75 hover:opacity-100 transition">
                           <div className="flex items-center gap-3 min-w-0">
-                            <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700/50">
-                              <ArrowRight className="h-4 w-4 text-zinc-500" />
+                            <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700/50 overflow-hidden">
+                              {request.profilePicture ? (
+                                <img src={request.profilePicture} alt={request.name} className="h-full w-full object-cover" />
+                              ) : (
+                                <ArrowRight className="h-4 w-4 text-zinc-500" />
+                              )}
                             </div>
                             <div className="min-w-0">
                               <p className="text-sm font-medium text-zinc-300 truncate">{request.name}</p>

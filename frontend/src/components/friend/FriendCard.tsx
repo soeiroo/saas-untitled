@@ -30,8 +30,8 @@ export const FriendCard: React.FC<FriendCardProps> = ({ friend, onDelete, onSeco
     <Card className="bg-zinc-900/80 border-zinc-800 p-5 shadow-lg shadow-black/20 hover:border-zinc-700 transition-all duration-300 hover:-translate-y-1">
       <div className="flex items-start gap-4">
         <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
-          {friend.avatarUrl ? (
-            <img src={friend.avatarUrl} alt={friend.name} className="h-full w-full rounded-full object-cover" />
+          {friend.profilePicture || friend.avatarUrl ? (
+            <img src={friend.profilePicture || friend.avatarUrl} alt={friend.name} className="h-full w-full rounded-full object-cover" />
           ) : (
             <User className="h-6 w-6 text-emerald-400" />
           )}

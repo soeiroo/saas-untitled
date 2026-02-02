@@ -16,6 +16,7 @@ const profileSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
   email: z.string().email('Email inválido'),
   currentPassword: z.string().optional(),
+  profilePicture: z.string().optional(),
 });
 
 type ProfileForm = z.infer<typeof profileSchema>;
@@ -36,6 +37,7 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
       name: user.name,
       email: user.email,
       currentPassword: '',
+      profilePicture: user.profilePicture || '',
     },
   });
 
@@ -48,6 +50,7 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
         name: user.name,
         email: user.email,
         currentPassword: '',
+        profilePicture: user.profilePicture || '',
       });
       setShowPassword(false);
     }
@@ -64,12 +67,29 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
       const payload: UpdateUserData = {
         name: data.name,
         email: data.email,
+        profilePicture: data.profilePicture,
         ...(data.email !== user.email ? { currentPassword: data.currentPassword } : {}),
       };
 
       await onSave(payload);
       onOpenChange(false);
     } catch {
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (file.size > 2 * 1024 * 1024) { // 2MB limit
+        toast.error("A imagem deve ter no máximo 2MB.");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        const base64String = reader.result as string;
+        form.setValue('profilePicture', base64String);
+      };
+      reader.readAsDataURL(file);
     }
   };
 
@@ -84,6 +104,45 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
         </DialogHeader>
         <form onSubmit={form.handleSubmit(onSubmit)}>
           <div className="grid gap-4 py-4">
+            <div className="flex flex-col items-center gap-4 mb-2">
+              <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-zinc-700 bg-zinc-800">
+                {form.watch('profilePicture') ? (
+                  <img
+                    src={form.watch('profilePicture')}
+                    alt="Preview"
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="h-full w-full flex items-center justify-center text-zinc-500 bg-gradient-to-br from-emerald-500/10 to-purple-500/10">
+                    <span className="text-2xl font-bold opacity-50">{user.name.substring(0, 2).toUpperCase()}</span>
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center">
+                <Label htmlFor="picture-upload" className="cursor-pointer py-1.5 px-3 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 rounded-md text-sm text-zinc-300 transition-colors">
+                  Alterar foto
+                </Label>
+                <Input
+                  id="picture-upload"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleFileChange}
+                />
+                {form.watch('profilePicture') && (
+                  <Button
+                    type="button"
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => form.setValue('profilePicture', '')}
+                    className="ml-2 text-red-400 hover:text-red-300 hover:bg-red-950/20"
+                  >
+                    Remover
+                  </Button>
+                )}
+              </div>
+            </div>
+
             <div className="space-y-2">
               <Label htmlFor="name" className="text-zinc-300">Nome</Label>
               <Input
@@ -136,16 +195,16 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
             )}
           </div>
           <DialogFooter>
-            <Button 
-              type="button" 
-              variant="outline" 
+            <Button
+              type="button"
+              variant="outline"
               onClick={() => onOpenChange(false)}
               className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700"
             >
               Cancelar
             </Button>
-            <Button 
-              type="submit" 
+            <Button
+              type="submit"
               disabled={form.formState.isSubmitting}
               className="bg-emerald-600 hover:bg-emerald-700"
             >

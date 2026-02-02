@@ -17,4 +17,5 @@ export interface FriendRequest {
   userId: string;
   name: string;
   email: string;
+  profilePicture?: string;
 }
