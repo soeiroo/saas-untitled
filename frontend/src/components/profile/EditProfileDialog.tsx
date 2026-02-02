@@ -79,18 +79,42 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
-      if (file.size > 2 * 1024 * 1024) { // 2MB limit
-        toast.error("A imagem deve ter no máximo 2MB.");
-        return;
-      }
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result as string;
-        form.setValue('profilePicture', base64String);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      toast.error('A imagem deve ter no máximo 8MB.');
+      return;
     }
+
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      const base64String = reader.result as string;
+      const img = new Image();
+      img.onload = () => {
+        const maxSize = 512;
+        const scale = Math.min(1, maxSize / Math.max(img.width, img.height));
+        const targetWidth = Math.round(img.width * scale);
+        const targetHeight = Math.round(img.height * scale);
+
+        const canvas = document.createElement('canvas');
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+
+        const ctx = canvas.getContext('2d');
+        if (!ctx) {
+          toast.error('Não foi possível processar a imagem.');
+          return;
+        }
+
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+        const compressed = canvas.toDataURL('image/jpeg', 0.82);
+        form.setValue('profilePicture', compressed);
+      };
+      img.onerror = () => {
+        toast.error('Arquivo de imagem inválido.');
+      };
+      img.src = base64String;
+    };
+    reader.readAsDataURL(file);
   };
 
   return (
