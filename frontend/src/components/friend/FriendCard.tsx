@@ -42,24 +42,23 @@ export const FriendCard: React.FC<FriendCardProps> = ({ friend, onDelete, onSeco
           <p className="text-xs text-zinc-500">{timeAgo()}</p>
         </div>
       </div>
-      <div className="flex gap-2 mt-4">
+      <div className="flex gap-2 mt-4 pt-4 border-t border-zinc-800/50">
         <Button
           onClick={() => onSecondaryAction(friend)}
-          variant="outline"
-          size="sm"
-          className="flex-1 bg-zinc-800/60 border-zinc-700 text-zinc-300 hover:bg-zinc-800 hover:text-white hover:border-zinc-600"
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 bg-zinc-800/40 text-zinc-400 hover:text-white hover:bg-zinc-800 rounded-xl"
         >
-          <MoreHorizontal className="h-4 w-4 mr-1" />
-          Ação
+          <MoreHorizontal className="h-5 w-5" />
         </Button>
+        <div className="flex-1"></div>
         <Button
           onClick={() => onDelete(friend.id)}
-          variant="outline"
-          size="sm"
-          className="flex-1 bg-red-950/30 border-red-900/50 text-red-400 hover:bg-red-950/50 hover:text-red-300 hover:border-red-800"
+          variant="ghost"
+          size="icon"
+          className="h-9 w-9 text-zinc-500 hover:text-red-400 hover:bg-red-950/20 rounded-xl"
         >
-          <UserMinus className="h-4 w-4 mr-1" />
-          Remover
+          <UserMinus className="h-5 w-5" />
         </Button>
       </div>
     </Card>
