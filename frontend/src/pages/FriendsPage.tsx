@@ -9,7 +9,8 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
-import { Users, Search, Sparkles, Loader2 } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Users, Search, Sparkles, Loader2, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Friend, FriendRequest } from '@/types/friend';
@@ -25,7 +26,6 @@ export default function FriendsPage() {
   const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isFetchingFriends, setIsFetchingFriends] = useState(false);
-  //   const [isMutatingFriends, setIsMutatingFriends] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
@@ -36,6 +36,7 @@ export default function FriendsPage() {
   const [isSharing, setIsSharing] = useState(false);
   const [actionError, setActionError] = useState('');
   const [actionSuccess, setActionSuccess] = useState('');
+  const [activeTab, setActiveTab] = useState<'friends' | 'requests' | 'sent'>('friends');
 
   useEffect(() => {
     async function fetchFriends() {
@@ -46,6 +47,7 @@ export default function FriendsPage() {
           const me = await getCurrentUser();
           setCurrentUser(me);
         } catch {
+          // ignore
         }
         const [friendsList, pendingRequests, mySentRequests, mySubscriptions] = await Promise.all([
           getFriends(),
@@ -91,6 +93,7 @@ export default function FriendsPage() {
       setSentRequests(mySentRequests);
       setSubscriptions(mySubscriptions);
     } catch {
+      // ignore
     }
   };
 
@@ -104,6 +107,7 @@ export default function FriendsPage() {
       ]);
       setFriends(friendsList);
       setRequests(pendingRequests);
+      toast.success('Pedido de amizade aceito!');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -114,12 +118,12 @@ export default function FriendsPage() {
   };
 
   const handleDeleteFriend = async (id: string) => {
-    // setIsMutatingFriends(true);
     setDeletingId(id);
     setError('');
     try {
       await deleteFriend(id);
       setFriends(prev => prev.filter(friend => friend.id !== id));
+      toast.success('Amigo removido com sucesso');
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -130,7 +134,6 @@ export default function FriendsPage() {
       }
     } finally {
       setDeletingId(null);
-      //   setIsMutatingFriends(false);
     }
   };
 
@@ -198,8 +201,8 @@ export default function FriendsPage() {
 
           <main className="flex-1 lg:pl-6">
             <MobileAppMenu title="Meus Amigos" />
-            <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 relative">
-              <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8">
+            <div className="max-w-6xl mx-auto px-4 lg:px-6 py-8 sm:py-10 relative">
+              <header className="flex flex-col gap-4 sm:gap-6 md:flex-row md:items-center md:justify-between mb-6 sm:mb-8">
                 <div className="space-y-2">
                   <h1 className="text-3xl md:text-4xl font-semibold text-white">
                     Amigos
@@ -212,18 +215,15 @@ export default function FriendsPage() {
                 </div>
               </header>
 
-              <Card className="relative overflow-hidden mb-8 bg-zinc-900/70 border-zinc-800">
+              <Card className="relative overflow-hidden mb-6 sm:mb-8 bg-zinc-900/70 border-zinc-800">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_45%),radial-gradient(circle_at_85%_10%,_rgba(139,92,246,0.14),_transparent_40%)]" />
-                <div className="relative px-6 py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
+                <div className="relative px-5 py-5 sm:px-6 sm:py-6 md:px-8 md:py-7 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                   <div className="space-y-2">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Rede</p>
                     <h2 className="text-2xl md:text-3xl font-semibold text-white">Gerencie suas conexões</h2>
                     <p className="text-sm text-zinc-400 max-w-lg">
-                      Aceite convites, organize contatos e compartilhe serviços com segurança.
+                      Adicione amigos e compartilhe assinaturas com facilidade.
                     </p>
-                  </div>
-                  <div className="flex flex-wrap gap-3">
-                    <AddFriendDialog onRequestSent={refreshFriends} />
                   </div>
                 </div>
               </Card>
@@ -234,185 +234,165 @@ export default function FriendsPage() {
                 </Alert>
               )}
 
-              <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Total de amigos</p>
-                      <p className="text-3xl text-white">{visibleFriends.length}</p>
-                      <p className="text-xs text-zinc-500 mt-2">Conexões ativas</p>
-                    </div>
-                    <Users className="h-10 w-10 text-emerald-400" />
-                  </div>
-                </Card>
-
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Solicitações</p>
-                      <p className="text-3xl text-white">{requests.length}</p>
-                      <p className="text-xs text-zinc-500 mt-2">Pendentes</p>
-                    </div>
-                    <Sparkles className="h-10 w-10 text-purple-400" />
-                  </div>
-                </Card>
-
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Assinaturas</p>
-                      <p className="text-3xl text-white">{subscriptions.length}</p>
-                      <p className="text-xs text-zinc-500 mt-2">Disponíveis para compartilhar</p>
-                    </div>
-                    <Sparkles className="h-10 w-10 text-yellow-400" />
-                  </div>
-                </Card>
-              </section>
-
-              {requests.length > 0 && (
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20 mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Users className="h-4 w-4 text-emerald-400" />
-                    <h2 className="text-sm font-semibold text-white">Pedidos de amizade recebidos</h2>
-                  </div>
-                  <div className="space-y-2">
-                    {requests.map((request) => (
-                      <div
-                        key={request.requestId}
-                        className="flex items-center justify-between gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-2"
-                      >
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-white truncate">{request.name}</p>
-                          <p className="text-xs text-zinc-500 truncate">{request.email}</p>
-                        </div>
-                        <button
-                          type="button"
-                          onClick={() => handleAcceptRequest(request.requestId)}
-                          className="text-xs px-3 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition"
-                        >
-                          Aceitar
-                        </button>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              )}
-
-              {sentRequests.length > 0 && (
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20 mb-6">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Users className="h-4 w-4 text-emerald-400" />
-                    <h2 className="text-sm font-semibold text-white">Solicitações enviadas</h2>
-                  </div>
-                  <div className="space-y-2">
-                    {sentRequests.map((request) => (
-                      <div
-                        key={request.requestId}
-                        className="flex items-center justify-between gap-3 rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-3 py-2"
-                      >
-                        <div className="min-w-0">
-                          <p className="text-sm font-medium text-white truncate">{request.name}</p>
-                          <p className="text-xs text-zinc-500 truncate">{request.email}</p>
-                        </div>
-                        <span className="text-xs px-3 py-2 rounded-xl bg-zinc-800 text-zinc-400 cursor-default">
-                          Pendente
+              <div className="flex flex-col items-center mb-6 sm:mb-8 gap-4 sm:gap-5 w-full">
+                <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-5">
+                  <Tabs
+                    value={activeTab}
+                    onValueChange={(value) => setActiveTab(value as 'friends' | 'requests' | 'sent')}
+                    className="w-full lg:w-auto"
+                  >
+                    <TabsList className="bg-zinc-900/80 border border-zinc-800 w-full flex-wrap sm:flex-nowrap gap-2 sm:gap-0">
+                      <TabsTrigger value="friends" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]">
+                        Meus Amigos
+                        <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
+                          {visibleFriends.length}
                         </span>
-                      </div>
-                    ))}
-                  </div>
-                </Card>
-              )}
+                      </TabsTrigger>
+                      <TabsTrigger value="requests" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]">
+                        Solicitações
+                        {requests.length > 0 && (
+                          <span className="ml-2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 text-[10px]">
+                            {requests.length}
+                          </span>
+                        )}
+                      </TabsTrigger>
+                      <TabsTrigger value="sent" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]">
+                        Enviadas
+                        <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
+                          {sentRequests.length}
+                        </span>
+                      </TabsTrigger>
+                    </TabsList>
+                  </Tabs>
 
-              {/* <section className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Total de Amigos</p>
-                      <p className="text-3xl text-white">{friends.length}</p>
-                      <p className="text-xs text-zinc-500 mt-2">Atualizado hoje</p>
-                    </div>
-                    <Users className="h-10 w-10 text-emerald-400" />
-                  </div>
-                </Card> 
-
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Adicionados Hoje</p>
-                      <p className="text-3xl text-white">0</p>
-                      <p className="text-xs text-zinc-500 mt-2">Últimas 24 horas</p>
-                    </div>
-                    <Sparkles className="h-10 w-10 text-purple-400" />
-                  </div>
-                </Card>
-
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Esta Semana</p>
-                      <p className="text-3xl text-white">0</p>
-                      <p className="text-xs text-zinc-500 mt-2">Últimos 7 dias</p>
-                    </div>
-                    <Users className="h-10 w-10 text-yellow-500" />
-                  </div>
-                </Card>
-            </section> */}
-
-              <Card className="bg-zinc-900/70 border-zinc-800 p-5 shadow-lg shadow-black/20 mb-8">
-                <div className="flex flex-col lg:flex-row items-center gap-4">
-                  <div className="relative w-full">
-                    <Search className="h-5 w-5 text-zinc-500 absolute left-5 top-1/2 -translate-y-1/2" />
-                    <Input
-                      value={searchQuery}
-                      onChange={(event) => setSearchQuery(event.target.value)}
-                      placeholder="Buscar por nome ou email"
-                      className="pl-14 py-5 text-lg bg-zinc-900/80 border-zinc-800 text-zinc-100 rounded-2xl w-full shadow-md"
-                    />
+                  <div className="flex items-center gap-3 mt-2 sm:mt-0 w-full lg:w-auto">
+                    <AddFriendDialog onRequestSent={refreshFriends} />
                   </div>
                 </div>
-              </Card>
+
+                {activeTab === 'friends' && (
+                  <div className="w-full flex flex-col lg:flex-row items-center gap-4 sm:gap-5 animate-in fade-in duration-300">
+                    <div className="relative w-full">
+                      <Search className="h-5 w-5 text-zinc-500 absolute left-5 top-1/2 -translate-y-1/2" />
+                      <Input
+                        value={searchQuery}
+                        onChange={(event) => setSearchQuery(event.target.value)}
+                        placeholder="Buscar por nome ou email"
+                        className="pl-14 py-5 text-lg bg-zinc-900/80 border-zinc-800 text-zinc-100 rounded-2xl w-full shadow-md"
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
 
               {(isFetchingFriends) && friends.length > 0 && (
                 <div className="mb-4 flex items-center gap-2 text-xs text-zinc-400">
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span>
-                    {deletingId
-                      ? 'Removendo amigo…'
-                      : isFetchingFriends
-                        ? 'Atualizando lista…'
-                        : 'Salvando alterações…'}
-                  </span>
+                  <span>Atualizando lista…</span>
                 </div>
               )}
 
-              {isFetchingFriends && friends.length === 0 ? (
-                <div className="mb-4 flex items-center gap-2 text-xs text-zinc-400">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span>Carregando amigos…</span>
-                </div>
-              ) : filteredFriends.length === 0 ? (
-                <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
-                  <p className="text-zinc-400 text-lg mb-2">
-                    {visibleFriends.length === 0 ? 'Nenhum amigo adicionado' : 'Nenhum resultado encontrado'}
-                  </p>
-                  <p className="text-zinc-500">
-                    {visibleFriends.length === 0
-                      ? 'Clique em "Novo Amigo" para começar'
-                      : 'Tente outro termo de busca'}
-                  </p>
-                </Card>
-              ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {filteredFriends.map(friend => (
-                    <FriendCard
-                      key={friend.id}
-                      friend={friend}
-                      onDelete={handleDeleteFriend}
-                      onSecondaryAction={handleSecondaryAction}
-                    />
-                  ))}
+              {/* TAB CONTENT: Meus Amigos */}
+              {activeTab === 'friends' && (
+                <div className="animate-in slide-in-from-bottom-2 fade-in duration-300 delay-100">
+                  {isFetchingFriends && friends.length === 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {Array.from({ length: 3 }).map((_, idx) => (
+                        <Card key={idx} className="bg-zinc-900/60 border-zinc-800 p-6 h-32 animate-pulse" />
+                      ))}
+                    </div>
+                  ) : filteredFriends.length === 0 ? (
+                    <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
+                      <p className="text-zinc-400 text-lg mb-2">
+                        {visibleFriends.length === 0 ? 'Nenhum amigo adicionado' : 'Nenhum resultado encontrado'}
+                      </p>
+                      <p className="text-zinc-500">
+                        {visibleFriends.length === 0
+                          ? 'Clique em "Novo Amigo" para começar a adicionar conexões.'
+                          : 'Tente outro termo de busca.'}
+                      </p>
+                    </Card>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                      {filteredFriends.map(friend => (
+                        <FriendCard
+                          key={friend.id}
+                          friend={friend}
+                          onDelete={handleDeleteFriend}
+                          onSecondaryAction={handleSecondaryAction}
+                        />
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
+
+              {/* TAB CONTENT: Solicitações */}
+              {activeTab === 'requests' && (
+                <div className="animate-in slide-in-from-bottom-2 fade-in duration-300 delay-100">
+                  {requests.length === 0 ? (
+                    <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
+                      <p className="text-zinc-400 text-lg">Nenhuma solicitação pendente</p>
+                      <p className="text-zinc-500 text-sm mt-1">Você não tem novos pedidos de amizade no momento.</p>
+                    </Card>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {requests.map((request) => (
+                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-5 flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-4 min-w-0">
+                            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 flex items-center justify-center border border-zinc-700/50">
+                              <Users className="h-5 w-5 text-zinc-400" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-base font-medium text-white truncate">{request.name}</p>
+                              <p className="text-sm text-zinc-500 truncate">{request.email}</p>
+                            </div>
+                          </div>
+                          <button
+                            type="button"
+                            onClick={() => handleAcceptRequest(request.requestId)}
+                            className="px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition font-medium text-sm whitespace-nowrap"
+                          >
+                            Aceitar
+                          </button>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* TAB CONTENT: Enviadas */}
+              {activeTab === 'sent' && (
+                <div className="animate-in slide-in-from-bottom-2 fade-in duration-300 delay-100">
+                  {sentRequests.length === 0 ? (
+                    <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
+                      <p className="text-zinc-400 text-lg">Nenhuma solicitação enviada</p>
+                      <p className="text-zinc-500 text-sm mt-1">Seus pedidos de amizade pendentes aparecerão aqui.</p>
+                    </Card>
+                  ) : (
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      {sentRequests.map((request) => (
+                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-5 flex items-center justify-between gap-4 opacity-75 hover:opacity-100 transition">
+                          <div className="flex items-center gap-4 min-w-0">
+                            <div className="h-10 w-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700/50">
+                              <ArrowRight className="h-5 w-5 text-zinc-500" />
+                            </div>
+                            <div className="min-w-0">
+                              <p className="text-base font-medium text-zinc-300 truncate">{request.name}</p>
+                              <p className="text-sm text-zinc-500 truncate">{request.email}</p>
+                            </div>
+                          </div>
+                          <span className="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-400 border border-zinc-700/50 cursor-default font-medium">
+                            Pendente
+                          </span>
+                        </Card>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
             </div>
           </main>
         </div>
