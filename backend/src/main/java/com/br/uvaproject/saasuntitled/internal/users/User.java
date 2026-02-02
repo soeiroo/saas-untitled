@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = true)
     private String name;
 
-    @Column(nullable = true, columnDefinition = "TEXT")
+    @Column(name = "avatar_base64", nullable = true, columnDefinition = "TEXT")
     private String profilePicture;
 
     private LocalDateTime createdAt;
