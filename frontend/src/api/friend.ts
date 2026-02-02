@@ -9,8 +9,15 @@ function getAuthToken() {
   return null;
 }
 
+function normalizeToken(token: string | null): string | null {
+  if (!token) return null;
+  const cleaned = token.replace(/^Bearer\s+/i, '').trim();
+  if (!cleaned || cleaned === 'undefined' || cleaned === 'null') return null;
+  return cleaned;
+}
+
 function buildAuthHeaders(): HeadersInit {
-  const token = getAuthToken();
+  const token = normalizeToken(getAuthToken());
   const headers: Record<string, string> = {};
   if (token) {
     headers.Authorization = `Bearer ${token}`;

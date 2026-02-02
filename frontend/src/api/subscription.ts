@@ -9,8 +9,15 @@ function getAuthToken() {
   return null;
 }
 
+function normalizeToken(token: string | null): string | null {
+  if (!token) return null;
+  const cleaned = token.replace(/^Bearer\s+/i, '').trim();
+  if (!cleaned || cleaned === 'undefined' || cleaned === 'null') return null;
+  return cleaned;
+}
+
 export async function getSubscriptions(): Promise<Subscription[]> {
-  const token = getAuthToken();
+  const token = normalizeToken(getAuthToken());
   const response = await fetch(`${API_URL}/api/subscriptions`, {
     credentials: 'include',
     headers: {
@@ -22,7 +29,7 @@ export async function getSubscriptions(): Promise<Subscription[]> {
 }
 
 export async function getSharedSubscriptions(): Promise<Subscription[]> {
-  const token = getAuthToken();
+  const token = normalizeToken(getAuthToken());
   const response = await fetch(`${API_URL}/api/subscriptions/shared`, {
     credentials: 'include',
     headers: {
@@ -34,7 +41,7 @@ export async function getSharedSubscriptions(): Promise<Subscription[]> {
 }
 
 export async function addSubscription(data: Omit<Subscription, 'id' | 'userId'>): Promise<Subscription> {
-  const token = getAuthToken();
+  const token = normalizeToken(getAuthToken());
   const response = await fetch(`${API_URL}/api/subscriptions`, {
     method: 'POST',
     headers: {
@@ -50,7 +57,7 @@ export async function addSubscription(data: Omit<Subscription, 'id' | 'userId'>)
 }
 
 export async function updateSubscription(id: string, data: Partial<Omit<Subscription, 'userId'>>): Promise<Subscription> {
-  const token = getAuthToken();
+  const token = normalizeToken(getAuthToken());
   const response = await fetch(`${API_URL}/api/subscriptions/${id}`, {
     method: 'PUT',
     headers: {
@@ -66,7 +73,7 @@ export async function updateSubscription(id: string, data: Partial<Omit<Subscrip
 }
 
 export async function deleteSubscription(id: string): Promise<void> {
-  const token = getAuthToken();
+  const token = normalizeToken(getAuthToken());
   const response = await fetch(`${API_URL}/api/subscriptions/${id}`, {
     method: 'DELETE',
     credentials: 'include',
@@ -82,7 +89,7 @@ export async function shareSubscriptionWithFriend(
   friendId: string,
   price?: number,
 ): Promise<void> {
-  const token = getAuthToken();
+  const token = normalizeToken(getAuthToken());
   const hasPrice = typeof price === 'number' && !Number.isNaN(price);
   const response = await fetch(`${API_URL}/api/subscriptions/${subscriptionId}/friends/${friendId}`, {
     method: 'POST',
