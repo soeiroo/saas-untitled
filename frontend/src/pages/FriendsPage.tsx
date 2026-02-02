@@ -336,22 +336,22 @@ export default function FriendsPage() {
                       <p className="text-zinc-500 text-sm mt-1">Você não tem novos pedidos de amizade no momento.</p>
                     </Card>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-2">
                       {requests.map((request) => (
-                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-5 flex items-center justify-between gap-4">
-                          <div className="flex items-center gap-4 min-w-0">
-                            <div className="h-10 w-10 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 flex items-center justify-center border border-zinc-700/50">
-                              <Users className="h-5 w-5 text-zinc-400" />
+                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-3 flex items-center justify-between gap-4">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 flex items-center justify-center border border-zinc-700/50">
+                              <Users className="h-4 w-4 text-zinc-400" />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-base font-medium text-white truncate">{request.name}</p>
-                              <p className="text-sm text-zinc-500 truncate">{request.email}</p>
+                              <p className="text-sm font-medium text-white truncate">{request.name}</p>
+                              <p className="text-xs text-zinc-500 truncate">{request.email}</p>
                             </div>
                           </div>
                           <button
                             type="button"
                             onClick={() => handleAcceptRequest(request.requestId)}
-                            className="px-4 py-2 rounded-xl bg-emerald-600 text-white hover:bg-emerald-700 transition font-medium text-sm whitespace-nowrap"
+                            className="px-3 py-1.5 rounded-lg bg-emerald-600 text-white hover:bg-emerald-700 transition font-medium text-xs whitespace-nowrap"
                           >
                             Aceitar
                           </button>
@@ -371,19 +371,19 @@ export default function FriendsPage() {
                       <p className="text-zinc-500 text-sm mt-1">Seus pedidos de amizade pendentes aparecerão aqui.</p>
                     </Card>
                   ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div className="grid grid-cols-1 gap-2">
                       {sentRequests.map((request) => (
-                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-5 flex items-center justify-between gap-4 opacity-75 hover:opacity-100 transition">
-                          <div className="flex items-center gap-4 min-w-0">
-                            <div className="h-10 w-10 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700/50">
-                              <ArrowRight className="h-5 w-5 text-zinc-500" />
+                        <Card key={request.requestId} className="bg-zinc-900/80 border-zinc-800 p-3 flex items-center justify-between gap-4 opacity-75 hover:opacity-100 transition">
+                          <div className="flex items-center gap-3 min-w-0">
+                            <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700/50">
+                              <ArrowRight className="h-4 w-4 text-zinc-500" />
                             </div>
                             <div className="min-w-0">
-                              <p className="text-base font-medium text-zinc-300 truncate">{request.name}</p>
-                              <p className="text-sm text-zinc-500 truncate">{request.email}</p>
+                              <p className="text-sm font-medium text-zinc-300 truncate">{request.name}</p>
+                              <p className="text-xs text-zinc-500 truncate">{request.email}</p>
                             </div>
                           </div>
-                          <span className="text-xs px-3 py-1.5 rounded-lg bg-zinc-800 text-zinc-400 border border-zinc-700/50 cursor-default font-medium">
+                          <span className="text-xs px-2 py-1 rounded bg-zinc-800 text-zinc-500 border border-zinc-700/50 cursor-default font-medium">
                             Pendente
                           </span>
                         </Card>
