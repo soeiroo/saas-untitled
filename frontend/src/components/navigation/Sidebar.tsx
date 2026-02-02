@@ -47,11 +47,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
       <nav className="flex flex-col gap-2 text-sm">
         <Link
           href="/dashboard"
-          className={`sidebar-item flex items-center rounded-lg border transition-all duration-300 px-0 py-0 h-12 w-full ${
-            activePage === 'overview'
+          className={`sidebar-item flex items-center rounded-lg border transition-all duration-300 px-0 py-0 h-12 w-full ${activePage === 'overview'
               ? 'bg-emerald-500/15 text-emerald-300 border-emerald-500/20'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60 border-transparent'
-          }`}
+            }`}
           style={{ minHeight: '3rem' }}
         >
           <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
@@ -64,11 +63,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         </Link>
         <Link
           href="/friends"
-          className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 w-full ${
-            activePage === 'friends'
+          className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 w-full ${activePage === 'friends'
               ? 'bg-emerald-500/10 text-emerald-200'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
-          }`}
+            }`}
           style={{ minHeight: '3rem' }}
         >
           <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
@@ -81,11 +79,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         </Link>
         <Link
           href="/assinaturas"
-          className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 w-full ${
-            activePage === 'subscriptions'
+          className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 w-full ${activePage === 'subscriptions'
               ? 'bg-emerald-500/10 text-emerald-200'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
-          }`}
+            }`}
           style={{ minHeight: '3rem' }}
         >
           <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
@@ -97,11 +94,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
           )}
         </Link>
         <button
-          className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 w-full ${
-            activePage === 'reports'
+          className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 w-full ${activePage === 'reports'
               ? 'bg-emerald-500/10 text-emerald-200'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
-          }`}
+            }`}
           style={{ minHeight: '3rem' }}
         >
           <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
@@ -112,11 +108,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         </button>
         <Link
           href="/profile"
-          className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 ${isExpanded ? 'w-full' : 'w-[70%]'} ${
-            activePage === 'settings'
+          className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 ${isExpanded ? 'w-full' : 'w-[70%]'} ${activePage === 'settings'
               ? 'bg-emerald-500/10 text-emerald-200'
               : 'text-zinc-400 hover:text-white hover:bg-zinc-800/60'
-          }`}
+            }`}
           style={{ minHeight: '3rem' }}
         >
           <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">

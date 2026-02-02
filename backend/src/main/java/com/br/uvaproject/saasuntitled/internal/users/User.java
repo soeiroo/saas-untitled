@@ -32,6 +32,7 @@ public class User {
     @Column(nullable = true)
     private String name;
 
+    @Lob
     @Column(name = "avatar_base64", nullable = true, columnDefinition = "TEXT")
     private String profilePicture;
 
