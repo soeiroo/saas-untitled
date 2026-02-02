@@ -32,7 +32,7 @@ public class User {
     @Column(nullable = true)
     private String name;
 
-    @Column(nullable = true)
+    @Column(nullable = true, columnDefinition = "TEXT")
     private String profilePicture;
 
     private LocalDateTime createdAt;
@@ -47,7 +47,6 @@ public class User {
 
     @OneToMany(mappedBy = "friend")
     private List<UserFriend> friendOf;
-
 
     @PrePersist
     public void prePersist() {

@@ -34,6 +34,10 @@ public class UserService {
             throw new IllegalStateException("Email já está em uso");
         }
 
+        if (dto.profilePicture() == null || dto.profilePicture().isBlank()) {
+            dto = new UserCreateDTO(dto.email(), dto.password(), dto.name(), getDefaultProfilePicture(dto.name()));
+        }
+
         String hash = passwordEncoder.encode(dto.password());
         User user = UserMapper.fromCreateDTO(dto, hash);
 
@@ -90,7 +94,12 @@ public class UserService {
         }
 
         if (dto.profilePicture() != null) {
-            user.setProfilePicture(dto.profilePicture());
+            String newPicture = dto.profilePicture();
+            if (newPicture.isBlank()) {
+                user.setProfilePicture(getDefaultProfilePicture(user.getName()));
+            } else {
+                user.setProfilePicture(newPicture);
+            }
         }
 
         if (dto.password() != null) {
@@ -101,6 +110,11 @@ public class UserService {
         }
 
         return userRepository.save(user);
+    }
+
+    private String getDefaultProfilePicture(String name) {
+        String encodedName = name != null ? name.replace(" ", "+") : "User";
+        return "https://ui-avatars.com/api/?name=" + encodedName + "&background=random";
     }
 
     public void deleteMe(String email) {
@@ -118,8 +132,7 @@ public class UserService {
                 .searchUsersExcludingFriends(
                         query,
                         user.getEmail(),
-                        user.getId()
-                )
+                        user.getId())
                 .stream()
                 .map(UserMapper::toSearchResponse)
                 .toList();
