@@ -30,12 +30,17 @@ public class UserService {
             throw new IllegalArgumentException("A senha não pode estar vazia");
         }
 
+        if (dto.userPlan() == null || dto.userPlan().isBlank()) {
+            throw new IllegalArgumentException("O plano não pode estar vazio");
+        }
+
+
         if (userRepository.findByEmail(dto.email()).isPresent()) {
             throw new IllegalStateException("Email já está em uso");
         }
 
         if (dto.profilePicture() == null || dto.profilePicture().isBlank()) {
-            dto = new UserCreateDTO(dto.email(), dto.password(), dto.name(), getDefaultProfilePicture(dto.name()));
+            dto = new UserCreateDTO(dto.email(), dto.password(), dto.name(), getDefaultProfilePicture(dto.name()), dto.userPlan());
         }
 
         String hash = passwordEncoder.encode(dto.password());
@@ -105,6 +110,13 @@ public class UserService {
         if (dto.password() != null) {
             if (dto.password().isBlank()) {
                 throw new IllegalArgumentException("A senha não pode estar vazia");
+            }
+            user.setPasswordHash(passwordEncoder.encode(dto.password()));
+        }
+
+        if (dto.userPlan() != null) {
+            if (dto.userPlan().isBlank()) {
+                throw new IllegalArgumentException("O plano não pode estar vazio");
             }
             user.setPasswordHash(passwordEncoder.encode(dto.password()));
         }

@@ -4,5 +4,6 @@ public record UserCreateDTO(
         String email,
         String password,
         String name,
-        String profilePicture
+        String profilePicture,
+        String userPlan
 ) {}

@@ -79,7 +79,7 @@ class UserIntegrationTest {
     void updateMe_ShouldUpdateUserAndReturnNoContent() throws Exception {
 
         UserUpdateDTO dto =
-                new UserUpdateDTO("new@example.com", "New Name", "newpass", "new_profile_photo.jpg");
+                new UserUpdateDTO("new@example.com", "New Name", "newpass", "new_profile_photo.jpg", "free");
 
         mockMvc.perform(put("/api/users/me")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -96,7 +96,7 @@ class UserIntegrationTest {
     @Test
     @WithMockUser(username = "nonexistent@example.com", roles = "USER")
     void updateMe_NotFound_ShouldReturn404() throws Exception {
-        UserUpdateDTO dto = new UserUpdateDTO("new@example.com", "New Name", "newpass", "new_profile_photo.jpg");
+        UserUpdateDTO dto = new UserUpdateDTO("new@example.com", "New Name", "newpass", "new_profile_photo.jpg", "free");
 
         mockMvc.perform(put("/api/users/me")
                         .contentType(MediaType.APPLICATION_JSON)

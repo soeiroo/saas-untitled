@@ -103,7 +103,7 @@ class UserServiceTest {
                 .thenAnswer(inv -> inv.getArgument(0));
 
         UserUpdateDTO dto =
-                new UserUpdateDTO("new@example.com", "New", "123", "new_profile_photo.jpg");
+                new UserUpdateDTO("new@example.com", "New", "123", "new_profile_photo.jpg", "free");
 
         User updated = userService.updateMe("old@example.com", dto);
 
@@ -132,7 +132,7 @@ class UserServiceTest {
                 .thenReturn(Optional.of(otherUser));
 
         UserUpdateDTO dto =
-                new UserUpdateDTO("new@example.com", "New", null, null);
+                new UserUpdateDTO("new@example.com", "New", null, null, "free");
 
         IllegalStateException ex = assertThrows(
                 IllegalStateException.class,

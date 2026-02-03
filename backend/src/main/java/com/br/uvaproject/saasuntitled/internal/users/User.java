@@ -35,6 +35,10 @@ public class User {
     @Column(name = "avatar_base64", nullable = true, columnDefinition = "TEXT")
     private String profilePicture;
 
+    @Column(nullable = false)
+    @Builder.Default
+    private String userPlan = "free";
+
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 
