@@ -95,9 +95,6 @@ public class UserService {
 
         if (dto.profilePicture() != null) {
             String newPicture = dto.profilePicture();
-            if (newPicture.length() > 4_000_000) {
-                throw new IllegalArgumentException("A imagem é muito grande. Tente uma imagem menor.");
-            }
             if (newPicture.isBlank()) {
                 user.setProfilePicture(getDefaultProfilePicture(user.getName()));
             } else {

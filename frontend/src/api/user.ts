@@ -9,24 +9,14 @@ function getAuthToken() {
   return null;
 }
 
-function normalizeToken(token: string | null): string | null {
-  if (!token) return null;
-  const cleaned = token.replace(/^Bearer\s+/i, '').trim();
-  if (!cleaned || cleaned === 'undefined' || cleaned === 'null') return null;
-  return cleaned;
-}
-
 function setAuthToken(nextToken: string) {
   if (typeof window !== 'undefined') {
-    const cleaned = normalizeToken(nextToken);
-    if (cleaned) {
-      localStorage.setItem('authToken', cleaned);
-    }
+    localStorage.setItem('authToken', nextToken);
   }
 }
 
 function buildAuthHeaders() {
-  const authToken = normalizeToken(getAuthToken());
+  const authToken = getAuthToken();
   const headers: Record<string, string> = {};
   if (authToken) headers.Authorization = `Bearer ${authToken}`;
   return headers;
