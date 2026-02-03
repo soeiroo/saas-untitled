@@ -13,6 +13,7 @@ public class UserMapper {
                 user.getEmail(),
                 user.getName(),
                 user.getProfilePicture(),
+                user.getUserPlan(),
                 user.getCreatedAt(),
                 user.getUpdatedAt()
         );
@@ -24,6 +25,7 @@ public class UserMapper {
                 .passwordHash(passwordHash)
                 .name(dto.name())
                 .profilePicture(dto.profilePicture())
+                .userPlan(dto.userPlan())
                 .build();
     }
 

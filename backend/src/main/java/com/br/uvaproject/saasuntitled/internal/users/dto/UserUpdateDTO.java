@@ -4,5 +4,6 @@ public record UserUpdateDTO(
         String email,
         String name,
         String password,
-        String profilePicture
+        String profilePicture,
+        String userPlan
 ) {}

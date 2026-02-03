@@ -28,7 +28,8 @@ public class AuthController {
                         request.email(),
                         request.password(),
                         request.name(),
-                        request.profilePicture()
+                        request.profilePicture(),
+                        request.userPlan()
                 )
         );
 
@@ -54,7 +55,7 @@ public class AuthController {
         return ResponseEntity.ok(new TokenResponse(token));
     }
 
-    public record RegisterRequest(String email, String password, String name, String profilePicture) {}
+    public record RegisterRequest(String email, String password, String name, String profilePicture, String userPlan) {}
     public record LoginRequest(String email, String password) {}
     public record TokenResponse(String token) {}
 }
