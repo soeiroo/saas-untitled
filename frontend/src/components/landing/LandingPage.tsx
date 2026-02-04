@@ -70,8 +70,10 @@ export default function LandingPage() {
     <div ref={containerRef} className="min-h-screen bg-zinc-950 text-white">
       <div className="relative">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_50%),radial-gradient(circle_at_80%_20%,_rgba(139,92,246,0.12),_transparent_45%)]" />
+        <div className="absolute inset-0 opacity-40 [background:linear-gradient(to_right,rgba(63,63,70,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(63,63,70,0.15)_1px,transparent_1px)] [background-size:48px_48px]" />
         <div className="relative">
-          <header className="px-6 py-6 lg:px-12 flex items-center justify-between">
+          <header className="px-6 py-6 lg:px-12">
+            <div className="mx-auto flex max-w-6xl items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
                 <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
@@ -89,16 +91,19 @@ export default function LandingPage() {
                 <Link href="/login">Começar agora</Link>
               </Button>
             </div>
+            </div>
           </header>
 
           <main className="px-6 pb-16 lg:px-12">
-            <section className="reveal-section max-w-6xl mx-auto pt-8 lg:pt-16 grid lg:grid-cols-2 gap-12 items-center">
+            <section className="reveal-section max-w-6xl mx-auto pt-10 lg:pt-20 grid lg:grid-cols-[1.1fr_0.9fr] gap-12 items-center">
               <div className="space-y-6">
-                <p className="text-xs uppercase tracking-[0.4em] text-emerald-300">Controle total</p>
-                <h1 className="text-4xl sm:text-5xl font-semibold text-white leading-tight">
+                <span className="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-4 py-1 text-xs uppercase tracking-[0.4em] text-emerald-300">
+                  Controle total
+                </span>
+                <h1 className="text-4xl sm:text-6xl font-semibold text-white leading-[1.05]">
                   O painel moderno para gerenciar assinaturas sem esforço.
                 </h1>
-                <p className="text-base sm:text-lg text-zinc-300">
+                <p className="text-base sm:text-lg text-zinc-300 max-w-xl">
                   Acompanhe gastos, próximas cobranças e compartilhamentos em um fluxo simples,
                   inspirado nos melhores layouts da Webflow.
                 </p>
@@ -121,34 +126,47 @@ export default function LandingPage() {
                   </span>
                 </div>
               </div>
-              <Card className="bg-zinc-900/70 border-zinc-800 p-6 shadow-lg shadow-black/30">
-                <div className="space-y-4">
+              <div className="grid gap-4 sm:grid-cols-2">
+                <Card className="bg-zinc-900/70 border-zinc-800 p-5 shadow-lg shadow-black/30 sm:col-span-2">
                   <div className="flex items-center justify-between">
                     <p className="text-sm text-zinc-400">Visão geral</p>
                     <span className="text-xs text-emerald-300">Hoje</span>
                   </div>
-                  <div className="space-y-3">
+                  <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3">
                     {stats.map((stat) => (
-                      <div key={stat.label} className="flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3">
-                        <span className="text-sm text-zinc-300">{stat.label}</span>
-                        <span className="text-lg font-semibold text-white">{stat.value}</span>
+                      <div key={stat.label} className="rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3">
+                        <p className="text-xs text-zinc-500">{stat.label}</p>
+                        <p className="text-lg font-semibold text-white mt-2">{stat.value}</p>
                       </div>
                     ))}
                   </div>
-                  <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-4">
-                    <p className="text-sm text-zinc-400">Próxima renovação</p>
-                    <p className="text-xl text-white font-semibold mt-2">Spotify Premium · 02 Fev</p>
-                    <p className="text-xs text-emerald-300 mt-1">Você paga: R$ 9,90</p>
+                </Card>
+                <Card className="bg-zinc-900/70 border-zinc-800 p-5 shadow-lg shadow-black/30">
+                  <p className="text-sm text-zinc-400">Próxima renovação</p>
+                  <p className="text-xl text-white font-semibold mt-3">Spotify Premium · 02 Fev</p>
+                  <p className="text-xs text-emerald-300 mt-2">Você paga: R$ 9,90</p>
+                </Card>
+                <Card className="bg-zinc-900/70 border-zinc-800 p-5 shadow-lg shadow-black/30">
+                  <p className="text-sm text-zinc-400 mb-3">Fluxo claro em 3 passos</p>
+                  <div className="space-y-2">
+                    {steps.map((step, index) => (
+                      <div key={step} className="flex items-center gap-2 text-xs text-zinc-300">
+                        <span className="h-6 w-6 rounded-full bg-emerald-500/20 text-emerald-300 flex items-center justify-center text-[10px]">
+                          {index + 1}
+                        </span>
+                        <span>{step}</span>
+                      </div>
+                    ))}
                   </div>
-                </div>
-              </Card>
+                </Card>
+              </div>
             </section>
 
-            <section className="reveal-section max-w-6xl mx-auto mt-16 grid md:grid-cols-3 gap-6">
+            <section className="reveal-section max-w-6xl mx-auto mt-16 grid md:grid-cols-2 xl:grid-cols-3 gap-6">
               {highlights.map((item) => {
                 const Icon = item.icon;
                 return (
-                  <Card key={item.title} className="bg-zinc-900/70 border-zinc-800 p-6">
+                  <Card key={item.title} className="group bg-zinc-900/70 border-zinc-800 p-6 transition hover:-translate-y-1 hover:border-zinc-700/80 hover:bg-zinc-900/90">
                     <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/30 flex items-center justify-center mb-4">
                       <Icon className="h-5 w-5 text-emerald-300" />
                     </div>
