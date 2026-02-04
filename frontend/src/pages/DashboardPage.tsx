@@ -6,10 +6,10 @@ import { TrendingUp, Bell, Users, CreditCard, ArrowRight } from 'lucide-react';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
-import { LoadingScreen } from '@/components/common/LoadingScreen';
 import { getSubscriptions } from '@/api/subscription';
 import { getFriends } from '@/api/friend';
 import { getCurrentUser } from '@/api/user';
@@ -86,15 +86,6 @@ export default function DashboardPage() {
       .slice(0, 3);
   }, [subscriptions]);
 
-  if (isLoading) {
-    return (
-      <LoadingScreen
-        label="Carregando dashboard..."
-        subLabel="Buscando dados do banco"
-      />
-    );
-  }
-
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <div className="relative">
@@ -153,53 +144,67 @@ export default function DashboardPage() {
               </section>
 
               <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Assinaturas ativas</p>
-                      <p className="text-3xl text-white">{subscriptions.length}</p>
-                      <p className="text-xs text-zinc-500 mt-2">Total cadastradas</p>
-                    </div>
-                    <CreditCard className="h-9 w-9 text-emerald-400" />
-                  </div>
-                </Card>
+                {isLoading ? (
+                  Array.from({ length: 4 }).map((_, index) => (
+                    <Card key={`kpi-skeleton-${index}`} className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                      <div className="space-y-3">
+                        <Skeleton className="h-4 w-28 bg-zinc-800" />
+                        <Skeleton className="h-8 w-24 bg-zinc-800" />
+                        <Skeleton className="h-3 w-32 bg-zinc-800" />
+                      </div>
+                    </Card>
+                  ))
+                ) : (
+                  <>
+                    <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-zinc-400 text-sm mb-1">Assinaturas ativas</p>
+                          <p className="text-3xl text-white">{subscriptions.length}</p>
+                          <p className="text-xs text-zinc-500 mt-2">Total cadastradas</p>
+                        </div>
+                        <CreditCard className="h-9 w-9 text-emerald-400" />
+                      </div>
+                    </Card>
 
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Gasto mensal</p>
-                      <p className="text-3xl text-white">
-                        R$ {totalMonthly.toFixed(2).replace('.', ',')}
-                      </p>
-                      <p className="text-xs text-zinc-500 mt-2">Última atualização</p>
-                    </div>
-                    <TrendingUp className="h-9 w-9 text-purple-400" />
-                  </div>
-                </Card>
+                    <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-zinc-400 text-sm mb-1">Gasto mensal</p>
+                          <p className="text-3xl text-white">
+                            R$ {totalMonthly.toFixed(2).replace('.', ',')}
+                          </p>
+                          <p className="text-xs text-zinc-500 mt-2">Última atualização</p>
+                        </div>
+                        <TrendingUp className="h-9 w-9 text-purple-400" />
+                      </div>
+                    </Card>
 
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Gasto anual</p>
-                      <p className="text-3xl text-white">
-                        R$ {totalYearly.toFixed(2).replace('.', ',')}
-                      </p>
-                      <p className="text-xs text-zinc-500 mt-2">Projeção 12 meses</p>
-                    </div>
-                    <TrendingUp className="h-9 w-9 text-emerald-400" />
-                  </div>
-                </Card>
+                    <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-zinc-400 text-sm mb-1">Gasto anual</p>
+                          <p className="text-3xl text-white">
+                            R$ {totalYearly.toFixed(2).replace('.', ',')}
+                          </p>
+                          <p className="text-xs text-zinc-500 mt-2">Projeção 12 meses</p>
+                        </div>
+                        <TrendingUp className="h-9 w-9 text-emerald-400" />
+                      </div>
+                    </Card>
 
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <p className="text-zinc-400 text-sm mb-1">Cobranças próximas</p>
-                      <p className="text-3xl text-white">{upcomingRenewals}</p>
-                      <p className="text-xs text-zinc-500 mt-2">Próximos 7 dias</p>
-                    </div>
-                    <Bell className="h-9 w-9 text-yellow-400" />
-                  </div>
-                </Card>
+                    <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <p className="text-zinc-400 text-sm mb-1">Cobranças próximas</p>
+                          <p className="text-3xl text-white">{upcomingRenewals}</p>
+                          <p className="text-xs text-zinc-500 mt-2">Próximos 7 dias</p>
+                        </div>
+                        <Bell className="h-9 w-9 text-yellow-400" />
+                      </div>
+                    </Card>
+                  </>
+                )}
               </section>
 
               <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -218,7 +223,14 @@ export default function DashboardPage() {
                   </div>
 
                   {isLoading ? (
-                    <p className="text-sm text-zinc-400">Carregando resumo...</p>
+                    <div className="space-y-3">
+                      {Array.from({ length: 3 }).map((_, index) => (
+                        <div key={`renewal-skeleton-${index}`} className="rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3">
+                          <Skeleton className="h-4 w-40 bg-zinc-800" />
+                          <Skeleton className="mt-2 h-3 w-28 bg-zinc-800" />
+                        </div>
+                      ))}
+                    </div>
                   ) : recentRenewals.length === 0 ? (
                     <p className="text-sm text-zinc-500">Nenhuma assinatura cadastrada ainda.</p>
                   ) : (
@@ -252,9 +264,19 @@ export default function DashboardPage() {
                     <Users className="h-5 w-5 text-emerald-400" />
                     <h2 className="text-lg font-semibold text-white">Amigos</h2>
                   </div>
-                  <p className="text-sm text-zinc-400">Você tem</p>
-                  <p className="text-3xl font-semibold text-white mt-1">{friends.length}</p>
-                  <p className="text-xs text-zinc-500 mt-2">contatos cadastrados</p>
+                  {isLoading ? (
+                    <div className="space-y-2">
+                      <Skeleton className="h-3 w-16 bg-zinc-800" />
+                      <Skeleton className="h-8 w-20 bg-zinc-800" />
+                      <Skeleton className="h-3 w-32 bg-zinc-800" />
+                    </div>
+                  ) : (
+                    <>
+                      <p className="text-sm text-zinc-400">Você tem</p>
+                      <p className="text-3xl font-semibold text-white mt-1">{friends.length}</p>
+                      <p className="text-xs text-zinc-500 mt-2">contatos cadastrados</p>
+                    </>
+                  )}
 
                   <div className="mt-6 flex flex-col gap-2">
                     <Button asChild variant="outline" className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">

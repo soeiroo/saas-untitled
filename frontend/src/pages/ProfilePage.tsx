@@ -6,9 +6,9 @@ import { getCurrentUser, updateCurrentUser, deleteCurrentUser } from '@/api/user
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
+import { Skeleton } from '@/components/ui/skeleton';
 import { EditProfileDialog } from '@/components/profile/EditProfileDialog';
 import { ChangePasswordDialog } from '@/components/profile/ChangePasswordDialog';
-import { LoadingIndicator } from '@/components/common/LoadingScreen';
 import { toast } from 'sonner';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { Pencil, Trash2, Key, ArrowLeft, User as UserIcon, Shield, AlertCircle } from 'lucide-react';
@@ -104,7 +104,11 @@ export default function ProfilePage() {
               <MobileAppMenu title="Configurações da conta" />
               <div className="max-w-6xl mx-auto px-4 py-8">
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
-                  <LoadingIndicator label="Carregando perfil..." subLabel="Buscando dados atualizados" size="lg" className="mx-auto" />
+                  <div className="flex flex-col items-center gap-4">
+                    <Skeleton className="h-16 w-16 rounded-full bg-zinc-800" />
+                    <Skeleton className="h-4 w-40 bg-zinc-800" />
+                    <Skeleton className="h-3 w-56 bg-zinc-800" />
+                  </div>
                 </Card>
               </div>
             </main>

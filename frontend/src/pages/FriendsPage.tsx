@@ -19,7 +19,6 @@ import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { getCurrentUser } from '@/api/user';
 import type { User } from '@/types/user';
-import { LoadingScreen } from '@/components/common/LoadingScreen';
 
 export default function FriendsPage() {
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -191,15 +190,6 @@ export default function FriendsPage() {
       friend.email.toLowerCase().includes(query)
     );
   });
-
-  if (isFetchingFriends && friends.length === 0 && requests.length === 0 && sentRequests.length === 0) {
-    return (
-      <LoadingScreen
-        label="Carregando amigos..."
-        subLabel="Buscando dados do banco"
-      />
-    );
-  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
