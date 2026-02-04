@@ -42,8 +42,8 @@
 
 .sidebar-item:hover,
 .sidebar-item:focus-visible {
-  transform: translateX(4px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.25);
+  transform: translateX(2px);
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.35);
 }
 @media (min-width: 1024px) {
   .sidebar {

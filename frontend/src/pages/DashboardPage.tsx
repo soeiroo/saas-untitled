@@ -89,7 +89,8 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <div className="relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,_rgba(16,185,129,0.10),_transparent_45%),radial-gradient(circle_at_80%_12%,_rgba(139,92,246,0.10),_transparent_42%),linear-gradient(to_bottom,_rgba(255,255,255,0.03),_transparent_22%)]" />
+        <div className="pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(circle_at_top,black,transparent_70%)] bg-[radial-gradient(circle_at_50%_0%,_rgba(255,255,255,0.05),_transparent_45%)]" />
         <div className="relative flex">
           <Sidebar activePage="overview" />
 
@@ -98,7 +99,10 @@ export default function DashboardPage() {
             <div className="max-w-6xl mx-auto px-4 lg:px-6 py-10 relative">
               <header className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between mb-8">
                 <div className="space-y-2">
-                  <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">Bem-vindo</p>
+                  <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.28em] text-zinc-300">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80" />
+                    Bem-vindo
+                  </div>
                   <h1 className="text-3xl md:text-4xl font-semibold text-white">
                     Olá{currentUser?.name ? `, ${currentUser.name.split(' ')[0]}` : ''}!
                     <span className="block text-base font-normal text-emerald-300/80 mt-1">Tudo pronto para hoje</span>
@@ -109,7 +113,7 @@ export default function DashboardPage() {
                 </div>
               </header>
 
-              <Card className="relative overflow-hidden mb-8 bg-zinc-900/70 border-zinc-800">
+              <Card className="relative overflow-hidden mb-8 bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 border-white/10">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_45%),radial-gradient(circle_at_85%_10%,_rgba(139,92,246,0.14),_transparent_40%)]" />
                 <div className="relative px-6 py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="space-y-2">
@@ -120,10 +124,10 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                    <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_14px_34px_rgba(16,185,129,0.18)] hover:shadow-[0_18px_40px_rgba(16,185,129,0.22)]">
                       <Link href="/assinaturas">Gerenciar assinaturas</Link>
                     </Button>
-                    <Button asChild variant="outline" className="bg-zinc-900/60 border-zinc-700 text-white hover:bg-zinc-800">
+                    <Button asChild variant="outline" className="bg-white/5 border-white/10 text-white hover:bg-white/10">
                       <Link href="/friends">Conectar amigos</Link>
                     </Button>
                   </div>
@@ -146,28 +150,33 @@ export default function DashboardPage() {
               <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                 {isLoading ? (
                   Array.from({ length: 4 }).map((_, index) => (
-                    <Card key={`kpi-skeleton-${index}`} className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
-                      <div className="space-y-3">
-                        <Skeleton className="h-4 w-28 bg-zinc-800" />
-                        <Skeleton className="h-8 w-24 bg-zinc-800" />
-                        <Skeleton className="h-3 w-32 bg-zinc-800" />
+                    <Card key={`kpi-skeleton-${index}`} className="relative overflow-hidden bg-white/5 border-white/10 p-6">
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_55%)]" />
+                      <div className="relative space-y-3">
+                        <Skeleton className="h-4 w-28 bg-white/10" />
+                        <Skeleton className="h-8 w-24 bg-white/10" />
+                        <Skeleton className="h-3 w-32 bg-white/10" />
                       </div>
                     </Card>
                   ))
                 ) : (
                   <>
-                    <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                    <Card className="relative overflow-hidden bg-white/5 border-white/10 p-6">
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_60%)]" />
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Assinaturas ativas</p>
                           <p className="text-3xl text-white">{subscriptions.length}</p>
                           <p className="text-xs text-zinc-500 mt-2">Total cadastradas</p>
                         </div>
-                        <CreditCard className="h-9 w-9 text-emerald-400" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/20 to-purple-500/15 flex items-center justify-center">
+                          <CreditCard className="h-5 w-5 text-emerald-200" />
+                        </div>
                       </div>
                     </Card>
 
-                    <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                    <Card className="relative overflow-hidden bg-white/5 border-white/10 p-6">
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.12),_transparent_60%)]" />
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Gasto mensal</p>
@@ -176,11 +185,14 @@ export default function DashboardPage() {
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Última atualização</p>
                         </div>
-                        <TrendingUp className="h-9 w-9 text-purple-400" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/20 to-emerald-500/10 flex items-center justify-center">
+                          <TrendingUp className="h-5 w-5 text-purple-200" />
+                        </div>
                       </div>
                     </Card>
 
-                    <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                    <Card className="relative overflow-hidden bg-white/5 border-white/10 p-6">
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.10),_transparent_60%)]" />
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Gasto anual</p>
@@ -189,18 +201,23 @@ export default function DashboardPage() {
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Projeção 12 meses</p>
                         </div>
-                        <TrendingUp className="h-9 w-9 text-emerald-400" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/20 to-purple-500/10 flex items-center justify-center">
+                          <TrendingUp className="h-5 w-5 text-emerald-200" />
+                        </div>
                       </div>
                     </Card>
 
-                    <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                    <Card className="relative overflow-hidden bg-white/5 border-white/10 p-6">
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(250,204,21,0.10),_transparent_60%)]" />
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Cobranças próximas</p>
                           <p className="text-3xl text-white">{upcomingRenewals}</p>
                           <p className="text-xs text-zinc-500 mt-2">Próximos 7 dias</p>
                         </div>
-                        <Bell className="h-9 w-9 text-yellow-400" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-gradient-to-br from-yellow-500/15 to-purple-500/10 flex items-center justify-center">
+                          <Bell className="h-5 w-5 text-yellow-200" />
+                        </div>
                       </div>
                     </Card>
                   </>
@@ -208,13 +225,13 @@ export default function DashboardPage() {
               </section>
 
               <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20 lg:col-span-2">
+                <Card className="bg-white/5 border-white/10 p-6 lg:col-span-2">
                   <div className="flex items-center justify-between mb-4">
                     <div>
                       <h2 className="text-lg font-semibold text-white">Próximas renovações</h2>
                       <p className="text-sm text-zinc-500">As 3 mais próximas</p>
                     </div>
-                    <Button asChild variant="outline" className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">
+                    <Button asChild variant="outline" className="bg-white/5 border-white/10 text-white hover:bg-white/10">
                       <Link href="/assinaturas" className="inline-flex items-center gap-2">
                         Ver todas
                         <ArrowRight className="h-4 w-4" />
@@ -225,9 +242,9 @@ export default function DashboardPage() {
                   {isLoading ? (
                     <div className="space-y-3">
                       {Array.from({ length: 3 }).map((_, index) => (
-                        <div key={`renewal-skeleton-${index}`} className="rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3">
-                          <Skeleton className="h-4 w-40 bg-zinc-800" />
-                          <Skeleton className="mt-2 h-3 w-28 bg-zinc-800" />
+                        <div key={`renewal-skeleton-${index}`} className="rounded-2xl border border-white/10 bg-white/5 px-4 py-3">
+                          <Skeleton className="h-4 w-40 bg-white/10" />
+                          <Skeleton className="mt-2 h-3 w-28 bg-white/10" />
                         </div>
                       ))}
                     </div>
@@ -238,7 +255,7 @@ export default function DashboardPage() {
                       {recentRenewals.map((sub) => (
                         <div
                           key={sub.id}
-                          className="flex items-center justify-between rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3 transition-colors hover:bg-zinc-800/60 hover:border-zinc-700"
+                          className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
                         >
                           <div>
                             <p className="text-sm font-medium text-white">{sub.name}</p>
@@ -259,16 +276,16 @@ export default function DashboardPage() {
                   )}
                 </Card>
 
-                <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
+                <Card className="bg-white/5 border-white/10 p-6">
                   <div className="flex items-center gap-2 mb-4">
                     <Users className="h-5 w-5 text-emerald-400" />
                     <h2 className="text-lg font-semibold text-white">Amigos</h2>
                   </div>
                   {isLoading ? (
                     <div className="space-y-2">
-                      <Skeleton className="h-3 w-16 bg-zinc-800" />
-                      <Skeleton className="h-8 w-20 bg-zinc-800" />
-                      <Skeleton className="h-3 w-32 bg-zinc-800" />
+                      <Skeleton className="h-3 w-16 bg-white/10" />
+                      <Skeleton className="h-8 w-20 bg-white/10" />
+                      <Skeleton className="h-3 w-32 bg-white/10" />
                     </div>
                   ) : (
                     <>
@@ -279,7 +296,7 @@ export default function DashboardPage() {
                   )}
 
                   <div className="mt-6 flex flex-col gap-2">
-                    <Button asChild variant="outline" className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">
+                    <Button asChild variant="outline" className="bg-white/5 border-white/10 text-white hover:bg-white/10">
                       <Link href="/assinaturas">Ver assinaturas</Link>
                     </Button>
                   </div>

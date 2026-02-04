@@ -80,6 +80,12 @@
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(0.269 0 0);
   --sidebar-ring: oklch(0.439 0 0);
+
+  /* Premium surfaces (same palette, different opacity/layers) */
+  --surface-0: oklch(0.145 0 0);
+  --surface-1: color-mix(in oklch, white 4%, var(--background));
+  --surface-2: color-mix(in oklch, white 6%, var(--background));
+  --surface-border: color-mix(in oklch, white 8%, transparent);
 }
 
 @theme inline {
@@ -137,6 +143,16 @@
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     overflow-x: hidden;
+  }
+
+  .dark body {
+    background-color: var(--surface-0);
+    background-image:
+      radial-gradient(circle at 20% 0%, rgba(16, 185, 129, 0.10), transparent 45%),
+      radial-gradient(circle at 80% 10%, rgba(139, 92, 246, 0.10), transparent 42%),
+      radial-gradient(circle at 60% 100%, rgba(16, 185, 129, 0.06), transparent 55%),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03), transparent 22%);
+    background-attachment: fixed;
   }
   /**
   * Default typography styles for HTML elements (h1-h4, p, label, button, input).
