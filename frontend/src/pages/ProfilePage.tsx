@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Avatar, AvatarFallback } from '@/components/ui/avatar';
 import { EditProfileDialog } from '@/components/profile/EditProfileDialog';
 import { ChangePasswordDialog } from '@/components/profile/ChangePasswordDialog';
+import { LoadingIndicator } from '@/components/common/LoadingScreen';
 import { toast } from 'sonner';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { Pencil, Trash2, Key, ArrowLeft, User as UserIcon, Shield, AlertCircle } from 'lucide-react';
@@ -103,8 +104,7 @@ export default function ProfilePage() {
               <MobileAppMenu title="Configurações da conta" />
               <div className="max-w-6xl mx-auto px-4 py-8">
                 <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
-                  <p className="text-zinc-400 text-lg mb-2">Carregando perfil...</p>
-                  <p className="text-zinc-500">Buscando dados atualizados</p>
+                  <LoadingIndicator label="Carregando perfil..." subLabel="Buscando dados atualizados" size="lg" className="mx-auto" />
                 </Card>
               </div>
             </main>
