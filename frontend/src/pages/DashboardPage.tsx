@@ -124,7 +124,7 @@ export default function DashboardPage() {
                     </p>
                   </div>
                   <div className="flex flex-wrap gap-3">
-                    <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_14px_34px_rgba(16,185,129,0.18)] hover:shadow-[0_18px_40px_rgba(16,185,129,0.22)]">
+                    <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-[0_10px_24px_rgba(16,185,129,0.12)] hover:shadow-[0_14px_30px_rgba(16,185,129,0.16)]">
                       <Link href="/assinaturas">Gerenciar assinaturas</Link>
                     </Button>
                     <Button asChild variant="outline" className="bg-white/5 border-white/10 text-white hover:bg-white/10">
@@ -185,8 +185,8 @@ export default function DashboardPage() {
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Última atualização</p>
                         </div>
-                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-emerald-500/10 flex items-center justify-center">
-                          <TrendingUp className="h-5 w-5 text-emerald-200" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center">
+                          <TrendingUp className="h-5 w-5 text-zinc-200" />
                         </div>
                       </div>
                     </Card>
@@ -201,8 +201,8 @@ export default function DashboardPage() {
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Projeção 12 meses</p>
                         </div>
-                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-emerald-500/10 flex items-center justify-center">
-                          <TrendingUp className="h-5 w-5 text-emerald-200" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center">
+                          <TrendingUp className="h-5 w-5 text-zinc-200" />
                         </div>
                       </div>
                     </Card>
@@ -215,8 +215,8 @@ export default function DashboardPage() {
                           <p className="text-3xl text-white">{upcomingRenewals}</p>
                           <p className="text-xs text-zinc-500 mt-2">Próximos 7 dias</p>
                         </div>
-                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-emerald-500/10 flex items-center justify-center">
-                          <Bell className="h-5 w-5 text-emerald-200" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center">
+                          <Bell className="h-5 w-5 text-zinc-200" />
                         </div>
                       </div>
                     </Card>
