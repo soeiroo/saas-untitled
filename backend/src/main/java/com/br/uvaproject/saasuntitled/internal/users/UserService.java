@@ -31,20 +31,19 @@ public class UserService {
         }
 
         dto = new UserCreateDTO(
-            dto.email(),
-            dto.password(),
-            dto.name(),
-            dto.profilePicture(),
-            "free"
-        );
-
+                dto.email(),
+                dto.password(),
+                dto.name(),
+                dto.profilePicture(),
+                "free");
 
         if (userRepository.findByEmail(dto.email()).isPresent()) {
             throw new IllegalStateException("Email já está em uso");
         }
 
         if (dto.profilePicture() == null || dto.profilePicture().isBlank()) {
-            dto = new UserCreateDTO(dto.email(), dto.password(), dto.name(), getDefaultProfilePicture(dto.name()), dto.userPlan());
+            dto = new UserCreateDTO(dto.email(), dto.password(), dto.name(), getDefaultProfilePicture(dto.name()),
+                    dto.userPlan());
         }
 
         String hash = passwordEncoder.encode(dto.password());

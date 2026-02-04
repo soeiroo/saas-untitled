@@ -9,6 +9,7 @@ import { Button } from '@/components/ui/button';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
+import { LoadingScreen } from '@/components/common/LoadingScreen';
 import { getSubscriptions } from '@/api/subscription';
 import { getFriends } from '@/api/friend';
 import { getCurrentUser } from '@/api/user';
@@ -20,7 +21,7 @@ export default function DashboardPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [friends, setFriends] = useState<Friend[]>([]);
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
@@ -84,6 +85,15 @@ export default function DashboardPage() {
       )
       .slice(0, 3);
   }, [subscriptions]);
+
+  if (isLoading) {
+    return (
+      <LoadingScreen
+        label="Carregando dashboard..."
+        subLabel="Buscando dados do banco"
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">

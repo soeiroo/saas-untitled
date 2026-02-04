@@ -10,6 +10,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff } from 'lucide-react';
+import { LoadingScreen } from '@/components/common/LoadingScreen';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -131,6 +132,15 @@ export default function LoginPage() {
       setLoading(false);
     }
   };
+
+  if (loading) {
+    return (
+      <LoadingScreen
+        label={isRegistered ? 'Entrando...' : 'Registrando...'}
+        subLabel="Aguarde um instante"
+      />
+    );
+  }
 
   if (!isRegistered) {
     return (
