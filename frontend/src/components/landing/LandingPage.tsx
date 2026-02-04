@@ -84,10 +84,10 @@ export default function LandingPage() {
               </div>
             </div>
             <div className="flex items-center gap-2">
-              <Button asChild variant="outline" className="bg-zinc-900/60 border-zinc-700 text-white hover:bg-zinc-800">
+              <Button asChild variant="outline" className="bg-zinc-900/60 border-zinc-700 text-white hover:bg-zinc-800 shadow-none hover:shadow-none">
                 <Link href="/login">Entrar</Link>
               </Button>
-              <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white hidden sm:inline-flex">
+              <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white hidden sm:inline-flex shadow-none hover:shadow-none">
                 <Link href="/login">Começar agora</Link>
               </Button>
             </div>
@@ -108,10 +108,10 @@ export default function LandingPage() {
                   inspirado nos melhores layouts da Webflow.
                 </p>
                 <div className="flex flex-wrap gap-3">
-                  <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                  <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-none hover:shadow-none">
                     <Link href="/login">Experimentar agora</Link>
                   </Button>
-                  <Button asChild variant="outline" className="bg-zinc-900/60 border-zinc-700 text-white hover:bg-zinc-800">
+                  <Button asChild variant="outline" className="bg-zinc-900/60 border-zinc-700 text-white hover:bg-zinc-800 shadow-none hover:shadow-none">
                     <Link href="/login">Ver demo</Link>
                   </Button>
                 </div>
@@ -208,7 +208,7 @@ export default function LandingPage() {
                     </li>
                   ))}
                 </ul>
-                <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-none hover:shadow-none">
                   <Link href="/login" className="inline-flex items-center gap-2">
                     Criar minha conta
                     <ArrowRight className="h-4 w-4" />
@@ -226,7 +226,7 @@ export default function LandingPage() {
                     Uma interface limpa, moderna e preparada para escalar com você.
                   </p>
                 </div>
-                <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white">
+                <Button asChild className="bg-emerald-600 hover:bg-emerald-700 text-white shadow-none hover:shadow-none">
                   <Link href="/login">Solicitar acesso</Link>
                 </Button>
               </Card>
