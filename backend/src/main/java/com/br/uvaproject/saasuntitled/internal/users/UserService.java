@@ -30,15 +30,13 @@ public class UserService {
             throw new IllegalArgumentException("A senha não pode estar vazia");
         }
 
-        if (dto.userPlan() == null || dto.userPlan().isBlank()) {
-            dto = new UserCreateDTO(
-                    dto.email(),
-                    dto.password(),
-                    dto.name(),
-                    dto.profilePicture(),
-                    "free"
-            );
-        }
+        dto = new UserCreateDTO(
+            dto.email(),
+            dto.password(),
+            dto.name(),
+            dto.profilePicture(),
+            "free"
+        );
 
 
         if (userRepository.findByEmail(dto.email()).isPresent()) {

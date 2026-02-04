@@ -29,7 +29,7 @@ public class AuthController {
                         request.password(),
                         request.name(),
                         request.profilePicture(),
-                        request.userPlan()
+                        "free"
                 )
         );
 
