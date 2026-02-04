@@ -89,7 +89,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <div className="relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_0%,_rgba(16,185,129,0.10),_transparent_45%),radial-gradient(circle_at_80%_12%,_rgba(139,92,246,0.10),_transparent_42%),linear-gradient(to_bottom,_rgba(255,255,255,0.03),_transparent_22%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_0%,_rgba(16,185,129,0.09),_transparent_46%),radial-gradient(circle_at_84%_8%,_rgba(139,92,246,0.03),_transparent_46%),linear-gradient(to_bottom,_rgba(255,255,255,0.03),_transparent_22%)]" />
         <div className="pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(circle_at_top,black,transparent_70%)] bg-[radial-gradient(circle_at_50%_0%,_rgba(255,255,255,0.05),_transparent_45%)]" />
         <div className="relative flex">
           <Sidebar activePage="overview" />
@@ -114,7 +114,7 @@ export default function DashboardPage() {
               </header>
 
               <Card className="relative overflow-hidden mb-8 bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 border-white/10">
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_45%),radial-gradient(circle_at_85%_10%,_rgba(139,92,246,0.14),_transparent_40%)]" />
+                <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.18),_transparent_48%),radial-gradient(circle_at_90%_10%,_rgba(255,255,255,0.05),_transparent_40%)]" />
                 <div className="relative px-6 py-6 md:px-8 md:py-7 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
                   <div className="space-y-2">
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-400">Visão geral</p>
@@ -162,21 +162,21 @@ export default function DashboardPage() {
                 ) : (
                   <>
                     <Card className="relative overflow-hidden bg-white/5 border-white/10 p-6">
-                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_60%)]" />
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_60%)]" />
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Assinaturas ativas</p>
                           <p className="text-3xl text-white">{subscriptions.length}</p>
                           <p className="text-xs text-zinc-500 mt-2">Total cadastradas</p>
                         </div>
-                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/20 to-purple-500/15 flex items-center justify-center">
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-emerald-500/10 flex items-center justify-center">
                           <CreditCard className="h-5 w-5 text-emerald-200" />
                         </div>
                       </div>
                     </Card>
 
                     <Card className="relative overflow-hidden bg-white/5 border-white/10 p-6">
-                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(139,92,246,0.12),_transparent_60%)]" />
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_60%)]" />
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Gasto mensal</p>
@@ -185,14 +185,14 @@ export default function DashboardPage() {
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Última atualização</p>
                         </div>
-                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-gradient-to-br from-purple-500/20 to-emerald-500/10 flex items-center justify-center">
-                          <TrendingUp className="h-5 w-5 text-purple-200" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-emerald-500/10 flex items-center justify-center">
+                          <TrendingUp className="h-5 w-5 text-emerald-200" />
                         </div>
                       </div>
                     </Card>
 
                     <Card className="relative overflow-hidden bg-white/5 border-white/10 p-6">
-                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.10),_transparent_60%)]" />
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_60%)]" />
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Gasto anual</p>
@@ -201,22 +201,22 @@ export default function DashboardPage() {
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Projeção 12 meses</p>
                         </div>
-                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/20 to-purple-500/10 flex items-center justify-center">
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-emerald-500/10 flex items-center justify-center">
                           <TrendingUp className="h-5 w-5 text-emerald-200" />
                         </div>
                       </div>
                     </Card>
 
                     <Card className="relative overflow-hidden bg-white/5 border-white/10 p-6">
-                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(250,204,21,0.10),_transparent_60%)]" />
+                      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(255,255,255,0.06),_transparent_60%)]" />
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Cobranças próximas</p>
                           <p className="text-3xl text-white">{upcomingRenewals}</p>
                           <p className="text-xs text-zinc-500 mt-2">Próximos 7 dias</p>
                         </div>
-                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-gradient-to-br from-yellow-500/15 to-purple-500/10 flex items-center justify-center">
-                          <Bell className="h-5 w-5 text-yellow-200" />
+                        <div className="h-11 w-11 rounded-2xl border border-white/10 bg-emerald-500/10 flex items-center justify-center">
+                          <Bell className="h-5 w-5 text-emerald-200" />
                         </div>
                       </div>
                     </Card>
