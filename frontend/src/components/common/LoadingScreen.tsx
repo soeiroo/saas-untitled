@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { cn } from '@/components/ui/utils';
 
 type LoaderSize = 'sm' | 'md' | 'lg';
@@ -8,6 +8,8 @@ type LoaderSize = 'sm' | 'md' | 'lg';
 interface LoadingIndicatorProps {
   label?: string;
   subLabel?: string;
+  slowMessage?: string;
+  slowDelayMs?: number;
   size?: LoaderSize;
   className?: string;
 }
@@ -21,9 +23,19 @@ const sizeMap: Record<LoaderSize, string> = {
 export function LoadingIndicator({
   label = 'Carregando...',
   subLabel,
+  slowMessage = 'Isso está demorando mais que o esperado…',
+  slowDelayMs = 2000,
   size = 'md',
   className,
 }: LoadingIndicatorProps) {
+  const [showSlowMessage, setShowSlowMessage] = useState(false);
+
+  useEffect(() => {
+    if (!slowMessage) return;
+    const timeoutId = setTimeout(() => setShowSlowMessage(true), slowDelayMs);
+    return () => clearTimeout(timeoutId);
+  }, [slowMessage, slowDelayMs]);
+
   return (
     <div className={cn('flex flex-col items-center gap-3', className)} role="status" aria-live="polite">
       <div className={cn('relative', sizeMap[size])} aria-hidden="true">
@@ -35,6 +47,9 @@ export function LoadingIndicator({
       </div>
       <p className="text-sm text-zinc-400">{label}</p>
       {subLabel && <p className="text-xs text-zinc-500">{subLabel}</p>}
+      {showSlowMessage && (
+        <p className="text-xs text-zinc-500">{slowMessage}</p>
+      )}
       <span className="sr-only">{label}</span>
     </div>
   );

@@ -14,6 +14,7 @@ import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
+import { LoadingScreen } from '@/components/common/LoadingScreen';
 
 type HomePageProps = {
   activePage?: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
@@ -25,7 +26,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [mySubscriptions, setMySubscriptions] = useState<Subscription[]>([]);
   const [sharedSubscriptions, setSharedSubscriptions] = useState<Subscription[]>([]);
-  const [isFetchingSubscriptions, setIsFetchingSubscriptions] = useState(false);
+  const [isFetchingSubscriptions, setIsFetchingSubscriptions] = useState(true);
   const [isMutatingSubscriptions, setIsMutatingSubscriptions] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
@@ -195,6 +196,15 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
           return new Date(a.renewalDate).getTime() - new Date(b.renewalDate).getTime();
       }
     });
+
+  if (isFetchingSubscriptions && allSubscriptions.length === 0) {
+    return (
+      <LoadingScreen
+        label="Carregando assinaturas..."
+        subLabel="Buscando dados do banco"
+      />
+    );
+  }
 
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
