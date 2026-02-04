@@ -89,8 +89,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <div className="relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_22%_0%,_rgba(16,185,129,0.09),_transparent_46%),radial-gradient(circle_at_84%_8%,_rgba(139,92,246,0.03),_transparent_46%),linear-gradient(to_bottom,_rgba(255,255,255,0.03),_transparent_22%)]" />
-        <div className="pointer-events-none absolute inset-0 opacity-60 [mask-image:radial-gradient(circle_at_top,black,transparent_70%)] bg-[radial-gradient(circle_at_50%_0%,_rgba(255,255,255,0.05),_transparent_45%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
         <div className="relative flex">
           <Sidebar activePage="overview" />
 
