@@ -31,7 +31,13 @@ public class UserService {
         }
 
         if (dto.userPlan() == null || dto.userPlan().isBlank()) {
-            throw new IllegalArgumentException("O plano não pode estar vazio");
+            dto = new UserCreateDTO(
+                    dto.email(),
+                    dto.password(),
+                    dto.name(),
+                    dto.profilePicture(),
+                    "free"
+            );
         }
 
 
@@ -118,7 +124,7 @@ public class UserService {
             if (dto.userPlan().isBlank()) {
                 throw new IllegalArgumentException("O plano não pode estar vazio");
             }
-            user.setPasswordHash(passwordEncoder.encode(dto.password()));
+            user.setUserPlan(dto.userPlan());
         }
 
         return userRepository.save(user);

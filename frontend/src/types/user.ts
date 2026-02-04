@@ -3,6 +3,7 @@ export interface User {
   name: string;
   email: string;
   profilePicture?: string;
+  userPlan?: string;
 }
 
 export interface UpdateUserData {
@@ -11,4 +12,5 @@ export interface UpdateUserData {
   currentPassword?: string;
   newPassword?: string;
   profilePicture?: string;
+  userPlan?: string;
 }
