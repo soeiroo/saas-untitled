@@ -1,4 +1,5 @@
 import type { Subscription } from '@/types/subscription';
+import type { SubscriptionFriend } from '@/types/subscriptionFriend';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -94,4 +95,16 @@ export async function shareSubscriptionWithFriend(
     ...(hasPrice ? { body: JSON.stringify({ price }) } : {}),
   });
   if (!response.ok) throw new Error('Erro ao compartilhar assinatura');
+}
+
+export async function getSubscriptionFriends(subscriptionId: string): Promise<SubscriptionFriend[]> {
+  const token = getAuthToken();
+  const response = await fetch(`${API_URL}/api/subscriptions/${subscriptionId}/friends`, {
+    credentials: 'include',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!response.ok) throw new Error('Erro ao buscar amigos da assinatura');
+  return response.json();
 }

@@ -10,7 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { StatCounter } from '@/components/common/StatCounter';
-import { getSubscriptions, updateSubscription } from '@/api/subscription';
+import { getSubscriptions, updateSubscription, getSubscriptionFriends } from '@/api/subscription';
 import { getFriends } from '@/api/friend';
 import { getCurrentUser } from '@/api/user';
 import type { Subscription } from '@/types/subscription';
@@ -18,6 +18,9 @@ import type { Friend } from '@/types/friend';
 import type { User } from '@/types/user';
 import { getAutoRenewedDate } from '@/utils/subscriptionRenewal';
 import { format } from 'date-fns';
+import type { SubscriptionFriend } from '@/types/subscriptionFriend';
+import { subscriptionIcons } from '@/data/subscriptionIcons';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 export default function DashboardPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -25,6 +28,7 @@ export default function DashboardPage() {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
+  const [subscriptionFriends, setSubscriptionFriends] = useState<Record<string, SubscriptionFriend[]>>({});
 
   useEffect(() => {
     async function loadDashboard() {
@@ -45,6 +49,8 @@ export default function DashboardPage() {
 
         const normalizedSubs = await autoRenewSubscriptions(subs);
         setSubscriptions(normalizedSubs);
+        const friendsMap = await loadSubscriptionFriends(normalizedSubs);
+        setSubscriptionFriends(friendsMap);
         setFriends(friendsList);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -84,6 +90,24 @@ export default function DashboardPage() {
     }
 
     return updated;
+  };
+
+  const loadSubscriptionFriends = async (subs: Subscription[]) => {
+    const entries = await Promise.all(
+      subs.map(async (sub) => {
+        try {
+          const friends = await getSubscriptionFriends(sub.id);
+          return [sub.id, friends] as const;
+        } catch {
+          return [sub.id, [] as SubscriptionFriend[]] as const;
+        }
+      })
+    );
+
+    return entries.reduce<Record<string, SubscriptionFriend[]>>((acc, [id, friends]) => {
+      acc[id] = friends;
+      return acc;
+    }, {});
   };
 
   const totalMonthly = useMemo(
@@ -280,26 +304,73 @@ export default function DashboardPage() {
                     <p className="text-sm text-zinc-500">Nenhuma assinatura cadastrada ainda.</p>
                   ) : (
                     <div className="space-y-3">
-                      {recentRenewals.map((sub) => (
-                        <div
-                          key={sub.id}
-                          className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
-                        >
-                          <div>
-                            <p className="text-sm font-medium text-white">{sub.name}</p>
-                            <p className="text-xs text-zinc-500">
-                              Renovação em{' '}
-                              {new Date(sub.renewalDate).toLocaleDateString('pt-BR', {
-                                day: '2-digit',
-                                month: 'short',
-                              })}
-                            </p>
+                      {recentRenewals.map((sub) => {
+                        const icon = subscriptionIcons.find((i) => i.name === sub.icon) ?? subscriptionIcons[0];
+                        const friends = subscriptionFriends[sub.id] ?? [];
+
+                        return (
+                          <div
+                            key={sub.id}
+                            className="flex items-center justify-between rounded-2xl border border-white/10 bg-white/5 px-4 py-3 transition-colors hover:bg-white/10"
+                          >
+                            <div className="flex items-center gap-3 min-w-0">
+                              <span
+                                className="inline-flex items-center justify-center rounded-full"
+                                style={{ background: icon.color + '80', minWidth: 36, minHeight: 36, width: 36, height: 36 }}
+                              >
+                                <ImageWithFallback
+                                  src={icon.url}
+                                  alt={icon.name}
+                                  className="w-6 h-6 object-contain"
+                                />
+                              </span>
+                              <div className="min-w-0">
+                                <p className="text-sm font-medium text-white truncate">{sub.name}</p>
+                                <p className="text-xs text-zinc-500">
+                                  Renovação em{' '}
+                                  {new Date(sub.renewalDate).toLocaleDateString('pt-BR', {
+                                    day: '2-digit',
+                                    month: 'short',
+                                  })}
+                                </p>
+                              </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                              {friends.length > 0 && (
+                                <div className="flex -space-x-2">
+                                  {friends.slice(0, 3).map((friend) => (
+                                    <div
+                                      key={friend.id}
+                                      className="h-7 w-7 rounded-full border border-zinc-800 bg-zinc-900/80 overflow-hidden"
+                                      title={friend.name}
+                                    >
+                                      {friend.profilePicture ? (
+                                        <ImageWithFallback
+                                          src={friend.profilePicture}
+                                          alt={friend.name}
+                                          className="h-full w-full object-cover"
+                                        />
+                                      ) : (
+                                        <div className="h-full w-full flex items-center justify-center text-[10px] text-zinc-400">
+                                          {friend.name?.slice(0, 2).toUpperCase()}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                  {friends.length > 3 && (
+                                    <div className="h-7 w-7 rounded-full border border-zinc-800 bg-zinc-900/80 flex items-center justify-center text-[10px] text-zinc-400">
+                                      +{friends.length - 3}
+                                    </div>
+                                  )}
+                                </div>
+                              )}
+                              <div className="text-sm text-zinc-300">
+                                R$ {sub.price.toFixed(2).replace('.', ',')}
+                              </div>
+                            </div>
                           </div>
-                          <div className="text-sm text-zinc-300">
-                            R$ {sub.price.toFixed(2).replace('.', ',')}
-                          </div>
-                        </div>
-                      ))}
+                        );
+                      })}
                     </div>
                   )}
                 </Card>

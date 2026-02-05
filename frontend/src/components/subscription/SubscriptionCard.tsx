@@ -9,16 +9,18 @@ import { ptBR } from 'date-fns/locale';
 import { subscriptionIcons } from '@/data/subscriptionIcons';
 import type { Subscription } from '@/types/subscription';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
+import type { SubscriptionFriend } from '@/types/subscriptionFriend';
 
 interface SubscriptionCardProps {
   subscription: Subscription;
   onDelete?: (id: string) => void;
   onEdit?: (subscription: Subscription) => void;
   onMarkPaid?: (subscription: Subscription) => void;
+  sharedFriends?: SubscriptionFriend[];
   isShared?: boolean;
 }
 
-export function SubscriptionCard({ subscription, onDelete, onEdit, onMarkPaid, isShared = false }: SubscriptionCardProps) {
+export function SubscriptionCard({ subscription, onDelete, onEdit, onMarkPaid, sharedFriends = [], isShared = false }: SubscriptionCardProps) {
   const daysUntilRenewal = differenceInDays(new Date(subscription.renewalDate), new Date());
   const isUpcoming = daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
 
@@ -39,7 +41,7 @@ export function SubscriptionCard({ subscription, onDelete, onEdit, onMarkPaid, i
               style={{ display: 'block' }}
             />
           </span>
-          <div>
+            <div>
             <h3 className="text-white text-lg mb-1">{subscription.name}</h3>
             <div className="flex flex-wrap gap-1 mb-1">
               <Badge variant="outline" className="border-zinc-700 text-zinc-400">
@@ -61,6 +63,37 @@ export function SubscriptionCard({ subscription, onDelete, onEdit, onMarkPaid, i
                 </Badge>
               )}
             </div>
+              {(isShared || sharedFriends.length > 0) && (
+                <div className="mt-2 flex items-center gap-2">
+                  <div className="flex -space-x-2">
+                    {sharedFriends.slice(0, 3).map((friend) => (
+                      <div
+                        key={friend.id}
+                        className="h-7 w-7 rounded-full border border-zinc-800 bg-zinc-900/80 overflow-hidden"
+                        title={friend.name}
+                      >
+                        {friend.profilePicture ? (
+                          <ImageWithFallback
+                            src={friend.profilePicture}
+                            alt={friend.name}
+                            className="h-full w-full object-cover"
+                          />
+                        ) : (
+                          <div className="h-full w-full flex items-center justify-center text-[10px] text-zinc-400">
+                            {friend.name?.slice(0, 2).toUpperCase()}
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    {sharedFriends.length > 3 && (
+                      <div className="h-7 w-7 rounded-full border border-zinc-800 bg-zinc-900/80 flex items-center justify-center text-[10px] text-zinc-400">
+                        +{sharedFriends.length - 3}
+                      </div>
+                    )}
+                  </div>
+                  <span className="text-xs text-zinc-500">Compartilhada</span>
+                </div>
+              )}
           </div>
         </div>
         {(onMarkPaid || onEdit || onDelete) && (

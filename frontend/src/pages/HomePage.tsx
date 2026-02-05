@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { getSubscriptions, getSharedSubscriptions, addSubscription, updateSubscription, deleteSubscription } from '@/api/subscription';
+import { getSubscriptions, getSharedSubscriptions, addSubscription, updateSubscription, deleteSubscription, getSubscriptionFriends } from '@/api/subscription';
 import { AddSubscriptionDialog } from '@/components/subscription/AddSubscriptionDialog';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { EditSubscriptionDialog } from '@/components/subscription/EditSubscriptionDialog';
@@ -16,6 +16,7 @@ import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { StatCounter } from '@/components/common/StatCounter';
 import { getAutoRenewedDate, getNextRenewalDate } from '@/utils/subscriptionRenewal';
 import { format } from 'date-fns';
+import type { SubscriptionFriend } from '@/types/subscriptionFriend';
 
 type HomePageProps = {
   activePage?: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
@@ -36,6 +37,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   const [activeTab, setActiveTab] = useState<'all' | 'mine' | 'shared'>('all');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState<'renewal-asc' | 'price-desc' | 'price-asc' | 'name-asc'>('renewal-asc');
+  const [subscriptionFriends, setSubscriptionFriends] = useState<Record<string, SubscriptionFriend[]>>({});
 
   useEffect(() => {
     async function fetchSubs() {
@@ -49,6 +51,9 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
         const normalizedSubs = await autoRenewSubscriptions(subs);
         setMySubscriptions(normalizedSubs);
         setSharedSubscriptions(sharedSubs);
+        const all = [...normalizedSubs, ...sharedSubs];
+        const friendsMap = await loadSubscriptionFriends(all);
+        setSubscriptionFriends(friendsMap);
       } catch (err: unknown) {
         if (err instanceof Error) {
           setError(err.message);
@@ -63,6 +68,24 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
     }
     fetchSubs();
   }, []);
+
+  const loadSubscriptionFriends = async (subs: Subscription[]) => {
+    const entries = await Promise.all(
+      subs.map(async (sub) => {
+        try {
+          const friends = await getSubscriptionFriends(sub.id);
+          return [sub.id, friends] as const;
+        } catch {
+          return [sub.id, [] as SubscriptionFriend[]] as const;
+        }
+      })
+    );
+
+    return entries.reduce<Record<string, SubscriptionFriend[]>>((acc, [id, friends]) => {
+      acc[id] = friends;
+      return acc;
+    }, {});
+  };
   const autoRenewSubscriptions = async (subs: Subscription[]) => {
     const updates: Array<{ id: string; renewalDate: string }> = [];
     const updated = subs.map((sub) => {
@@ -126,6 +149,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
     try {
       const created = await addSubscription(newSub);
       setMySubscriptions(prev => [...prev, created]);
+      setSubscriptionFriends(prev => ({ ...prev, [created.id]: [] }));
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -146,6 +170,11 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
     try {
       await deleteSubscription(id);
       setMySubscriptions(prev => prev.filter(sub => sub.id !== id));
+      setSubscriptionFriends(prev => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -486,6 +515,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       onDelete={sharedIds.has(subscription.id) ? undefined : handleDeleteSubscription}
                       onEdit={sharedIds.has(subscription.id) ? undefined : handleEditSubscription}
                       onMarkPaid={sharedIds.has(subscription.id) ? undefined : handleMarkPaid}
+                      sharedFriends={subscriptionFriends[subscription.id]}
                     />
                   ))}
                 </div>
