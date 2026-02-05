@@ -1,7 +1,7 @@
 import '@/styles/sidebar.css';
 import { LayoutDashboard, CreditCard, BarChart3, Settings, Contact, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getCurrentUser } from '@/api/user';
 import type { User } from '@/types/user';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
@@ -13,6 +13,8 @@ interface SidebarProps {
 export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [user, setUser] = useState<User | null>(null);
+  const [showProfileActions, setShowProfileActions] = useState(false);
+  const sidebarRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -35,6 +37,20 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
       mounted = false;
     };
   }, []);
+
+  useEffect(() => {
+    if (!showProfileActions) return;
+
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node | null;
+      if (sidebarRef.current && target && !sidebarRef.current.contains(target)) {
+        setShowProfileActions(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showProfileActions]);
 
   const toggleSidebar = () => {
     setIsExpanded(prev => {
@@ -66,6 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
   return (
     <>
       <aside
+        ref={sidebarRef}
         className={`sidebar hidden lg:flex lg:flex-col fixed left-0 top-0 h-screen bg-zinc-950/45 border-r border-white/5 px-2 py-6 backdrop-blur-xl overflow-hidden z-40 ${isExpanded ? 'is-expanded px-5' : ''}`}
       >
         <div className="flex flex-col items-center justify-center min-h-16 mb-8">
@@ -148,40 +165,47 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
           </button>
         </nav>
         <div className="mt-auto pt-6 space-y-3">
+          {showProfileActions && (
+            <div className="space-y-3">
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-2 text-left transition hover:border-white/20 hover:bg-white/5"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
+                    <LogOut className="h-4 w-4 text-zinc-300" />
+                  </div>
+                  <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                    <p className="text-sm font-medium text-white">Sair da conta</p>
+                    <p className="text-[11px] text-zinc-500">Encerrar sessão</p>
+                  </div>
+                </div>
+              </button>
+
+              <Link
+                href="/profile"
+                className="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-2 text-left transition hover:border-white/20 hover:bg-white/5"
+                onClick={() => setShowProfileActions(false)}
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-8 w-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
+                    <Settings className="h-4 w-4 text-zinc-300" />
+                  </div>
+                  <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                    <p className="text-sm font-medium text-white">Configurações</p>
+                    <p className="text-[11px] text-zinc-500">Conta e segurança</p>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          )}
+
           <button
             type="button"
-            onClick={handleLogout}
-            className="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-2 text-left transition hover:border-white/20 hover:bg-white/5"
-          >
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
-                <LogOut className="h-4 w-4 text-zinc-300" />
-              </div>
-              <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
-                <p className="text-sm font-medium text-white">Sair da conta</p>
-                <p className="text-[11px] text-zinc-500">Encerrar sessão</p>
-              </div>
-            </div>
-          </button>
-
-          <Link
-            href="/profile"
-            className="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-2 text-left transition hover:border-white/20 hover:bg-white/5"
-          >
-            <div className="flex items-center gap-3">
-              <div className="h-8 w-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
-                <Settings className="h-4 w-4 text-zinc-300" />
-              </div>
-              <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
-                <p className="text-sm font-medium text-white">Configurações</p>
-                <p className="text-[11px] text-zinc-500">Conta e segurança</p>
-              </div>
-            </div>
-          </Link>
-
-          <Link
-            href="/profile"
-            className="w-full rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 p-4 transition hover:border-white/20 hover:bg-white/5"
+            onClick={() => setShowProfileActions((prev) => !prev)}
+            className="w-full rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 p-4 text-left transition hover:border-white/20 hover:bg-white/5"
+            aria-expanded={showProfileActions}
           >
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center overflow-hidden">
@@ -196,7 +220,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
                 <p className="text-xs text-zinc-400 truncate">Perfil</p>
               </div>
             </div>
-          </Link>
+          </button>
         </div>
       </aside>
 
