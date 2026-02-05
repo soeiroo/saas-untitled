@@ -2,6 +2,7 @@ import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { UserMinus, MoreHorizontal, User } from 'lucide-react';
 import type { Friend } from '@/types/friend';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 interface FriendCardProps {
   friend: Friend;
@@ -31,7 +32,11 @@ export const FriendCard: React.FC<FriendCardProps> = ({ friend, onDelete, onSeco
       <div className="flex items-start gap-4">
         <div className="h-12 w-12 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 flex items-center justify-center flex-shrink-0">
           {friend.profilePicture || friend.avatarUrl ? (
-            <img src={friend.profilePicture || friend.avatarUrl} alt={friend.name} className="h-full w-full rounded-full object-cover" />
+            <ImageWithFallback
+              src={friend.profilePicture || friend.avatarUrl}
+              alt={friend.name}
+              className="h-full w-full rounded-full object-cover"
+            />
           ) : (
             <User className="h-6 w-6 text-emerald-400" />
           )}

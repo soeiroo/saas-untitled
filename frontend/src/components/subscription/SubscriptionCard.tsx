@@ -8,6 +8,7 @@ import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { subscriptionIcons } from '@/data/subscriptionIcons';
 import type { Subscription } from '@/types/subscription';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 interface SubscriptionCardProps {
   subscription: Subscription;
@@ -30,7 +31,7 @@ export function SubscriptionCard({ subscription, onDelete, onEdit, isShared = fa
             className="inline-flex items-center justify-center rounded-full"
             style={{ background: icon.color + '80', minWidth: 40, minHeight: 40, width: 40, height: 40 }}
           >
-            <img
+            <ImageWithFallback
               src={icon.url}
               alt={icon.name}
               className="w-7 h-7 object-contain bg-transparent"

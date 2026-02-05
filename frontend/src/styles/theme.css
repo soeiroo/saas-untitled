@@ -147,6 +147,10 @@
 
   .dark body {
     background-color: var(--surface-0);
+    background-image:
+      radial-gradient(circle at top, rgba(16, 185, 129, 0.08), transparent 55%),
+      radial-gradient(circle at 75% 20%, rgba(139, 92, 246, 0.08), transparent 45%);
+    background-attachment: fixed;
   }
   /**
   * Default typography styles for HTML elements (h1-h4, p, label, button, input).

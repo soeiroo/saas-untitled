@@ -8,6 +8,7 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Plus } from 'lucide-react';
 import type { Subscription } from '@/types/subscription';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 interface AddSubscriptionDialogProps {
   onAdd: (subscription: Omit<Subscription, 'id' | 'userId'>) => void;
@@ -148,7 +149,7 @@ export function AddSubscriptionDialog({ onAdd }: AddSubscriptionDialogProps) {
                             aria-label={i.name}
                           >
                             <span style={{ background: i.color + '22', borderRadius: '50%', display: 'inline-flex', width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}>
-                              <img src={i.url} alt={i.name} className="w-7 h-7 object-contain" />
+                              <ImageWithFallback src={i.url} alt={i.name} className="w-7 h-7 object-contain" />
                             </span>
                           </button>
                         ))}

@@ -7,6 +7,7 @@ import { Button } from '../ui/button';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import type { Subscription } from '@/types/subscription';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 interface EditSubscriptionDialogProps {
   subscription: Subscription | null;
@@ -134,7 +135,7 @@ export function EditSubscriptionDialog({
           </div>
           <div className="space-y-2">
             <Label className="text-zinc-300">Ícone</Label>
-            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto overflow-y-hidden">
+            <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto overflow-x-hidden">
               {subscriptionIcons.map((i) => (
                 <button
                   type="button"
@@ -145,7 +146,7 @@ export function EditSubscriptionDialog({
                   aria-label={i.name}
                 >
                   <span style={{ background: i.color + '22', borderRadius: '50%', display: 'inline-flex', width: 32, height: 32, alignItems: 'center', justifyContent: 'center' }}>
-                    <img src={i.url} alt={i.name} className="w-7 h-7 object-contain" />
+                    <ImageWithFallback src={i.url} alt={i.name} className="w-7 h-7 object-contain" />
                   </span>
                 </button>
               ))}

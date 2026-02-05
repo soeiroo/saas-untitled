@@ -10,15 +10,14 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Users, Search, Sparkles, Loader2, ArrowRight } from 'lucide-react';
+import { Users, Search, Loader2, ArrowRight } from 'lucide-react';
 import { toast } from 'sonner';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Friend, FriendRequest } from '@/types/friend';
 import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
-import { getCurrentUser } from '@/api/user';
-import type { User } from '@/types/user';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 export default function FriendsPage() {
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -26,10 +25,8 @@ export default function FriendsPage() {
   const [sentRequests, setSentRequests] = useState<FriendRequest[]>([]);
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
   const [isFetchingFriends, setIsFetchingFriends] = useState(true);
-  const [deletingId, setDeletingId] = useState<string | null>(null);
   const [error, setError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
-  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [actionFriend, setActionFriend] = useState<Friend | null>(null);
   const [selectedSubscriptionId, setSelectedSubscriptionId] = useState('');
   const [sharePrice, setSharePrice] = useState('');
@@ -43,12 +40,6 @@ export default function FriendsPage() {
       setIsFetchingFriends(true);
       setError('');
       try {
-        try {
-          const me = await getCurrentUser();
-          setCurrentUser(me);
-        } catch {
-          // ignore
-        }
         const [friendsList, pendingRequests, mySentRequests, mySubscriptions] = await Promise.all([
           getFriends(),
           getFriendRequests(),
@@ -118,7 +109,6 @@ export default function FriendsPage() {
   };
 
   const handleDeleteFriend = async (id: string) => {
-    setDeletingId(id);
     setError('');
     try {
       await deleteFriend(id);
@@ -132,8 +122,6 @@ export default function FriendsPage() {
       } else {
         setError('Erro ao remover amigo');
       }
-    } finally {
-      setDeletingId(null);
     }
   };
 
@@ -342,7 +330,7 @@ export default function FriendsPage() {
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="h-8 w-8 rounded-full bg-gradient-to-br from-emerald-500/20 to-purple-500/20 flex items-center justify-center border border-zinc-700/50 overflow-hidden">
                               {request.profilePicture ? (
-                                <img src={request.profilePicture} alt={request.name} className="h-full w-full object-cover" />
+                                <ImageWithFallback src={request.profilePicture} alt={request.name} className="h-full w-full object-cover" />
                               ) : (
                                 <Users className="h-4 w-4 text-zinc-400" />
                               )}
@@ -381,7 +369,7 @@ export default function FriendsPage() {
                           <div className="flex items-center gap-3 min-w-0">
                             <div className="h-8 w-8 rounded-full bg-zinc-800 flex items-center justify-center border border-zinc-700/50 overflow-hidden">
                               {request.profilePicture ? (
-                                <img src={request.profilePicture} alt={request.name} className="h-full w-full object-cover" />
+                                <ImageWithFallback src={request.profilePicture} alt={request.name} className="h-full w-full object-cover" />
                               ) : (
                                 <ArrowRight className="h-4 w-4 text-zinc-500" />
                               )}

@@ -11,7 +11,9 @@ import { EditProfileDialog } from '@/components/profile/EditProfileDialog';
 import { ChangePasswordDialog } from '@/components/profile/ChangePasswordDialog';
 import { toast } from 'sonner';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
-import { Pencil, Trash2, Key, ArrowLeft, User as UserIcon, Shield, AlertCircle } from 'lucide-react';
+import { Pencil, Trash2, Key, User as UserIcon, Shield, AlertCircle } from 'lucide-react';
+import { Sidebar } from '@/components/navigation/Sidebar';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,7 +25,6 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 
 export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
@@ -93,28 +94,121 @@ export default function ProfilePage() {
     return user?.name[0]?.toUpperCase() || 'U';
   };
 
-  if (loading) {
+  const PageShell = ({ children }: { children: React.ReactNode }) => {
     return (
       <div className="min-h-screen bg-zinc-950 text-white">
         <div className="relative">
-          <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
           <div className="relative flex">
-            <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur" />
-            <main className="flex-1">
-              <MobileAppMenu title="Configurações da conta" />
-              <div className="max-w-6xl mx-auto px-4 py-8">
-                <Card className="bg-zinc-900/80 border-zinc-800 p-12 text-center shadow-lg shadow-black/20">
-                  <div className="flex flex-col items-center gap-4">
-                    <Skeleton className="h-16 w-16 rounded-full bg-zinc-800" />
-                    <Skeleton className="h-4 w-40 bg-zinc-800" />
-                    <Skeleton className="h-3 w-56 bg-zinc-800" />
-                  </div>
-                </Card>
+            <Sidebar activePage="settings" />
+
+            <main className="flex-1 lg:pl-6">
+              <MobileAppMenu title="Conta" />
+              <div className="max-w-4xl mx-auto px-4 lg:px-6 py-10 relative">
+                {children}
               </div>
             </main>
           </div>
         </div>
       </div>
+    );
+  };
+
+  if (loading) {
+    return (
+      <PageShell>
+        <header className="mb-8 space-y-3">
+          <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.28em] text-zinc-300">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80" />
+            Conta
+          </div>
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 rounded-2xl border border-white/10 bg-white/5" />
+            <div className="space-y-2">
+              <Skeleton className="h-6 w-56 bg-white/10" />
+              <Skeleton className="h-4 w-72 bg-white/10" />
+            </div>
+          </div>
+        </header>
+
+        <div className="space-y-6">
+          <Card className="bg-white/5 border-white/10">
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
+                <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 min-w-0">
+                  <Skeleton className="h-24 w-24 rounded-full bg-white/10" />
+                  <div className="flex-1 min-w-0 space-y-3">
+                    <Skeleton className="h-4 w-40 bg-white/10" />
+                    <Skeleton className="h-3 w-[min(520px,90%)] bg-white/10" />
+                    <Skeleton className="h-3 w-56 bg-white/10" />
+                  </div>
+                </div>
+
+                <div className="flex gap-2 w-full sm:w-auto">
+                  <Skeleton className="h-9 w-full sm:w-36 bg-white/10 rounded-xl" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/5 border-white/10">
+            <CardContent className="pt-6 space-y-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div className="space-y-2">
+                  <Skeleton className="h-3 w-16 bg-white/10" />
+                  <Skeleton className="h-10 w-full bg-white/10" />
+                </div>
+                <div className="space-y-2">
+                  <Skeleton className="h-3 w-24 bg-white/10" />
+                  <Skeleton className="h-10 w-full bg-white/10" />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Skeleton className="h-3 w-40 bg-white/10" />
+                <Skeleton className="h-10 w-full bg-white/10" />
+              </div>
+
+              <div className="flex flex-col sm:flex-row gap-2 pt-4">
+                <Skeleton className="h-10 w-full sm:w-44 bg-white/10 rounded-xl" />
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/5 border-white/10">
+            <CardHeader>
+              <div className="flex items-center gap-2">
+                <div className="h-9 w-9 rounded-2xl border border-white/10 bg-white/5" />
+                <Skeleton className="h-5 w-24 bg-white/10" />
+              </div>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="space-y-2">
+                <Skeleton className="h-3 w-14 bg-white/10" />
+                <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                  <Skeleton className="h-10 w-full bg-white/10" />
+                  <Skeleton className="h-9 w-full sm:w-28 bg-white/10 rounded-xl" />
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-white/5 border-red-900/40">
+            <CardContent className="pt-6">
+              <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 p-4 border border-red-900/30 rounded-2xl bg-red-900/10">
+                <div className="flex items-start gap-3 min-w-0">
+                  <Skeleton className="h-9 w-9 rounded-2xl bg-white/10" />
+                  <div className="min-w-0 space-y-2">
+                    <Skeleton className="h-4 w-28 bg-white/10" />
+                    <Skeleton className="h-3 w-[min(520px,90%)] bg-white/10" />
+                    <Skeleton className="h-3 w-56 bg-white/10" />
+                  </div>
+                </div>
+                <Skeleton className="h-10 w-full sm:w-40 bg-white/10 rounded-xl" />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      </PageShell>
     );
   }
 
@@ -127,53 +221,34 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className="min-h-screen bg-zinc-950 text-white">
-      <div className="relative">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
-        <div className="relative flex">
-          <aside className="hidden lg:flex lg:flex-col lg:w-64 lg:min-h-screen bg-zinc-900/80 border-r border-zinc-800 px-5 py-6 backdrop-blur">
-            <Link href="/dashboard" className="flex items-center gap-2 text-zinc-400 hover:text-white mb-8">
-              <ArrowLeft className="w-4 h-4" />
-              <span>Voltar</span>
-            </Link>
+    <PageShell>
+      <header className="mb-8 space-y-3">
+        <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[11px] uppercase tracking-[0.28em] text-zinc-300">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/80" />
+          Conta
+        </div>
 
-            <nav className="space-y-2 text-sm">
-              <div className="px-3 py-2 rounded-lg bg-zinc-800/50 border border-zinc-700 text-white flex items-center gap-2">
-                <UserIcon className="w-4 h-4 text-emerald-400" />
-                <span>Conta</span>
-              </div>
-              <button className="w-full text-left px-3 py-2 rounded-lg text-zinc-400 hover:bg-zinc-800/30 hover:text-white transition">
-                <span className="flex items-center gap-2">
-                  <span>Plano e cobrança</span>
-                </span>
-              </button>
-            </nav>
-          </aside>
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center">
+            <UserIcon className="h-5 w-5 text-zinc-200" />
+          </div>
+          <div>
+            <h1 className="text-2xl font-semibold text-white">Configurações</h1>
+            <p className="text-sm text-zinc-400">Gerencie seus dados e segurança.</p>
+          </div>
+        </div>
+      </header>
 
-          <main className="flex-1">
-            <MobileAppMenu title="Configurações da conta" />
-            <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="p-2 bg-zinc-800 rounded-lg">
-                    <UserIcon className="w-5 h-5 text-emerald-400" />
-                  </div>
-                  <div>
-                    <h1 className="text-2xl font-semibold text-white">Configurações da conta</h1>
-                    <p className="text-sm text-zinc-400">Aqui você pode atualizar as informações da sua conta.</p>
-                  </div>
-                </div>
-              </div>
-
-              <Card className="bg-zinc-900/80 border-zinc-800">
-                <CardContent className="pt-6">
+      <div className="space-y-6">
+        <Card className="bg-white/5 border-white/10">
+          <CardContent className="pt-6">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6">
                     <div className="flex flex-col sm:flex-row sm:items-start gap-4 sm:gap-6 min-w-0">
                       <Avatar className="w-24 h-24 border-2 border-emerald-500/20">
                         {user.profilePicture ? (
-                          <img src={user.profilePicture} alt={user.name} className="h-full w-full object-cover" />
+                          <ImageWithFallback src={user.profilePicture} alt={user.name} className="h-full w-full object-cover" />
                         ) : (
-                          <AvatarFallback className="text-2xl bg-gradient-to-br from-emerald-500 to-purple-500 text-white">
+                          <AvatarFallback className="text-2xl bg-gradient-to-br from-emerald-500/90 to-emerald-500/50 text-white">
                             {getInitials()}
                           </AvatarFallback>
                         )}
@@ -193,18 +268,18 @@ export default function ProfilePage() {
                         variant="outline"
                         size="sm"
                         onClick={() => setEditProfileOpen(true)}
-                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 w-full sm:w-auto"
+                        className="bg-white/5 border-white/10 text-white hover:bg-white/10 w-full sm:w-auto"
                       >
                         <Pencil className="w-4 h-4 mr-2" />
                         Alterar perfil
                       </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+          </CardContent>
+        </Card>
 
-              <Card className="bg-zinc-900/80 border-zinc-800">
-                <CardContent className="pt-6 space-y-6">
+        <Card className="bg-white/5 border-white/10">
+          <CardContent className="pt-6 space-y-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                       <label className="block text-sm font-medium text-zinc-300 mb-2">Nome</label>
@@ -212,7 +287,7 @@ export default function ProfilePage() {
                         type="text"
                         value={user.name.split(' ')[0]}
                         disabled
-                        className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
+                        className="w-full min-w-0 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm"
                       />
                     </div>
                     <div>
@@ -221,7 +296,7 @@ export default function ProfilePage() {
                         type="text"
                         value={user.name.split(' ').slice(1).join(' ')}
                         disabled
-                        className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
+                        className="w-full min-w-0 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm"
                       />
                     </div>
                   </div>
@@ -232,29 +307,31 @@ export default function ProfilePage() {
                       type="email"
                       value={user.email}
                       disabled
-                      className="w-full min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
+                      className="w-full min-w-0 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm"
                     />
                   </div>
 
                   <div className="flex flex-col sm:flex-row gap-2 pt-4">
                     <Button
-                      className="bg-purple-600 hover:bg-purple-700 text-white w-full sm:w-auto"
+                      className="bg-emerald-600 hover:bg-emerald-700 text-white w-full sm:w-auto"
                       onClick={() => setEditProfileOpen(true)}
                     >
-                      Salvar alterações
+                      Editar informações
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
+          </CardContent>
+        </Card>
 
-              <Card className="bg-zinc-900/80 border-zinc-800">
-                <CardHeader>
-                  <div className="flex items-center gap-2">
-                    <Shield className="w-5 h-5 text-purple-400" />
-                    <CardTitle className="text-white">Segurança</CardTitle>
-                  </div>
-                </CardHeader>
-                <CardContent className="space-y-4">
+        <Card className="bg-white/5 border-white/10">
+          <CardHeader>
+            <div className="flex items-center gap-2">
+              <div className="h-9 w-9 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center">
+                <Shield className="w-4 h-4 text-zinc-200" />
+              </div>
+              <CardTitle className="text-white">Segurança</CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-zinc-300 mb-2">Senha</label>
                     <div className="flex flex-col sm:flex-row sm:items-center gap-2">
@@ -262,12 +339,12 @@ export default function ProfilePage() {
                         type="password"
                         value="••••••••"
                         disabled
-                        className="w-full sm:flex-1 sm:min-w-0 px-3 py-2 bg-zinc-800 border border-zinc-700 rounded text-white text-sm"
+                        className="w-full sm:flex-1 sm:min-w-0 px-3 py-2 bg-white/5 border border-white/10 rounded-xl text-white text-sm"
                       />
                       <Button
                         variant="outline"
                         size="sm"
-                        className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700 w-full sm:w-auto"
+                        className="bg-white/5 border-white/10 text-white hover:bg-white/10 w-full sm:w-auto"
                         onClick={() => setChangePasswordOpen(true)}
                       >
                         <Key className="w-4 h-4 mr-2" />
@@ -275,11 +352,11 @@ export default function ProfilePage() {
                       </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+          </CardContent>
+        </Card>
 
-              <Card className="bg-zinc-900/80 border-red-900/50">
-                <CardContent className="pt-6">
+        <Card className="bg-white/5 border-red-900/40">
+          <CardContent className="pt-6">
                   <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 sm:gap-6 p-4 border border-red-900/30 rounded-lg bg-red-900/10">
                     <div className="flex items-start gap-3 min-w-0">
                       <div className="p-2 bg-red-900/30 rounded-lg mt-0.5">
@@ -304,11 +381,8 @@ export default function ProfilePage() {
                       Excluir conta
                     </Button>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </main>
-        </div>
+          </CardContent>
+        </Card>
       </div>
 
       <EditProfileDialog
@@ -346,6 +420,6 @@ export default function ProfilePage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
-    </div>
+    </PageShell>
   );
 }

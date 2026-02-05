@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { User, UpdateUserData } from '@/types/user';
@@ -11,6 +11,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Eye, EyeOff } from 'lucide-react';
 import { toast } from 'sonner';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 const profileSchema = z.object({
   name: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
@@ -41,7 +42,8 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
     },
   });
 
-  const watchedEmail = form.watch('email');
+  const watchedEmail = useWatch({ control: form.control, name: 'email' });
+  const watchedProfilePicture = useWatch({ control: form.control, name: 'profilePicture' });
   const isEmailChanged = useMemo(() => watchedEmail !== user.email, [watchedEmail, user.email]);
 
   useEffect(() => {
@@ -106,12 +108,8 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
           <div className="grid gap-4 py-4">
             <div className="flex flex-col items-center gap-4 mb-2">
               <div className="relative h-24 w-24 rounded-full overflow-hidden border-2 border-zinc-700 bg-zinc-800">
-                {form.watch('profilePicture') ? (
-                  <img
-                    src={form.watch('profilePicture')}
-                    alt="Preview"
-                    className="h-full w-full object-cover"
-                  />
+                {watchedProfilePicture ? (
+                  <ImageWithFallback src={watchedProfilePicture} alt="Preview" className="h-full w-full object-cover" />
                 ) : (
                   <div className="h-full w-full flex items-center justify-center text-zinc-500 bg-gradient-to-br from-emerald-500/10 to-purple-500/10">
                     <span className="text-2xl font-bold opacity-50">{user.name.substring(0, 2).toUpperCase()}</span>
@@ -129,7 +127,7 @@ export function EditProfileDialog({ user, open, onOpenChange, onSave }: EditProf
                   className="hidden"
                   onChange={handleFileChange}
                 />
-                {form.watch('profilePicture') && (
+                {watchedProfilePicture && (
                   <Button
                     type="button"
                     variant="ghost"
