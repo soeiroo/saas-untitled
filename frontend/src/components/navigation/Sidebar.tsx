@@ -178,32 +178,40 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             <button
               type="button"
               onClick={handleLogout}
-              className="w-full rounded-lg border border-white/10 bg-zinc-950/60 px-2.5 py-1.5 text-left transition hover:border-white/20 hover:bg-white/5"
+              className={`w-full rounded-lg border border-white/10 bg-zinc-950/60 text-left transition hover:border-white/20 hover:bg-white/5 ${
+                isExpanded ? 'px-2.5 py-1.5' : 'px-2 py-2'
+              }`}
             >
-              <div className="flex items-center gap-2.5">
+              <div className={`flex items-center ${isExpanded ? 'gap-2.5' : 'justify-center'}`}>
                 <div className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center">
                   <LogOut className="h-3.5 w-3.5 text-zinc-300" />
                 </div>
-                <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
-                  <p className="text-xs font-medium text-white">Sair da conta</p>
-                  <p className="text-[10px] text-zinc-500">Encerrar sessão</p>
-                </div>
+                {isExpanded && (
+                  <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                    <p className="text-xs font-medium text-white">Sair da conta</p>
+                    <p className="text-[10px] text-zinc-500">Encerrar sessão</p>
+                  </div>
+                )}
               </div>
             </button>
 
             <Link
               href="/profile"
-              className="w-full rounded-lg border border-white/10 bg-zinc-950/60 px-2.5 py-1.5 text-left transition hover:border-white/20 hover:bg-white/5"
+              className={`w-full rounded-lg border border-white/10 bg-zinc-950/60 text-left transition hover:border-white/20 hover:bg-white/5 ${
+                isExpanded ? 'px-2.5 py-1.5' : 'px-2 py-2'
+              }`}
               onClick={() => setShowProfileActions(false)}
             >
-              <div className="flex items-center gap-2.5">
+              <div className={`flex items-center ${isExpanded ? 'gap-2.5' : 'justify-center'}`}>
                 <div className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center">
                   <Settings className="h-3.5 w-3.5 text-zinc-300" />
                 </div>
-                <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
-                  <p className="text-xs font-medium text-white">Configurações</p>
-                  <p className="text-[10px] text-zinc-500">Conta e segurança</p>
-                </div>
+                {isExpanded && (
+                  <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                    <p className="text-xs font-medium text-white">Configurações</p>
+                    <p className="text-[10px] text-zinc-500">Conta e segurança</p>
+                  </div>
+                )}
               </div>
             </Link>
           </div>
@@ -211,11 +219,11 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
           <button
             type="button"
             onClick={() => setShowProfileActions((prev) => !prev)}
-            className={`w-full rounded-xl border bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 px-3 py-2 text-left transition duration-200 ${
+            className={`w-full rounded-xl border bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 text-left transition duration-200 ${
               showProfileActions
                 ? 'border-emerald-500/30 shadow-[0_10px_28px_rgba(16,185,129,0.12)]'
                 : 'border-white/10 hover:border-white/20 hover:bg-white/5'
-            }`}
+            } ${isExpanded ? 'px-3 py-2' : 'px-2 py-2'}`}
             aria-expanded={showProfileActions}
           >
             <div className={`flex items-center gap-3 ${isExpanded ? '' : 'justify-center'}`}>
@@ -226,10 +234,12 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
                   <span className="text-[11px] font-semibold text-white/80">{initials}</span>
                 )}
               </div>
-              <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
-                <p className="text-sm font-semibold text-white truncate">{user?.name ?? 'Minha conta'}</p>
-                <p className="text-[11px] text-zinc-400 truncate">Perfil</p>
-              </div>
+              {isExpanded && (
+                <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                  <p className="text-sm font-semibold text-white truncate">{user?.name ?? 'Minha conta'}</p>
+                  <p className="text-[11px] text-zinc-400 truncate">Perfil</p>
+                </div>
+              )}
             </div>
           </button>
         </div>
