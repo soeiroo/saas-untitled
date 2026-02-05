@@ -15,6 +15,8 @@ import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { StatCounter } from '@/components/common/StatCounter';
+import { getAutoRenewedDate, getNextRenewalDate } from '@/utils/subscriptionRenewal';
+import { format } from 'date-fns';
 
 type HomePageProps = {
   activePage?: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
@@ -45,7 +47,8 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
           getSubscriptions(),
           getSharedSubscriptions(),
         ]);
-        setMySubscriptions(subs);
+        const normalizedSubs = await autoRenewSubscriptions(subs);
+        setMySubscriptions(normalizedSubs);
         setSharedSubscriptions(sharedSubs);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -61,6 +64,54 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
     }
     fetchSubs();
   }, []);
+  const autoRenewSubscriptions = async (subs: Subscription[]) => {
+    const updates: Array<{ id: string; renewalDate: string }> = [];
+    const updated = subs.map((sub) => {
+      const nextDate = getAutoRenewedDate(sub.renewalDate, sub.period);
+      if (!nextDate) return sub;
+      const formatted = format(nextDate, 'yyyy-MM-dd');
+      if (formatted === sub.renewalDate) return sub;
+      updates.push({ id: sub.id, renewalDate: formatted });
+      return { ...sub, renewalDate: formatted };
+    });
+
+    if (updates.length > 0) {
+      try {
+        await Promise.all(
+          updates.map((update) => updateSubscription(update.id, { renewalDate: update.renewalDate }))
+        );
+      } catch {
+        // ignore auto-renew sync failures
+      }
+    }
+
+    return updated;
+  };
+
+  const handleMarkPaid = async (subscription: Subscription) => {
+    const nextDate = getNextRenewalDate(subscription.renewalDate, subscription.period);
+    if (!nextDate) {
+      setError('Não foi possível calcular o próximo período desta assinatura.');
+      return;
+    }
+    setIsMutatingSubscriptions(true);
+    setError('');
+    try {
+      const formatted = format(nextDate, 'yyyy-MM-dd');
+      const updated = await updateSubscription(subscription.id, { renewalDate: formatted });
+      setMySubscriptions((prev) => prev.map((item) => (item.id === updated.id ? updated : item)));
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao marcar assinatura como paga');
+      }
+    } finally {
+      setIsMutatingSubscriptions(false);
+    }
+  };
 
   useEffect(() => {
     const handle = setTimeout(() => {
@@ -437,6 +488,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       isShared={sharedIds.has(subscription.id)}
                       onDelete={sharedIds.has(subscription.id) ? undefined : handleDeleteSubscription}
                       onEdit={sharedIds.has(subscription.id) ? undefined : handleEditSubscription}
+                      onMarkPaid={sharedIds.has(subscription.id) ? undefined : handleMarkPaid}
                     />
                   ))}
                 </div>

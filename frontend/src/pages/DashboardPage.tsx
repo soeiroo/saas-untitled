@@ -11,12 +11,14 @@ import { Sidebar } from '@/components/navigation/Sidebar';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { StatCounter } from '@/components/common/StatCounter';
-import { getSubscriptions } from '@/api/subscription';
+import { getSubscriptions, updateSubscription } from '@/api/subscription';
 import { getFriends } from '@/api/friend';
 import { getCurrentUser } from '@/api/user';
 import type { Subscription } from '@/types/subscription';
 import type { Friend } from '@/types/friend';
 import type { User } from '@/types/user';
+import { getAutoRenewedDate } from '@/utils/subscriptionRenewal';
+import { format } from 'date-fns';
 
 export default function DashboardPage() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
@@ -42,7 +44,8 @@ export default function DashboardPage() {
           getFriends(),
         ]);
 
-        setSubscriptions(subs);
+        const normalizedSubs = await autoRenewSubscriptions(subs);
+        setSubscriptions(normalizedSubs);
         setFriends(friendsList);
       } catch (err: unknown) {
         if (err instanceof Error) {
@@ -59,6 +62,30 @@ export default function DashboardPage() {
 
     loadDashboard();
   }, []);
+
+  const autoRenewSubscriptions = async (subs: Subscription[]) => {
+    const updates: Array<{ id: string; renewalDate: string }> = [];
+    const updated = subs.map((sub) => {
+      const nextDate = getAutoRenewedDate(sub.renewalDate, sub.period);
+      if (!nextDate) return sub;
+      const formatted = format(nextDate, 'yyyy-MM-dd');
+      if (formatted === sub.renewalDate) return sub;
+      updates.push({ id: sub.id, renewalDate: formatted });
+      return { ...sub, renewalDate: formatted };
+    });
+
+    if (updates.length > 0) {
+      try {
+        await Promise.all(
+          updates.map((update) => updateSubscription(update.id, { renewalDate: update.renewalDate }))
+        );
+      } catch {
+        // ignore auto-renew sync failures
+      }
+    }
+
+    return updated;
+  };
 
   const totalMonthly = useMemo(
     () => subscriptions.reduce((sum, sub) => sum + sub.price, 0),

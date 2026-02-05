@@ -1,6 +1,6 @@
 'use client';
 
-import { Calendar, DollarSign, Trash, Pencil, Bell } from 'lucide-react';
+import { Calendar, DollarSign, Trash, Pencil, Bell, CheckCircle } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
@@ -14,10 +14,11 @@ interface SubscriptionCardProps {
   subscription: Subscription;
   onDelete?: (id: string) => void;
   onEdit?: (subscription: Subscription) => void;
+  onMarkPaid?: (subscription: Subscription) => void;
   isShared?: boolean;
 }
 
-export function SubscriptionCard({ subscription, onDelete, onEdit, isShared = false }: SubscriptionCardProps) {
+export function SubscriptionCard({ subscription, onDelete, onEdit, onMarkPaid, isShared = false }: SubscriptionCardProps) {
   const daysUntilRenewal = differenceInDays(new Date(subscription.renewalDate), new Date());
   const isUpcoming = daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
 
@@ -62,8 +63,19 @@ export function SubscriptionCard({ subscription, onDelete, onEdit, isShared = fa
             </div>
           </div>
         </div>
-        {(onEdit || onDelete) && (
+        {(onMarkPaid || onEdit || onDelete) && (
           <div className="flex gap-1">
+            {!isShared && onMarkPaid && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onMarkPaid(subscription)}
+                className="text-emerald-300 hover:text-emerald-200 hover:bg-emerald-900/30"
+                aria-label="Marcar como pago"
+              >
+                <CheckCircle className="h-4 w-4" />
+              </Button>
+            )}
             {onEdit && (
               <Button
                 variant="ghost"
