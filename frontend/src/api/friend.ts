@@ -1,4 +1,5 @@
 import type { Friend, FriendRequest, UserSearchResult } from '@/types/friend';
+import { getSessionCacheWithSWR, invalidateSessionCache } from '@/utils/sessionCache';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -32,16 +33,18 @@ export async function searchUsers(query: string): Promise<UserSearchResult[]> {
 }
 
 export async function getFriends(): Promise<Friend[]> {
-  const response = await fetch(`${API_URL}/api/friends`, {
-    method: 'GET',
-    headers: buildAuthHeaders(),
+  return getSessionCacheWithSWR('friends:list', 2 * 60 * 1000, async () => {
+    const response = await fetch(`${API_URL}/api/friends`, {
+      method: 'GET',
+      headers: buildAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao buscar amigos');
+    }
+
+    return response.json();
   });
-
-  if (!response.ok) {
-    throw new Error('Erro ao buscar amigos');
-  }
-
-  return response.json();
 }
 
 export async function sendFriendRequest(friendId: string): Promise<void> {
@@ -53,6 +56,8 @@ export async function sendFriendRequest(friendId: string): Promise<void> {
   if (!response.ok) {
     throw new Error('Erro ao enviar pedido de amizade');
   }
+
+  invalidateSessionCache(['friends:requests:sent', 'friends:requests']);
 }
 
 export async function acceptFriendRequest(requestId: string): Promise<void> {
@@ -64,32 +69,38 @@ export async function acceptFriendRequest(requestId: string): Promise<void> {
   if (!response.ok) {
     throw new Error('Erro ao aceitar pedido de amizade');
   }
+
+  invalidateSessionCache(['friends:requests', 'friends:list']);
 }
 
 export async function getFriendRequests(): Promise<FriendRequest[]> {
-  const response = await fetch(`${API_URL}/api/friends/requests`, {
-    method: 'GET',
-    headers: buildAuthHeaders(),
+  return getSessionCacheWithSWR('friends:requests', 2 * 60 * 1000, async () => {
+    const response = await fetch(`${API_URL}/api/friends/requests`, {
+      method: 'GET',
+      headers: buildAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao buscar solicitações');
+    }
+
+    return response.json();
   });
-
-  if (!response.ok) {
-    throw new Error('Erro ao buscar solicitações');
-  }
-
-  return response.json();
 }
 
 export async function getSentFriendRequests(): Promise<FriendRequest[]> {
-  const response = await fetch(`${API_URL}/api/friends/requests/sent`, {
-    method: 'GET',
-    headers: buildAuthHeaders(),
+  return getSessionCacheWithSWR('friends:requests:sent', 2 * 60 * 1000, async () => {
+    const response = await fetch(`${API_URL}/api/friends/requests/sent`, {
+      method: 'GET',
+      headers: buildAuthHeaders(),
+    });
+
+    if (!response.ok) {
+      throw new Error('Erro ao buscar solicitações enviadas');
+    }
+
+    return response.json();
   });
-
-  if (!response.ok) {
-    throw new Error('Erro ao buscar solicitações enviadas');
-  }
-
-  return response.json();
 }
 
 export async function deleteFriend(id: string): Promise<void> {
@@ -101,4 +112,6 @@ export async function deleteFriend(id: string): Promise<void> {
   if (!response.ok) {
     throw new Error('Erro ao remover amigo');
   }
+
+  invalidateSessionCache(['friends:list']);
 }

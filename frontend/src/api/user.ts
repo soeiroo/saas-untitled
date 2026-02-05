@@ -1,4 +1,5 @@
 import type { User, UpdateUserData } from '@/types/user';
+import { clearSessionUserId, getSessionCache, invalidateSessionCache, setSessionCache, setSessionUserId } from '@/utils/sessionCache';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -66,6 +67,28 @@ async function parseJsonSafely<T>(response: Response): Promise<T | undefined> {
 }
 
 export async function getCurrentUser(): Promise<User> {
+  const cached = getSessionCache<User>('user:me');
+  if (cached) {
+    void (async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/users/me`, {
+          credentials: 'include',
+          headers: {
+            ...buildAuthHeaders(),
+          },
+        });
+        if (!response.ok) return;
+        const data = await parseJsonSafely<User>(response);
+        if (!data) return;
+        setSessionUserId(data.id);
+        setSessionCache('user:me', data, 5 * 60 * 1000);
+      } catch {
+        // ignore background refresh errors
+      }
+    })();
+    return cached;
+  }
+
   const response = await fetch(`${API_URL}/api/users/me`, {
     credentials: 'include',
     headers: {
@@ -89,6 +112,9 @@ export async function getCurrentUser(): Promise<User> {
   if (!data) {
     throw new Error('Resposta inválida do servidor');
   }
+
+  setSessionUserId(data.id);
+  setSessionCache('user:me', data, 5 * 60 * 1000);
   return data;
 }
 
@@ -147,9 +173,12 @@ export async function updateCurrentUser(data: UpdateUserData): Promise<User> {
 
   const updatedUser: unknown = isRecord(body) && 'user' in body ? body.user : body;
   if (isUser(updatedUser)) {
+    setSessionUserId(updatedUser.id);
+    setSessionCache('user:me', updatedUser, 5 * 60 * 1000);
     return updatedUser;
   }
 
+  invalidateSessionCache(['user:me']);
   return getCurrentUser();
 }
 
@@ -173,4 +202,7 @@ export async function deleteCurrentUser(): Promise<void> {
     }
     throw new Error(errorMessage);
   }
+
+  invalidateSessionCache(['user:me']);
+  clearSessionUserId();
 }

@@ -1,5 +1,6 @@
 import type { Subscription } from '@/types/subscription';
 import type { SubscriptionFriend } from '@/types/subscriptionFriend';
+import { getSessionCacheWithSWR, invalidateSessionCache } from '@/utils/sessionCache';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || '';
 
@@ -11,27 +12,31 @@ function getAuthToken() {
 }
 
 export async function getSubscriptions(): Promise<Subscription[]> {
-  const token = getAuthToken();
-  const response = await fetch(`${API_URL}/api/subscriptions`, {
-    credentials: 'include',
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
+  return getSessionCacheWithSWR('subscriptions:list', 2 * 60 * 1000, async () => {
+    const token = getAuthToken();
+    const response = await fetch(`${API_URL}/api/subscriptions`, {
+      credentials: 'include',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    if (!response.ok) throw new Error('Erro ao buscar assinaturas');
+    return response.json();
   });
-  if (!response.ok) throw new Error('Erro ao buscar assinaturas');
-  return response.json();
 }
 
 export async function getSharedSubscriptions(): Promise<Subscription[]> {
-  const token = getAuthToken();
-  const response = await fetch(`${API_URL}/api/subscriptions/shared`, {
-    credentials: 'include',
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
+  return getSessionCacheWithSWR('subscriptions:shared', 2 * 60 * 1000, async () => {
+    const token = getAuthToken();
+    const response = await fetch(`${API_URL}/api/subscriptions/shared`, {
+      credentials: 'include',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    if (!response.ok) throw new Error('Erro ao buscar assinaturas compartilhadas');
+    return response.json();
   });
-  if (!response.ok) throw new Error('Erro ao buscar assinaturas compartilhadas');
-  return response.json();
 }
 
 export async function addSubscription(data: Omit<Subscription, 'id' | 'userId'>): Promise<Subscription> {
@@ -47,7 +52,9 @@ export async function addSubscription(data: Omit<Subscription, 'id' | 'userId'>)
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error('Erro ao adicionar assinatura');
-  return response.json();
+  const created = await response.json();
+  invalidateSessionCache(['subscriptions:list', 'subscriptions:shared']);
+  return created;
 }
 
 export async function updateSubscription(id: string, data: Partial<Omit<Subscription, 'userId'>>): Promise<Subscription> {
@@ -63,7 +70,9 @@ export async function updateSubscription(id: string, data: Partial<Omit<Subscrip
     body: JSON.stringify(data),
   });
   if (!response.ok) throw new Error('Erro ao atualizar assinatura');
-  return response.json();
+  const updated = await response.json();
+  invalidateSessionCache(['subscriptions:list', 'subscriptions:shared', `subscription:friends:${id}`]);
+  return updated;
 }
 
 export async function deleteSubscription(id: string): Promise<void> {
@@ -76,6 +85,7 @@ export async function deleteSubscription(id: string): Promise<void> {
     },
   });
   if (!response.ok) throw new Error('Erro ao deletar assinatura');
+  invalidateSessionCache(['subscriptions:list', 'subscriptions:shared', `subscription:friends:${id}`]);
 }
 
 export async function shareSubscriptionWithFriend(
@@ -95,16 +105,19 @@ export async function shareSubscriptionWithFriend(
     ...(hasPrice ? { body: JSON.stringify({ price }) } : {}),
   });
   if (!response.ok) throw new Error('Erro ao compartilhar assinatura');
+  invalidateSessionCache([`subscription:friends:${subscriptionId}`]);
 }
 
 export async function getSubscriptionFriends(subscriptionId: string): Promise<SubscriptionFriend[]> {
-  const token = getAuthToken();
-  const response = await fetch(`${API_URL}/api/subscriptions/${subscriptionId}/friends`, {
-    credentials: 'include',
-    headers: {
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
+  return getSessionCacheWithSWR(`subscription:friends:${subscriptionId}`, 2 * 60 * 1000, async () => {
+    const token = getAuthToken();
+    const response = await fetch(`${API_URL}/api/subscriptions/${subscriptionId}/friends`, {
+      credentials: 'include',
+      headers: {
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      },
+    });
+    if (!response.ok) throw new Error('Erro ao buscar amigos da assinatura');
+    return response.json();
   });
-  if (!response.ok) throw new Error('Erro ao buscar amigos da assinatura');
-  return response.json();
 }
