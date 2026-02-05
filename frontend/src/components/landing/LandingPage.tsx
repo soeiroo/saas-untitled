@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
@@ -33,13 +33,57 @@ const steps = [
 ];
 
 const stats = [
-  { label: 'Assinaturas gerenciadas', value: '120+' },
-  { label: 'Economia média', value: '23%' },
-  { label: 'Renovações evitadas', value: '300+' },
+  { label: 'Assinaturas gerenciadas', value: 120, suffix: '+' },
+  { label: 'Economia média', value: 23, suffix: '%' },
+  { label: 'Renovações evitadas', value: 300, suffix: '+' },
 ];
+
+const marqueeItems = [
+  'Controle total das assinaturas',
+  'Compartilhamento inteligente',
+  'Segurança e privacidade',
+  'Notificações antes de renovar',
+  'Visão compartilhada com amigos',
+  'Insights de gastos recorrentes',
+];
+
+function useCountUp(target: number, duration = 1200) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      setValue(target);
+      return;
+    }
+
+    let start: number | null = null;
+    let rafId: number;
+
+    const step = (timestamp: number) => {
+      if (start === null) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(Math.round(target * eased));
+      if (progress < 1) {
+        rafId = window.requestAnimationFrame(step);
+      }
+    };
+
+    rafId = window.requestAnimationFrame(step);
+
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, [target, duration]);
+
+  return value;
+}
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const repeatedMarqueeItems = useMemo(() => [...marqueeItems, ...marqueeItems], []);
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger);
@@ -136,7 +180,9 @@ export default function LandingPage() {
                     {stats.map((stat) => (
                       <div key={stat.label} className="rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3">
                         <p className="text-xs text-zinc-500">{stat.label}</p>
-                        <p className="text-lg font-semibold text-white mt-2">{stat.value}</p>
+                        <p className="text-lg font-semibold text-white mt-2">
+                          <StatCounter target={stat.value} suffix={stat.suffix} />
+                        </p>
                       </div>
                     ))}
                   </div>
@@ -159,6 +205,22 @@ export default function LandingPage() {
                     ))}
                   </div>
                 </Card>
+              </div>
+            </section>
+
+            <section className="reveal-section max-w-6xl mx-auto mt-12">
+              <div className="marquee rounded-2xl border border-zinc-800/70 bg-zinc-900/50 px-2 py-3">
+                <div className="marquee-track gap-6">
+                  {repeatedMarqueeItems.map((item, index) => (
+                    <div
+                      key={`${item}-${index}`}
+                      className="flex items-center gap-3 rounded-full border border-zinc-800/80 bg-zinc-900/70 px-4 py-2 text-xs text-zinc-300"
+                    >
+                      <span className="h-2 w-2 rounded-full bg-emerald-400/80" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </section>
 
@@ -245,5 +307,15 @@ export default function LandingPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+function StatCounter({ target, suffix }: { target: number; suffix?: string }) {
+  const value = useCountUp(target);
+  return (
+    <span>
+      {value}
+      {suffix ?? ''}
+    </span>
   );
 }

@@ -164,7 +164,9 @@ export default function DashboardPage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Assinaturas ativas</p>
-                          <p className="text-3xl text-white">{subscriptions.length}</p>
+                          <p className="text-3xl text-white">
+                            <StatCounter target={subscriptions.length} />
+                          </p>
                           <p className="text-xs text-zinc-500 mt-2">Total cadastradas</p>
                         </div>
                         <div className="h-11 w-11 rounded-2xl border border-white/10 bg-emerald-500/10 flex items-center justify-center">
@@ -179,7 +181,7 @@ export default function DashboardPage() {
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Gasto mensal</p>
                           <p className="text-3xl text-white">
-                            R$ {totalMonthly.toFixed(2).replace('.', ',')}
+                            R$ <StatCounter target={totalMonthly} formatter={(value) => value.toFixed(2).replace('.', ',')} />
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Última atualização</p>
                         </div>
@@ -195,7 +197,7 @@ export default function DashboardPage() {
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Gasto anual</p>
                           <p className="text-3xl text-white">
-                            R$ {totalYearly.toFixed(2).replace('.', ',')}
+                            R$ <StatCounter target={totalYearly} formatter={(value) => value.toFixed(2).replace('.', ',')} />
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Projeção 12 meses</p>
                         </div>
@@ -210,7 +212,9 @@ export default function DashboardPage() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Cobranças próximas</p>
-                          <p className="text-3xl text-white">{upcomingRenewals}</p>
+                          <p className="text-3xl text-white">
+                            <StatCounter target={upcomingRenewals} />
+                          </p>
                           <p className="text-xs text-zinc-500 mt-2">Próximos 7 dias</p>
                         </div>
                         <div className="h-11 w-11 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center">
@@ -288,7 +292,9 @@ export default function DashboardPage() {
                   ) : (
                     <>
                       <p className="text-sm text-zinc-400">Você tem</p>
-                      <p className="text-3xl font-semibold text-white mt-1">{friends.length}</p>
+                      <p className="text-3xl font-semibold text-white mt-1">
+                        <StatCounter target={friends.length} />
+                      </p>
                       <p className="text-xs text-zinc-500 mt-2">contatos cadastrados</p>
                     </>
                   )}
@@ -306,4 +312,49 @@ export default function DashboardPage() {
       </div>
     </div>
   );
+}
+
+function useCountUp(target: number, duration = 1200) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      setValue(target);
+      return;
+    }
+
+    let start: number | null = null;
+    let rafId: number;
+
+    const step = (timestamp: number) => {
+      if (start === null) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(target * eased);
+      if (progress < 1) {
+        rafId = window.requestAnimationFrame(step);
+      }
+    };
+
+    rafId = window.requestAnimationFrame(step);
+
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, [target, duration]);
+
+  return value;
+}
+
+function StatCounter({
+  target,
+  formatter,
+}: {
+  target: number;
+  formatter?: (value: number) => string;
+}) {
+  const value = useCountUp(target);
+  return <span>{formatter ? formatter(value) : Math.round(value)}</span>;
 }

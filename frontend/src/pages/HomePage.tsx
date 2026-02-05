@@ -262,7 +262,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Gasto Anual</p>
                       <p className="text-3xl text-white">
-                        R$ {totalYearly.toFixed(2).replace('.', ',')}
+                        R$ <StatCounter target={totalYearly} formatter={(value) => value.toFixed(2).replace('.', ',')} />
                       </p>
                       <p className="text-xs text-zinc-500 mt-2">Projeção de 12 meses</p>
                     </div>
@@ -274,7 +274,9 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Cobranças Próximas</p>
-                      <p className="text-3xl text-white">{upcomingRenewals}</p>
+                      <p className="text-3xl text-white">
+                        <StatCounter target={upcomingRenewals} />
+                      </p>
                       <p className="text-zinc-500 text-xs mt-1">Na aba atual</p>
                     </div>
                     <Bell className="h-10 w-10 text-yellow-500" />
@@ -285,7 +287,9 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Compartilhadas</p>
-                      <p className="text-3xl text-white">{sharedSubscriptions.length}</p>
+                      <p className="text-3xl text-white">
+                        <StatCounter target={sharedSubscriptions.length} />
+                      </p>
                       <p className="text-zinc-500 text-xs mt-1">Recebidas de amigos</p>
                     </div>
                     <Sparkles className="h-10 w-10 text-purple-400" />
@@ -301,19 +305,28 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     className="w-full lg:w-auto"
                   >
                     <TabsList className="bg-zinc-900/80 border border-zinc-800 w-full flex-wrap sm:flex-nowrap gap-2 sm:gap-0">
-                      <TabsTrigger value="all" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]">
+                      <TabsTrigger
+                        value="all"
+                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                      >
                         Todas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
                           {allSubscriptions.length}
                         </span>
                       </TabsTrigger>
-                      <TabsTrigger value="mine" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]">
+                      <TabsTrigger
+                        value="mine"
+                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                      >
                         Minhas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
                           {mySubscriptions.length}
                         </span>
                       </TabsTrigger>
-                      <TabsTrigger value="shared" className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[140px]">
+                      <TabsTrigger
+                        value="shared"
+                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[140px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                      >
                         Compartilhadas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
                           {sharedSubscriptions.length}
@@ -443,5 +456,50 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
       </div>
     </div>
   );
+}
+
+function useCountUp(target: number, duration = 1200) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      setValue(target);
+      return;
+    }
+
+    let start: number | null = null;
+    let rafId: number;
+
+    const step = (timestamp: number) => {
+      if (start === null) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(target * eased);
+      if (progress < 1) {
+        rafId = window.requestAnimationFrame(step);
+      }
+    };
+
+    rafId = window.requestAnimationFrame(step);
+
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, [target, duration]);
+
+  return value;
+}
+
+function StatCounter({
+  target,
+  formatter,
+}: {
+  target: number;
+  formatter?: (value: number) => string;
+}) {
+  const value = useCountUp(target);
+  return <span>{formatter ? formatter(value) : Math.round(value)}</span>;
 }
 
