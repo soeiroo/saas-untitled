@@ -262,7 +262,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Gasto Anual</p>
                       <p className="text-3xl text-white">
-                        R$ <StatCounter target={totalYearly} formatter={(value) => value.toFixed(2).replace('.', ',')} />
+                        R$ <StatCounter target={isFetchingSubscriptions ? 0 : totalYearly} formatter={(value) => value.toFixed(2).replace('.', ',')} />
                       </p>
                       <p className="text-xs text-zinc-500 mt-2">Projeção de 12 meses</p>
                     </div>
@@ -275,7 +275,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Cobranças Próximas</p>
                       <p className="text-3xl text-white">
-                        <StatCounter target={upcomingRenewals} />
+                        <StatCounter target={isFetchingSubscriptions ? 0 : upcomingRenewals} />
                       </p>
                       <p className="text-zinc-500 text-xs mt-1">Na aba atual</p>
                     </div>
@@ -288,7 +288,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Compartilhadas</p>
                       <p className="text-3xl text-white">
-                        <StatCounter target={sharedSubscriptions.length} />
+                        <StatCounter target={isFetchingSubscriptions ? 0 : sharedSubscriptions.length} />
                       </p>
                       <p className="text-zinc-500 text-xs mt-1">Recebidas de amigos</p>
                     </div>
@@ -307,29 +307,29 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <TabsList className="bg-zinc-900/80 border border-zinc-800 w-full flex-wrap sm:flex-nowrap gap-2 sm:gap-0">
                       <TabsTrigger
                         value="all"
-                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                        className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]"
                       >
                         Todas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          {allSubscriptions.length}
+                          <StatCounter target={isFetchingSubscriptions ? 0 : allSubscriptions.length} />
                         </span>
                       </TabsTrigger>
                       <TabsTrigger
                         value="mine"
-                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                        className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]"
                       >
                         Minhas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          {mySubscriptions.length}
+                          <StatCounter target={isFetchingSubscriptions ? 0 : mySubscriptions.length} />
                         </span>
                       </TabsTrigger>
                       <TabsTrigger
                         value="shared"
-                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[140px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                        className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[140px]"
                       >
                         Compartilhadas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          {sharedSubscriptions.length}
+                          <StatCounter target={isFetchingSubscriptions ? 0 : sharedSubscriptions.length} />
                         </span>
                       </TabsTrigger>
                     </TabsList>

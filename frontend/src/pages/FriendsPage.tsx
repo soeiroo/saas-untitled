@@ -232,31 +232,31 @@ export default function FriendsPage() {
                     <TabsList className="bg-zinc-900/80 border border-zinc-800 w-full flex-wrap sm:flex-nowrap gap-2 sm:gap-0">
                       <TabsTrigger
                         value="friends"
-                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                        className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]"
                       >
                         Amigos
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          {visibleFriends.length}
+                          <StatCounter target={isFetchingFriends ? 0 : visibleFriends.length} />
                         </span>
                       </TabsTrigger>
                       <TabsTrigger
                         value="requests"
-                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                        className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]"
                       >
                         Solicitações
                         {requests.length > 0 && (
                           <span className="ml-2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 text-[10px]">
-                            {requests.length}
+                            <StatCounter target={isFetchingFriends ? 0 : requests.length} />
                           </span>
                         )}
                       </TabsTrigger>
                       <TabsTrigger
                         value="sent"
-                        className="relative text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px] after:content-[''] after:absolute after:left-4 after:right-4 after:bottom-1 after:h-px after:rounded-full after:bg-emerald-400/70 after:opacity-0 after:transition-opacity data-[state=active]:after:opacity-100"
+                        className="text-zinc-200 data-[state=active]:bg-white data-[state=active]:text-zinc-900 flex-1 min-w-[120px]"
                       >
                         Enviadas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          {sentRequests.length}
+                          <StatCounter target={isFetchingFriends ? 0 : sentRequests.length} />
                         </span>
                       </TabsTrigger>
                     </TabsList>
@@ -481,4 +481,43 @@ export default function FriendsPage() {
       </Dialog>
     </div>
   );
+}
+
+function useCountUp(target: number, duration = 1200) {
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReducedMotion) {
+      setValue(target);
+      return;
+    }
+
+    let start: number | null = null;
+    let rafId: number;
+
+    const step = (timestamp: number) => {
+      if (start === null) start = timestamp;
+      const progress = Math.min((timestamp - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      setValue(target * eased);
+      if (progress < 1) {
+        rafId = window.requestAnimationFrame(step);
+      }
+    };
+
+    rafId = window.requestAnimationFrame(step);
+
+    return () => {
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
+  }, [target, duration]);
+
+  return value;
+}
+
+function StatCounter({ target }: { target: number }) {
+  const value = useCountUp(target);
+  return <span>{Math.round(value)}</span>;
 }
