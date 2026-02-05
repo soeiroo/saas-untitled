@@ -86,6 +86,12 @@
   --surface-1: color-mix(in oklch, white 4%, var(--background));
   --surface-2: color-mix(in oklch, white 6%, var(--background));
   --surface-border: color-mix(in oklch, white 8%, transparent);
+
+  --accent-emerald-rgb: 16 185 129;
+  --accent-purple-rgb: 139 92 246;
+  --accent-emerald-soft: rgba(16, 185, 129, 0.12);
+  --accent-purple-soft: rgba(139, 92, 246, 0.12);
+  --accent-mix-soft: linear-gradient(120deg, rgba(16, 185, 129, 0.08), rgba(139, 92, 246, 0.08));
 }
 
 @theme inline {
@@ -148,8 +154,10 @@
   .dark body {
     background-color: var(--surface-0);
     background-image:
-      radial-gradient(circle at top, rgba(16, 185, 129, 0.08), transparent 55%),
-      radial-gradient(circle at 75% 20%, rgba(139, 92, 246, 0.08), transparent 45%);
+      radial-gradient(1200px circle at 12% -10%, var(--accent-emerald-soft), transparent 55%),
+      radial-gradient(1000px circle at 88% -5%, var(--accent-purple-soft), transparent 60%),
+      radial-gradient(700px circle at 50% 18%, rgba(16, 185, 129, 0.05), transparent 65%),
+      var(--accent-mix-soft);
     background-attachment: fixed;
   }
   /**

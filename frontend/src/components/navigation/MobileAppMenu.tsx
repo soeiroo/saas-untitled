@@ -22,7 +22,7 @@ interface MobileAppMenuProps {
 }
 
 export default function MobileAppMenu({
-  title = 'Assinaturas Pro',
+  title = 'Nexio',
   items,
 }: MobileAppMenuProps) {
   const pathname = usePathname();
