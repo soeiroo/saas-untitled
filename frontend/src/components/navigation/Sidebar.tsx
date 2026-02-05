@@ -218,8 +218,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             }`}
             aria-expanded={showProfileActions}
           >
-            <div className="flex items-center gap-3">
-              <div className="h-9 w-9 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center overflow-hidden">
+            <div className={`flex items-center gap-3 ${isExpanded ? '' : 'justify-center'}`}>
+              <div className="h-10 w-10 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center overflow-hidden">
                 {user?.profilePicture ? (
                   <ImageWithFallback src={user.profilePicture} alt={user.name ?? 'Usuário'} className="h-full w-full object-cover" />
                 ) : (
