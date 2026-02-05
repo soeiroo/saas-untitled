@@ -142,6 +142,9 @@
   }
 
   body {
+    --sb-track-color: #1f262b;
+    --sb-thumb-color: #6f7a7d;
+    --sb-size: 10px;
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-family: 'Manrope', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -212,34 +215,25 @@
   }
 }
 
-@layer base {
-  * {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(16, 185, 129, 0.12) transparent;
-  }
+body::-webkit-scrollbar {
+  width: var(--sb-size);
+  height: var(--sb-size);
+}
 
-  *::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-  }
+body::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 6px;
+}
 
-  *::-webkit-scrollbar-track {
-    background: rgba(2, 6, 12, 0.7);
-    border-radius: 999px;
-  }
+body::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 6px;
+  border: 1px solid #274a6d;
+}
 
-  *::-webkit-scrollbar-thumb {
-    background: rgba(16, 185, 129, 0.16);
-    border-radius: 999px;
-    border: 2px solid transparent;
-    background-clip: padding-box;
-    box-shadow: 0 0 12px rgba(16, 185, 129, 0.18);
-  }
-
-  *::-webkit-scrollbar-thumb:hover {
-    background: rgba(139, 92, 246, 0.22);
-    background-clip: padding-box;
-    box-shadow: 0 0 14px rgba(139, 92, 246, 0.22);
+@supports not selector(::-webkit-scrollbar) {
+  body {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
   }
 }
 
