@@ -93,14 +93,19 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             <p className="text-base font-semibold sidebar-label opacity-0 transition-opacity duration-200 whitespace-nowrap">Nexio</p>
           </div>
         </div>
-        <button
-          type="button"
-          onClick={toggleSidebar}
-          className="mx-auto mb-6 inline-flex h-9 w-9 items-center justify-center rounded-xl border border-white/10 bg-zinc-950/40 text-zinc-300 hover:text-white hover:bg-white/5 transition"
-          aria-label={isExpanded ? 'Recolher sidebar' : 'Expandir sidebar'}
-        >
-          {isExpanded ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
-        </button>
+        <div className={`mb-6 flex ${isExpanded ? 'justify-start' : 'justify-center'} px-1`}>
+          <button
+            type="button"
+            onClick={toggleSidebar}
+            className={`inline-flex h-8 items-center justify-center gap-2 rounded-full border border-white/10 bg-zinc-950/50 text-zinc-300 transition hover:text-white hover:bg-white/5 ${
+              isExpanded ? 'px-3' : 'w-8'
+            }`}
+            aria-label={isExpanded ? 'Recolher sidebar' : 'Expandir sidebar'}
+          >
+            {isExpanded ? <ChevronLeft className="h-4 w-4" /> : <ChevronRight className="h-4 w-4" />}
+            {isExpanded && <span className="text-[11px] font-medium text-zinc-400">Recolher</span>}
+          </button>
+        </div>
         <nav className="flex flex-col gap-2 text-sm">
           <Link
             href="/dashboard"
