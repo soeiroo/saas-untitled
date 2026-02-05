@@ -165,59 +165,65 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
           </button>
         </nav>
         <div className="mt-auto pt-6 space-y-3">
-          {showProfileActions && (
-            <div className="space-y-3">
-              <button
-                type="button"
-                onClick={handleLogout}
-                className="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-2 text-left transition hover:border-white/20 hover:bg-white/5"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
-                    <LogOut className="h-4 w-4 text-zinc-300" />
-                  </div>
-                  <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
-                    <p className="text-sm font-medium text-white">Sair da conta</p>
-                    <p className="text-[11px] text-zinc-500">Encerrar sessão</p>
-                  </div>
+          <div
+            className={`space-y-2 overflow-hidden transition-all duration-200 ease-out ${
+              showProfileActions ? 'max-h-32 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none'
+            }`}
+          >
+            <button
+              type="button"
+              onClick={handleLogout}
+              className="w-full rounded-lg border border-white/10 bg-zinc-950/60 px-2.5 py-1.5 text-left transition hover:border-white/20 hover:bg-white/5"
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center">
+                  <LogOut className="h-3.5 w-3.5 text-zinc-300" />
                 </div>
-              </button>
+                <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                  <p className="text-xs font-medium text-white">Sair da conta</p>
+                  <p className="text-[10px] text-zinc-500">Encerrar sessão</p>
+                </div>
+              </div>
+            </button>
 
-              <Link
-                href="/profile"
-                className="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-2 text-left transition hover:border-white/20 hover:bg-white/5"
-                onClick={() => setShowProfileActions(false)}
-              >
-                <div className="flex items-center gap-3">
-                  <div className="h-8 w-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
-                    <Settings className="h-4 w-4 text-zinc-300" />
-                  </div>
-                  <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
-                    <p className="text-sm font-medium text-white">Configurações</p>
-                    <p className="text-[11px] text-zinc-500">Conta e segurança</p>
-                  </div>
+            <Link
+              href="/profile"
+              className="w-full rounded-lg border border-white/10 bg-zinc-950/60 px-2.5 py-1.5 text-left transition hover:border-white/20 hover:bg-white/5"
+              onClick={() => setShowProfileActions(false)}
+            >
+              <div className="flex items-center gap-2.5">
+                <div className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center">
+                  <Settings className="h-3.5 w-3.5 text-zinc-300" />
                 </div>
-              </Link>
-            </div>
-          )}
+                <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                  <p className="text-xs font-medium text-white">Configurações</p>
+                  <p className="text-[10px] text-zinc-500">Conta e segurança</p>
+                </div>
+              </div>
+            </Link>
+          </div>
 
           <button
             type="button"
             onClick={() => setShowProfileActions((prev) => !prev)}
-            className="w-full rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 p-4 text-left transition hover:border-white/20 hover:bg-white/5"
+            className={`w-full rounded-xl border bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 px-3 py-2 text-left transition duration-200 ${
+              showProfileActions
+                ? 'border-emerald-500/30 shadow-[0_10px_28px_rgba(16,185,129,0.12)]'
+                : 'border-white/10 hover:border-white/20 hover:bg-white/5'
+            }`}
             aria-expanded={showProfileActions}
           >
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center overflow-hidden">
+              <div className="h-9 w-9 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center overflow-hidden">
                 {user?.profilePicture ? (
                   <ImageWithFallback src={user.profilePicture} alt={user.name ?? 'Usuário'} className="h-full w-full object-cover" />
                 ) : (
-                  <span className="text-xs font-semibold text-white/80">{initials}</span>
+                  <span className="text-[11px] font-semibold text-white/80">{initials}</span>
                 )}
               </div>
               <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
                 <p className="text-sm font-semibold text-white truncate">{user?.name ?? 'Minha conta'}</p>
-                <p className="text-xs text-zinc-400 truncate">Perfil</p>
+                <p className="text-[11px] text-zinc-400 truncate">Perfil</p>
               </div>
             </div>
           </button>
