@@ -15,7 +15,6 @@ import { toast } from 'sonner';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Friend, FriendRequest } from '@/types/friend';
 import type { Subscription } from '@/types/subscription';
-import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 import { StatCounter } from '@/components/common/StatCounter';
@@ -198,9 +197,7 @@ export default function FriendsPage() {
                   </h1>
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="hidden lg:block">
-                    <LogoutButton floating={false} className="relative" />
-                  </div>
+                  <div className="hidden lg:block" />
                 </div>
               </header>
 

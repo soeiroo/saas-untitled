@@ -1,7 +1,10 @@
 import '@/styles/sidebar.css';
-import { LayoutDashboard, CreditCard, BarChart3, Settings, Contact, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutDashboard, CreditCard, BarChart3, Settings, Contact, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
+import { getCurrentUser } from '@/api/user';
+import type { User } from '@/types/user';
+import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 interface SidebarProps {
   activePage: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
@@ -9,11 +12,28 @@ interface SidebarProps {
 
 export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
   const [isExpanded, setIsExpanded] = useState(true);
+  const [user, setUser] = useState<User | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
     const saved = localStorage.getItem('sidebarExpanded');
     if (saved !== null) setIsExpanded(saved === 'true');
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    const loadUser = async () => {
+      try {
+        const me = await getCurrentUser();
+        if (mounted) setUser(me);
+      } catch {
+        // ignore
+      }
+    };
+    loadUser();
+    return () => {
+      mounted = false;
+    };
   }, []);
 
   const toggleSidebar = () => {
@@ -25,6 +45,23 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
       return next;
     });
   };
+
+  const handleLogout = () => {
+    const confirmLogout = window.confirm('Deseja sair da conta?');
+    if (!confirmLogout) return;
+    localStorage.clear();
+    sessionStorage.clear();
+    window.location.href = '/login';
+  };
+
+  const initials = user?.name
+    ? user.name
+        .split(' ')
+        .slice(0, 2)
+        .map((part) => part[0])
+        .join('')
+        .toUpperCase()
+    : 'U';
 
   return (
     <>
@@ -109,26 +146,57 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
             </span>
             <span className="text-xs sidebar-label opacity-0 transition-opacity duration-200 pr-3">Em breve</span>
           </button>
+        </nav>
+        <div className="mt-auto pt-6 space-y-3">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-2 text-left transition hover:border-white/20 hover:bg-white/5"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
+                <LogOut className="h-4 w-4 text-zinc-300" />
+              </div>
+              <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                <p className="text-sm font-medium text-white">Sair da conta</p>
+                <p className="text-[11px] text-zinc-500">Encerrar sessão</p>
+              </div>
+            </div>
+          </button>
+
           <Link
             href="/profile"
-            className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 ${isExpanded ? 'w-full' : 'w-[70%]'} ${activePage === 'settings'
-                ? 'bg-emerald-500/10 text-emerald-200 border border-white/10 shadow-[0_14px_34px_rgba(16,185,129,0.10)]'
-                : 'text-zinc-400 hover:text-white hover:bg-white/5'
-              }`}
-            style={{ minHeight: '3rem' }}
+            className="w-full rounded-xl border border-white/10 bg-zinc-950/60 px-3 py-2 text-left transition hover:border-white/20 hover:bg-white/5"
           >
-            <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
-              <Settings className="h-4 w-4 flex-shrink-0" />
-              <span className="sidebar-label opacity-0 transition-opacity duration-200 whitespace-nowrap">Configurações</span>
-            </span>
+            <div className="flex items-center gap-3">
+              <div className="h-8 w-8 rounded-xl border border-white/10 bg-white/5 flex items-center justify-center">
+                <Settings className="h-4 w-4 text-zinc-300" />
+              </div>
+              <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                <p className="text-sm font-medium text-white">Configurações</p>
+                <p className="text-[11px] text-zinc-500">Conta e segurança</p>
+              </div>
+            </div>
           </Link>
-        </nav>
-        <div className="mt-auto pt-6">
-          <div className="rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/50 to-zinc-950/40 p-4 opacity-0 transition-opacity duration-200">
-            <p className="text-xs text-zinc-500">Plano atual</p>
-            <p className="text-sm font-semibold">Inicial</p>
-            <p className="text-xs text-emerald-400 mt-1">Upgrade disponível</p>
-          </div>
+
+          <Link
+            href="/profile"
+            className="w-full rounded-2xl border border-white/10 bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 p-4 transition hover:border-white/20 hover:bg-white/5"
+          >
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-2xl border border-white/10 bg-white/5 flex items-center justify-center overflow-hidden">
+                {user?.profilePicture ? (
+                  <ImageWithFallback src={user.profilePicture} alt={user.name ?? 'Usuário'} className="h-full w-full object-cover" />
+                ) : (
+                  <span className="text-xs font-semibold text-white/80">{initials}</span>
+                )}
+              </div>
+              <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                <p className="text-sm font-semibold text-white truncate">{user?.name ?? 'Minha conta'}</p>
+                <p className="text-xs text-zinc-400 truncate">Perfil</p>
+              </div>
+            </div>
+          </Link>
         </div>
       </aside>
 

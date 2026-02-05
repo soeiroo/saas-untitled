@@ -8,7 +8,6 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Sidebar } from '@/components/navigation/Sidebar';
-import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { StatCounter } from '@/components/common/StatCounter';
 import { getSubscriptions, updateSubscription } from '@/api/subscription';
@@ -135,9 +134,7 @@ export default function DashboardPage() {
                     <span className="block text-base font-normal text-emerald-300/80 mt-1">Tudo pronto para hoje</span>
                   </h1>
                 </div>
-                <div className="hidden lg:block">
-                  <LogoutButton floating={false} className="relative" />
-                </div>
+                <div className="hidden lg:block" />
               </header>
 
               <Card className="relative overflow-hidden mb-8 bg-gradient-to-br from-zinc-900/60 to-zinc-950/40 border-white/10">

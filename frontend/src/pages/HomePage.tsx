@@ -12,7 +12,6 @@ import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { DollarSign, Bell, TrendingUp, Search, Sparkles, Loader2 } from 'lucide-react';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Subscription } from '@/types/subscription';
-import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { StatCounter } from '@/components/common/StatCounter';
 import { getAutoRenewedDate, getNextRenewalDate } from '@/utils/subscriptionRenewal';
@@ -267,9 +266,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 </div>
                 <div className="flex flex-wrap items-center gap-3">
                   {/* <Badge className="bg-zinc-900/70 text-zinc-300 border border-zinc-800">Total: {subscriptions.length}</Badge> */}
-                  <div className="hidden lg:block">
-                    <LogoutButton floating={false} className="relative" />
-                  </div>
+                  <div className="hidden lg:block" />
                 </div>
               </header>
 
