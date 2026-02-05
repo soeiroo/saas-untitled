@@ -18,6 +18,7 @@ import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
+import { StatCounter } from '@/components/common/StatCounter';
 
 export default function FriendsPage() {
   const [friends, setFriends] = useState<Friend[]>([]);
@@ -236,7 +237,7 @@ export default function FriendsPage() {
                       >
                         Amigos
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          <StatCounter target={isFetchingFriends ? 0 : visibleFriends.length} />
+                          <StatCounter target={visibleFriends.length} start={!isFetchingFriends} />
                         </span>
                       </TabsTrigger>
                       <TabsTrigger
@@ -246,7 +247,7 @@ export default function FriendsPage() {
                         Solicitações
                         {requests.length > 0 && (
                           <span className="ml-2 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 px-2 py-0.5 text-[10px]">
-                            <StatCounter target={isFetchingFriends ? 0 : requests.length} />
+                            <StatCounter target={requests.length} start={!isFetchingFriends} />
                           </span>
                         )}
                       </TabsTrigger>
@@ -256,7 +257,7 @@ export default function FriendsPage() {
                       >
                         Enviadas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          <StatCounter target={isFetchingFriends ? 0 : sentRequests.length} />
+                          <StatCounter target={sentRequests.length} start={!isFetchingFriends} />
                         </span>
                       </TabsTrigger>
                     </TabsList>
@@ -481,43 +482,4 @@ export default function FriendsPage() {
       </Dialog>
     </div>
   );
-}
-
-function useCountUp(target: number, duration = 1200) {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      setValue(target);
-      return;
-    }
-
-    let start: number | null = null;
-    let rafId: number;
-
-    const step = (timestamp: number) => {
-      if (start === null) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(target * eased);
-      if (progress < 1) {
-        rafId = window.requestAnimationFrame(step);
-      }
-    };
-
-    rafId = window.requestAnimationFrame(step);
-
-    return () => {
-      if (rafId) window.cancelAnimationFrame(rafId);
-    };
-  }, [target, duration]);
-
-  return value;
-}
-
-function StatCounter({ target }: { target: number }) {
-  const value = useCountUp(target);
-  return <span>{Math.round(value)}</span>;
 }

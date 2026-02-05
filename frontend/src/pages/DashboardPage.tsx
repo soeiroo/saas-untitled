@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
+import { StatCounter } from '@/components/common/StatCounter';
 import { getSubscriptions } from '@/api/subscription';
 import { getFriends } from '@/api/friend';
 import { getCurrentUser } from '@/api/user';
@@ -165,7 +166,7 @@ export default function DashboardPage() {
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Assinaturas ativas</p>
                           <p className="text-3xl text-white">
-                            <StatCounter target={subscriptions.length} />
+                            <StatCounter target={subscriptions.length} start={!isLoading} />
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Total cadastradas</p>
                         </div>
@@ -181,7 +182,7 @@ export default function DashboardPage() {
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Gasto mensal</p>
                           <p className="text-3xl text-white">
-                            R$ <StatCounter target={totalMonthly} formatter={(value) => value.toFixed(2).replace('.', ',')} />
+                            R$ <StatCounter target={totalMonthly} start={!isLoading} formatter={(value) => value.toFixed(2).replace('.', ',')} />
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Última atualização</p>
                         </div>
@@ -197,7 +198,7 @@ export default function DashboardPage() {
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Gasto anual</p>
                           <p className="text-3xl text-white">
-                            R$ <StatCounter target={totalYearly} formatter={(value) => value.toFixed(2).replace('.', ',')} />
+                            R$ <StatCounter target={totalYearly} start={!isLoading} formatter={(value) => value.toFixed(2).replace('.', ',')} />
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Projeção 12 meses</p>
                         </div>
@@ -213,7 +214,7 @@ export default function DashboardPage() {
                         <div>
                           <p className="text-zinc-400 text-sm mb-1">Cobranças próximas</p>
                           <p className="text-3xl text-white">
-                            <StatCounter target={upcomingRenewals} />
+                            <StatCounter target={upcomingRenewals} start={!isLoading} />
                           </p>
                           <p className="text-xs text-zinc-500 mt-2">Próximos 7 dias</p>
                         </div>
@@ -293,7 +294,7 @@ export default function DashboardPage() {
                     <>
                       <p className="text-sm text-zinc-400">Você tem</p>
                       <p className="text-3xl font-semibold text-white mt-1">
-                        <StatCounter target={friends.length} />
+                        <StatCounter target={friends.length} start={!isLoading} />
                       </p>
                       <p className="text-xs text-zinc-500 mt-2">contatos cadastrados</p>
                     </>
@@ -312,49 +313,4 @@ export default function DashboardPage() {
       </div>
     </div>
   );
-}
-
-function useCountUp(target: number, duration = 1200) {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      setValue(target);
-      return;
-    }
-
-    let start: number | null = null;
-    let rafId: number;
-
-    const step = (timestamp: number) => {
-      if (start === null) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(target * eased);
-      if (progress < 1) {
-        rafId = window.requestAnimationFrame(step);
-      }
-    };
-
-    rafId = window.requestAnimationFrame(step);
-
-    return () => {
-      if (rafId) window.cancelAnimationFrame(rafId);
-    };
-  }, [target, duration]);
-
-  return value;
-}
-
-function StatCounter({
-  target,
-  formatter,
-}: {
-  target: number;
-  formatter?: (value: number) => string;
-}) {
-  const value = useCountUp(target);
-  return <span>{formatter ? formatter(value) : Math.round(value)}</span>;
 }

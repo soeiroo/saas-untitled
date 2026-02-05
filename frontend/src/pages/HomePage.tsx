@@ -14,6 +14,7 @@ import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Subscription } from '@/types/subscription';
 import LogoutButton from '@/components/ui/LogoutButton';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
+import { StatCounter } from '@/components/common/StatCounter';
 
 type HomePageProps = {
   activePage?: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
@@ -262,7 +263,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Gasto Anual</p>
                       <p className="text-3xl text-white">
-                        R$ <StatCounter target={isFetchingSubscriptions ? 0 : totalYearly} formatter={(value) => value.toFixed(2).replace('.', ',')} />
+                        R$ <StatCounter target={totalYearly} start={!isFetchingSubscriptions} formatter={(value) => value.toFixed(2).replace('.', ',')} />
                       </p>
                       <p className="text-xs text-zinc-500 mt-2">Projeção de 12 meses</p>
                     </div>
@@ -275,7 +276,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Cobranças Próximas</p>
                       <p className="text-3xl text-white">
-                        <StatCounter target={isFetchingSubscriptions ? 0 : upcomingRenewals} />
+                        <StatCounter target={upcomingRenewals} start={!isFetchingSubscriptions} />
                       </p>
                       <p className="text-zinc-500 text-xs mt-1">Na aba atual</p>
                     </div>
@@ -288,7 +289,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <div>
                       <p className="text-zinc-400 text-sm mb-1">Compartilhadas</p>
                       <p className="text-3xl text-white">
-                        <StatCounter target={isFetchingSubscriptions ? 0 : sharedSubscriptions.length} />
+                        <StatCounter target={sharedSubscriptions.length} start={!isFetchingSubscriptions} />
                       </p>
                       <p className="text-zinc-500 text-xs mt-1">Recebidas de amigos</p>
                     </div>
@@ -311,7 +312,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       >
                         Todas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          <StatCounter target={isFetchingSubscriptions ? 0 : allSubscriptions.length} />
+                          <StatCounter target={allSubscriptions.length} start={!isFetchingSubscriptions} />
                         </span>
                       </TabsTrigger>
                       <TabsTrigger
@@ -320,7 +321,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       >
                         Minhas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          <StatCounter target={isFetchingSubscriptions ? 0 : mySubscriptions.length} />
+                          <StatCounter target={mySubscriptions.length} start={!isFetchingSubscriptions} />
                         </span>
                       </TabsTrigger>
                       <TabsTrigger
@@ -329,7 +330,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       >
                         Compartilhadas
                         <span className="ml-2 rounded-full bg-zinc-800 px-2 py-0.5 text-[10px] text-zinc-300">
-                          <StatCounter target={isFetchingSubscriptions ? 0 : sharedSubscriptions.length} />
+                          <StatCounter target={sharedSubscriptions.length} start={!isFetchingSubscriptions} />
                         </span>
                       </TabsTrigger>
                     </TabsList>
@@ -456,50 +457,5 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
       </div>
     </div>
   );
-}
-
-function useCountUp(target: number, duration = 1200) {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      setValue(target);
-      return;
-    }
-
-    let start: number | null = null;
-    let rafId: number;
-
-    const step = (timestamp: number) => {
-      if (start === null) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(target * eased);
-      if (progress < 1) {
-        rafId = window.requestAnimationFrame(step);
-      }
-    };
-
-    rafId = window.requestAnimationFrame(step);
-
-    return () => {
-      if (rafId) window.cancelAnimationFrame(rafId);
-    };
-  }, [target, duration]);
-
-  return value;
-}
-
-function StatCounter({
-  target,
-  formatter,
-}: {
-  target: number;
-  formatter?: (value: number) => string;
-}) {
-  const value = useCountUp(target);
-  return <span>{formatter ? formatter(value) : Math.round(value)}</span>;
 }
 

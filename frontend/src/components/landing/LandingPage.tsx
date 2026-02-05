@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import Link from 'next/link';
 import gsap from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { Check, Sparkles, ArrowRight, ShieldCheck, Zap, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
+import { StatCounter } from '@/components/common/StatCounter';
 
 const highlights = [
   {
@@ -46,40 +47,6 @@ const marqueeItems = [
   'Visão compartilhada com amigos',
   'Insights de gastos recorrentes',
 ];
-
-function useCountUp(target: number, duration = 1200) {
-  const [value, setValue] = useState(0);
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return;
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      setValue(target);
-      return;
-    }
-
-    let start: number | null = null;
-    let rafId: number;
-
-    const step = (timestamp: number) => {
-      if (start === null) start = timestamp;
-      const progress = Math.min((timestamp - start) / duration, 1);
-      const eased = 1 - Math.pow(1 - progress, 3);
-      setValue(Math.round(target * eased));
-      if (progress < 1) {
-        rafId = window.requestAnimationFrame(step);
-      }
-    };
-
-    rafId = window.requestAnimationFrame(step);
-
-    return () => {
-      if (rafId) window.cancelAnimationFrame(rafId);
-    };
-  }, [target, duration]);
-
-  return value;
-}
 
 export default function LandingPage() {
   const containerRef = useRef<HTMLDivElement | null>(null);
@@ -181,7 +148,10 @@ export default function LandingPage() {
                       <div key={stat.label} className="rounded-2xl border border-zinc-800/80 bg-zinc-900/60 px-4 py-3">
                         <p className="text-xs text-zinc-500">{stat.label}</p>
                         <p className="text-lg font-semibold text-white mt-2">
-                          <StatCounter target={stat.value} suffix={stat.suffix} />
+                          <StatCounter
+                            target={stat.value}
+                            formatter={(value) => `${Math.round(value)}${stat.suffix ?? ''}`}
+                          />
                         </p>
                       </div>
                     ))}
@@ -307,15 +277,5 @@ export default function LandingPage() {
         </div>
       </div>
     </div>
-  );
-}
-
-function StatCounter({ target, suffix }: { target: number; suffix?: string }) {
-  const value = useCountUp(target);
-  return (
-    <span>
-      {value}
-      {suffix ?? ''}
-    </span>
   );
 }
