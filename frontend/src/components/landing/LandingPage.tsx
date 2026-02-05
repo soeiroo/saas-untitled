@@ -8,6 +8,7 @@ import { Check, Sparkles, ArrowRight, ShieldCheck, Zap, Users } from 'lucide-rea
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { StatCounter } from '@/components/common/StatCounter';
+import Particles from '@/components/Particles';
 
 const highlights = [
   {
@@ -82,6 +83,21 @@ export default function LandingPage() {
       <div className="relative">
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.12),_transparent_50%),radial-gradient(circle_at_80%_20%,_rgba(139,92,246,0.12),_transparent_45%)]" />
         <div className="absolute inset-0 opacity-40 [background:linear-gradient(to_right,rgba(63,63,70,0.15)_1px,transparent_1px),linear-gradient(to_bottom,rgba(63,63,70,0.15)_1px,transparent_1px)] [background-size:48px_48px]" />
+        <div className="absolute inset-0 pointer-events-none opacity-45 [mask-image:linear-gradient(to_bottom,black_60%,transparent_100%)]">
+          <Particles
+            className="absolute inset-0"
+            particleCount={160}
+            particleSpread={10}
+            speed={0.08}
+            particleColors={['#10B981', '#8B5CF6', '#ffffff']}
+            alphaParticles
+            particleBaseSize={90}
+            sizeRandomness={1.2}
+            cameraDistance={20}
+            disableRotation={false}
+            pixelRatio={1}
+          />
+        </div>
         <div className="relative">
           <header className="px-6 py-6 lg:px-12">
             <div className="mx-auto flex max-w-6xl items-center justify-between">

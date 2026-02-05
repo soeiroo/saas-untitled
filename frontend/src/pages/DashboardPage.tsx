@@ -90,6 +90,7 @@ export default function DashboardPage() {
   return (
     <div className="min-h-screen bg-zinc-950 text-white">
       <div className="relative">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(16,185,129,0.08),_transparent_55%),radial-gradient(circle_at_75%_20%,_rgba(139,92,246,0.08),_transparent_45%)]" />
         <div className="relative flex">
           <Sidebar activePage="overview" />
 
