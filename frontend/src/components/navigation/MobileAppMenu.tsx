@@ -63,9 +63,7 @@ export default function MobileAppMenu({
           </SheetTrigger>
 
           <div className="flex items-center gap-2 min-w-0">
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-transparent border border-emerald-500/35 shadow-lg shadow-emerald-500/15 flex items-center justify-center">
-              <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-            </div>
+            <img src={"/icon.svg"} alt="Logo" className="h-10 w-10 rounded-2xl" />
             <div className="leading-tight min-w-0">
               <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">Menu</p>
               <p className="text-sm font-semibold text-white truncate">{title}</p>
@@ -79,9 +77,7 @@ export default function MobileAppMenu({
             <div className="flex h-full flex-col">
               <div className="px-5 pt-6 pb-4 border-b border-zinc-800/70">
                 <div className="flex items-center gap-3">
-                  <div className="h-11 w-11 rounded-3xl bg-gradient-to-br from-emerald-500/20 to-transparent border border-emerald-500/25 shadow-lg shadow-emerald-500/15 flex items-center justify-center">
-                    <div className="h-5 w-5 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-                  </div>
+                  <img src="/icon.svg" alt="Logo" className="h-10 w-10 rounded-full" />
                   <div>
                     <p className="text-xs uppercase tracking-[0.2em] text-zinc-500">{title}</p>
                     <p className="text-sm text-zinc-300">Menu principal</p>

@@ -151,9 +151,7 @@ export default function LoginPage() {
             <Card className="w-full max-w-md bg-zinc-900/80 border-zinc-800">
               <CardHeader>
                 <div className="flex items-center justify-center mb-4">
-                  <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
-                    <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-                  </div>
+                  <img src="/icon.svg" alt="Logo" className="h-10 w-10 rounded-full" />
                 </div>
                 <CardTitle className="text-center text-white">Criar Conta</CardTitle>
                 <p className="text-center text-zinc-400 text-sm mt-2">Registre-se para começar</p>
@@ -260,9 +258,7 @@ export default function LoginPage() {
           <Card className="w-full max-w-md bg-zinc-900/80 border-zinc-800">
             <CardHeader>
               <div className="flex items-center justify-center mb-4">
-                <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
-                  <div className="h-6 w-6 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-                </div>
+                <img src="/icon.svg" alt="Logo" className="h-20 w-20 rounded-full" />
               </div>
               <CardTitle className="text-center text-white">Bem-vindo</CardTitle>
               <p className="text-center text-zinc-400 text-sm mt-2">Acesse sua conta</p>

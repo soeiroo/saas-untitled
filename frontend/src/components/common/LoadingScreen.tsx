@@ -38,13 +38,7 @@ export function LoadingIndicator({
 
   return (
     <div className={cn('flex flex-col items-center gap-3', className)} role="status" aria-live="polite">
-      <div className={cn('relative', sizeMap[size])} aria-hidden="true">
-        <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 motion-safe:animate-pulse motion-reduce:opacity-80" />
-        <div className="absolute inset-0 rounded-2xl border border-purple-500/30 motion-safe:animate-[pulse_2.5s_ease-in-out_infinite] motion-reduce:opacity-70" />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="h-3.5 w-3.5 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400 motion-safe:animate-[ping_1.8s_ease-in-out_infinite] motion-reduce:opacity-90" />
-        </div>
-      </div>
+      <img src="/icon.svg" className="h-25 w-25 rounded-full" />
       <p className="text-sm text-zinc-400">{label}</p>
       {subLabel && <p className="text-xs text-zinc-500">{subLabel}</p>}
       {showSlowMessage && (

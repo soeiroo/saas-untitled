@@ -102,9 +102,7 @@ export default function LandingPage() {
           <header className="px-6 py-6 lg:px-12">
             <div className="mx-auto flex max-w-6xl items-center justify-between">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-purple-500/20 border border-emerald-500/40 shadow-lg shadow-emerald-500/20 flex items-center justify-center">
-                <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-              </div>
+              <img src="/icon.svg" alt="Logo" className="h-10 w-10 rounded-full" />
               <div className="leading-tight">
                 <p className="text-xs uppercase tracking-[0.3em] text-zinc-500">Nexio</p>
                 <p className="text-sm font-semibold text-white">Assinaturas inteligentes</p>

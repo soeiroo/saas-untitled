@@ -85,10 +85,8 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
         ref={sidebarRef}
         className={`sidebar hidden lg:flex lg:flex-col fixed left-0 top-0 h-screen bg-zinc-950/45 border-r border-white/5 px-2 py-6 backdrop-blur-xl overflow-hidden z-40 ${isExpanded ? 'is-expanded px-5' : ''}`}
       >
-        <div className="flex flex-col items-center justify-center min-h-16 mb-8">
-          <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-emerald-500/20 to-transparent border border-white/10 shadow-[0_18px_40px_rgba(0,0,0,0.55)] flex items-center justify-center mx-auto">
-            <div className="h-4 w-4 rounded-full bg-gradient-to-br from-emerald-400 to-purple-400" />
-          </div>
+        <div className="flex flex-col items-center justify-center min-h-16 mb-8">  
+        <img src="/icon.svg" alt="Logo" className="h-10 w-10 rounded-2xl" />
           <div className="sidebar-label opacity-0 transition-opacity duration-200 mt-2">
             <p className="text-base font-semibold sidebar-label opacity-0 transition-opacity duration-200 whitespace-nowrap">Nexio</p>
           </div>
