@@ -17,6 +17,9 @@ import { StatCounter } from '@/components/common/StatCounter';
 import { getAutoRenewedDate, getNextRenewalDate } from '@/utils/subscriptionRenewal';
 import { format } from 'date-fns';
 import type { SubscriptionFriend } from '@/types/subscriptionFriend';
+import { getCurrentUser } from '@/api/user';
+import type { User } from '@/types/user';
+import { useRouter } from 'next/navigation';
 
 type HomePageProps = {
   activePage?: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
@@ -24,6 +27,8 @@ type HomePageProps = {
 
 export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   
+  const router = useRouter();
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [editingSubscription, setEditingSubscription] = useState<Subscription | null>(null);
   const [editDialogOpen, setEditDialogOpen] = useState(false);
   const [mySubscriptions, setMySubscriptions] = useState<Subscription[]>([]);
@@ -47,13 +52,15 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
       setIsFetchingSubscriptions(true);
       setError('');
       try {
-        const [subs, sharedSubs] = await Promise.all([
+        const [subs, sharedSubs, user] = await Promise.all([
           getSubscriptions(),
           getSharedSubscriptions(),
+          getCurrentUser(),
         ]);
         const normalizedSubs = await autoRenewSubscriptions(subs);
         setMySubscriptions(normalizedSubs);
         setSharedSubscriptions(sharedSubs);
+        setCurrentUser(user);
         const all = [...normalizedSubs, ...sharedSubs];
         const friendsMap = await loadSubscriptionFriends(all);
         setSubscriptionFriends(friendsMap);
@@ -436,14 +443,28 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     </TabsList>
                   </Tabs>
                   <div className="flex items-center gap-3 mt-2 sm:mt-0">
-                    <button
-                      onClick={handleRequestAIAnalysis}
-                      disabled={isLoadingAI}
-                      className="rounded-xl px-3 py-2 text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed border border-purple-400/20 flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-purple-500/20"
-                    >
-                      <Sparkles className="h-4 w-4" />
-                      {isLoadingAI ? 'Analisando...' : 'Solicitar análise da IA'}
-                    </button>
+                    {currentUser?.userPlan == 'premium' ? (
+                      <button
+                        onClick={handleRequestAIAnalysis}
+                        disabled={isLoadingAI}
+                        className="rounded-xl px-3 py-2 text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed border border-purple-400/20 flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-purple-500/20"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        {isLoadingAI ? 'Analisando...' : 'Solicitar análise da IA'}
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => router.push('/planos')}
+                        className="rounded-xl px-3 py-2 text-xs sm:text-sm text-zinc-400 bg-zinc-800 hover:bg-zinc-700 cursor-pointer border border-zinc-700 flex items-center gap-2 transition-all duration-200 shadow-lg relative group"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        Análise da IA
+                        <div className="absolute -top-12 left-1/2 -translate-x-1/2 bg-zinc-900 border border-zinc-700 rounded-lg px-3 py-2 text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none shadow-xl">
+                          Atualize seu plano agora mesmo
+                          <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-2 h-2 bg-zinc-900 border-r border-b border-zinc-700 rotate-45"></div>
+                        </div>
+                      </button>
+                    )}
                   </div>
                 </div>
 
