@@ -1,4 +1,4 @@
-# saas-untitled
+# Nexio
 
 This project is a SaaS platform for managing subscriptions and shared expenses in a centralized and intelligent way.
 
