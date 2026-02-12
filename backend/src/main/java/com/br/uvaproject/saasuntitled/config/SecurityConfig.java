@@ -74,7 +74,7 @@ public class SecurityConfig {
         String[] activeProfiles = env.getActiveProfiles();
         
         if (Arrays.asList(activeProfiles).contains("prod")) {
-            configuration.setAllowedOrigins(List.of("https://saas-untitled.vercel.app"));
+            configuration.setAllowedOrigins(List.of("https://nexio-saas.vercel.app"));
         } else {
             configuration.setAllowedOrigins(List.of("http://localhost:3000", "http://192.168.0.14:3000", "http://localhost:8080"));
         }
