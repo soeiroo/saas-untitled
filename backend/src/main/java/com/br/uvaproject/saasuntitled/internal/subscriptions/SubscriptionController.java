@@ -81,4 +81,15 @@ public class SubscriptionController {
 
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/advice")
+    public ResponseEntity<String> getSpendingAdvice(
+            Authentication authentication
+    ) {
+        User user = authenticatedUserService.getUser(authentication);
+
+        String advice = subscriptionService.generateSpendingAdvice(user);
+
+        return ResponseEntity.ok(advice);
+    }
 }
