@@ -84,7 +84,7 @@ export default function PlanosPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {plans.map((plan, index) => (
+            {plans.sort((a, b) => (b.isCurrent ? 1 : 0) - (a.isCurrent ? 1 : 0)).map((plan, index) => (
               <div
                 key={index}
                 className="relative flex flex-col bg-zinc-900/40 border border-white/10 rounded-2xl p-8 backdrop-blur-sm hover:border-white/20 transition-all duration-300 min-h-[600px]"
