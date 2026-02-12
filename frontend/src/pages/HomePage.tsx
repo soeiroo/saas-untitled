@@ -435,7 +435,6 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>
-{/* 
                   <div className="flex items-center gap-3 mt-2 sm:mt-0">
                     <button
                       onClick={handleRequestAIAnalysis}
@@ -445,7 +444,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       <Sparkles className="h-4 w-4" />
                       {isLoadingAI ? 'Analisando...' : 'Solicitar análise da IA'}
                     </button>
-                  </div> */}
+                  </div>
                 </div>
 
                 <div className="w-full flex flex-col lg:flex-row items-center gap-4 sm:gap-5">
