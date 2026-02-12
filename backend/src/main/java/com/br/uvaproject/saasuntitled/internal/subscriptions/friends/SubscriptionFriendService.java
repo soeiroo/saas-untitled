@@ -20,100 +20,96 @@ import java.util.UUID;
 @Transactional
 public class SubscriptionFriendService {
 
-    private final SubscriptionRepository subscriptionRepository;
-    private final SubscriptionFriendRepository subscriptionFriendRepository;
-    private final UserFriendRepository userFriendRepository;
+        private final SubscriptionRepository subscriptionRepository;
+        private final SubscriptionFriendRepository subscriptionFriendRepository;
+        private final UserFriendRepository userFriendRepository;
 
-    public void addFriendToSubscription(
-            User user,
-            UUID subscriptionId,
-            UUID friendId,
-            BigDecimal price
-    ) {
-        Subscription subscription = subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
+        public void addFriendToSubscription(
+                        User user,
+                        UUID subscriptionId,
+                        UUID friendId,
+                        BigDecimal price) {
+                Subscription subscription = subscriptionRepository.findById(subscriptionId)
+                                .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
 
-        if (!subscription.getUser().getId().equals(user.getId())) {
-            throw new EntityNotFoundException("Assinatura não encontrada");
+                if (!subscription.getUser().getId().equals(user.getId())) {
+                        throw new EntityNotFoundException("Assinatura não encontrada");
+                }
+
+                boolean areFriends = userFriendRepository.findByUserIdAndFriendId(user.getId(), friendId).isPresent()
+                                || userFriendRepository.findByUserIdAndFriendId(friendId, user.getId()).isPresent();
+
+                if (!areFriends) {
+                        throw new IllegalStateException("Usuário não é seu amigo");
+                }
+
+                subscriptionFriendRepository
+                                .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
+                                .ifPresent(f -> {
+                                        throw new IllegalStateException("Amigo já está na assinatura");
+                                });
+
+                SubscriptionFriend sf = new SubscriptionFriend();
+                sf.setSubscription(subscription);
+
+                User friend = new User();
+                friend.setId(friendId);
+                sf.setFriend(friend);
+                sf.setPrice(price);
+
+                subscriptionFriendRepository.save(sf);
         }
 
-        boolean areFriends =
-                userFriendRepository.findByUserIdAndFriendId(user.getId(), friendId).isPresent()
-             || userFriendRepository.findByUserIdAndFriendId(friendId, user.getId()).isPresent();
+        @Transactional(readOnly = true)
+        public List<SubscriptionFriendResponseDTO> listFriends(
+                        UUID subscriptionId,
+                        User user) {
+                Subscription subscription = subscriptionRepository.findById(subscriptionId)
+                                .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
 
-        if (!areFriends) {
-            throw new IllegalStateException("Usuário não é seu amigo");
+                boolean isOwner = subscription.getUser().getId().equals(user.getId());
+                boolean isFriend = subscriptionFriendRepository
+                                .findBySubscriptionIdAndFriendId(subscriptionId, user.getId())
+                                .isPresent();
+
+                if (!isOwner && !isFriend) {
+                        throw new EntityNotFoundException("Assinatura não encontrada");
+                }
+
+                return subscriptionFriendRepository.findBySubscriptionId(subscriptionId)
+                                .stream()
+                                .map(SubscriptionFriendMapper::toResponse)
+                                .toList();
         }
 
-        subscriptionFriendRepository
-                .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
-                .ifPresent(f -> {
-                    throw new IllegalStateException("Amigo já está na assinatura");
-                });
+        public void updateFriendPrice(
+                        User user,
+                        UUID subscriptionId,
+                        UUID friendId,
+                        BigDecimal price) {
+                SubscriptionFriend sf = subscriptionFriendRepository
+                                .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
+                                .orElseThrow(() -> new EntityNotFoundException("Amigo não está na assinatura"));
 
-        SubscriptionFriend sf = new SubscriptionFriend();
-        sf.setSubscription(subscription);
+                if (!sf.getSubscription().getUser().getId().equals(user.getId())) {
+                        throw new EntityNotFoundException("Assinatura não encontrada");
+                }
 
-        User friend = new User();
-        friend.setId(friendId);
-        sf.setFriend(friend);
-        sf.setPrice(price);
-
-        subscriptionFriendRepository.save(sf);
-    }
-
-    @Transactional(readOnly = true)
-    public List<SubscriptionFriendResponseDTO> listFriends(
-            UUID subscriptionId,
-            User user
-    ) {
-        Subscription subscription = subscriptionRepository.findById(subscriptionId)
-                .orElseThrow(() -> new EntityNotFoundException("Assinatura não encontrada"));
-
-        if (!subscription.getUser().getId().equals(user.getId())) {
-            throw new EntityNotFoundException("Assinatura não encontrada");
+                sf.setPrice(price);
         }
 
-        return subscriptionFriendRepository.findBySubscriptionId(subscriptionId)
-                .stream()
-                .map(SubscriptionFriendMapper::toResponse)
-                .toList();
-    }
+        public void removeFriendFromSubscription(
+                        User user,
+                        UUID subscriptionId,
+                        UUID friendId) {
+                SubscriptionFriend sf = subscriptionFriendRepository
+                                .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
+                                .orElseThrow(() -> new EntityNotFoundException("Amigo não está na assinatura"));
 
-    public void updateFriendPrice(
-            User user,
-            UUID subscriptionId,
-            UUID friendId,
-            BigDecimal price
-    ) {
-        SubscriptionFriend sf = subscriptionFriendRepository
-                .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Amigo não está na assinatura")
-                );
+                if (!sf.getSubscription().getUser().getId().equals(user.getId())) {
+                        throw new EntityNotFoundException("Assinatura não encontrada");
+                }
 
-        if (!sf.getSubscription().getUser().getId().equals(user.getId())) {
-            throw new EntityNotFoundException("Assinatura não encontrada");
+                subscriptionFriendRepository.delete(sf);
         }
-
-        sf.setPrice(price);
-    }
-
-    public void removeFriendFromSubscription(
-            User user,
-            UUID subscriptionId,
-            UUID friendId
-    ) {
-        SubscriptionFriend sf = subscriptionFriendRepository
-                .findBySubscriptionIdAndFriendId(subscriptionId, friendId)
-                .orElseThrow(() ->
-                        new EntityNotFoundException("Amigo não está na assinatura")
-                );
-
-        if (!sf.getSubscription().getUser().getId().equals(user.getId())) {
-            throw new EntityNotFoundException("Assinatura não encontrada");
-        }
-
-        subscriptionFriendRepository.delete(sf);
-    }
 }
