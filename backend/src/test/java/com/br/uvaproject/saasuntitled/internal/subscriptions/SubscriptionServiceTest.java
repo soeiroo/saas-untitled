@@ -6,6 +6,7 @@ import com.br.uvaproject.saasuntitled.internal.subscriptions.dto.SubscriptionUpd
 import com.br.uvaproject.saasuntitled.internal.subscriptions.friends.SubscriptionFriend;
 import com.br.uvaproject.saasuntitled.internal.subscriptions.friends.SubscriptionFriendRepository;
 import com.br.uvaproject.saasuntitled.internal.users.User;
+import com.br.uvaproject.saasuntitled.internal.ai.GeminiService;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ class SubscriptionServiceTest {
     private SubscriptionRepository subscriptionRepository;
     private SubscriptionFriendRepository subscriptionFriendRepository;
     private SubscriptionService subscriptionService;
+    private GeminiService geminiService;
 
     private User user;
 
@@ -31,7 +33,8 @@ class SubscriptionServiceTest {
     void setUp() {
         subscriptionRepository = mock(SubscriptionRepository.class);
         subscriptionFriendRepository = mock(SubscriptionFriendRepository.class);
-        subscriptionService = new SubscriptionService(subscriptionRepository, subscriptionFriendRepository);
+        geminiService = mock(GeminiService.class);
+        subscriptionService = new SubscriptionService(subscriptionRepository, subscriptionFriendRepository, geminiService);
 
         user = new User();
         user.setId(UUID.randomUUID());
