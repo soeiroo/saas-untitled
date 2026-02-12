@@ -5,6 +5,17 @@ import React, { useEffect, useRef, useState } from 'react';
 import { getCurrentUser } from '@/api/user';
 import type { User } from '@/types/user';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 interface SidebarProps {
   activePage: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings' | 'plans';
@@ -63,8 +74,6 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
   };
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm('Deseja sair da conta?');
-    if (!confirmLogout) return;
     localStorage.clear();
     sessionStorage.clear();
     window.location.href = '/login';
@@ -189,25 +198,47 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
               showProfileActions ? 'max-h-32 opacity-100 translate-y-0' : 'max-h-0 opacity-0 -translate-y-1 pointer-events-none'
             }`}
           >
-            <button
-              type="button"
-              onClick={handleLogout}
-              className={`w-full rounded-lg border border-white/10 bg-zinc-950/60 text-left transition hover:border-white/20 hover:bg-white/5 ${
-                isExpanded ? 'px-2.5 py-1.5' : 'px-2 py-2'
-              }`}
-            >
-              <div className={`flex items-center ${isExpanded ? 'gap-2.5' : 'justify-center'}`}>
-                <div className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center">
-                  <LogOut className="h-3.5 w-3.5 text-zinc-300" />
-                </div>
-                {isExpanded && (
-                  <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
-                    <p className="text-xs font-medium text-white">Sair da conta</p>
-                    <p className="text-[10px] text-zinc-500">Encerrar sessão</p>
+            <AlertDialog>
+              <AlertDialogTrigger asChild>
+                <button
+                  type="button"
+                  className={`w-full rounded-lg border border-white/10 bg-zinc-950/60 text-left transition hover:border-white/20 hover:bg-white/5 ${
+                    isExpanded ? 'px-2.5 py-1.5' : 'px-2 py-2'
+                  }`}
+                >
+                  <div className={`flex items-center ${isExpanded ? 'gap-2.5' : 'justify-center'}`}>
+                    <div className="h-7 w-7 rounded-lg border border-white/10 bg-white/5 flex items-center justify-center">
+                      <LogOut className="h-3.5 w-3.5 text-zinc-300" />
+                    </div>
+                    {isExpanded && (
+                      <div className="min-w-0 sidebar-label opacity-0 transition-opacity duration-200">
+                        <p className="text-xs font-medium text-white">Sair da conta</p>
+                        <p className="text-[10px] text-zinc-500">Encerrar sessao</p>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            </button>
+                </button>
+              </AlertDialogTrigger>
+              <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                <AlertDialogHeader>
+                  <AlertDialogTitle className="text-white">Deseja sair da conta?</AlertDialogTitle>
+                  <AlertDialogDescription className="text-zinc-400">
+                    Voce sera desconectado e precisara entrar novamente.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">
+                    Cancelar
+                  </AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleLogout}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    Sair
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
 
             <Link
               href="/profile"

@@ -8,6 +8,17 @@ import { Menu, LayoutDashboard, Settings, CreditCard, LogOut, Contact } from 'lu
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetClose, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { cn } from '@/components/ui/utils';
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 
 type NavItem = {
   href: string;
@@ -27,6 +38,7 @@ export default function MobileAppMenu({
 }: MobileAppMenuProps) {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [logoutOpen, setLogoutOpen] = useState(false);
 
   const navItems = useMemo<NavItem[]>(
     () =>
@@ -40,8 +52,6 @@ export default function MobileAppMenu({
   );
 
   const handleLogout = () => {
-    const confirmLogout = window.confirm('Deseja realmente sair?');
-    if (!confirmLogout) return;
     localStorage.clear();
     sessionStorage.clear();
     window.location.href = '/login';
@@ -116,19 +126,43 @@ export default function MobileAppMenu({
                 <div className="mt-6">
                   <div className="text-xs uppercase tracking-[0.2em] text-zinc-500">Conta</div>
                   <div className="mt-3 rounded-3xl border border-zinc-800/80 bg-zinc-900/60 p-3">
-                    <SheetClose asChild>
-                      <button
-                        type="button"
-                        className="flex w-full items-center justify-between gap-3 rounded-2xl px-3 py-3 text-sm text-zinc-300 hover:bg-zinc-800/70 hover:text-white transition"
-                        onClick={handleLogout}
-                      >
-                        <span className="flex items-center gap-3">
-                          <LogOut className="h-4 w-4 text-zinc-400" />
-                          Sair da conta
-                        </span>
-                        <span className="text-xs text-zinc-500">Agora</span>
-                      </button>
-                    </SheetClose>
+                    <AlertDialog open={logoutOpen} onOpenChange={setLogoutOpen}>
+                      <AlertDialogTrigger asChild>
+                        <button
+                          type="button"
+                          className="flex w-full items-center justify-between gap-3 rounded-2xl px-3 py-3 text-sm text-zinc-300 hover:bg-zinc-800/70 hover:text-white transition"
+                          onClick={() => {
+                            setOpen(false);
+                            setLogoutOpen(true);
+                          }}
+                        >
+                          <span className="flex items-center gap-3">
+                            <LogOut className="h-4 w-4 text-zinc-400" />
+                            Sair da conta
+                          </span>
+                          <span className="text-xs text-zinc-500">Agora</span>
+                        </button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="bg-zinc-900 border-zinc-800 text-white">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="text-white">Deseja sair da conta?</AlertDialogTitle>
+                          <AlertDialogDescription className="text-zinc-400">
+                            Voce sera desconectado e precisara entrar novamente.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="bg-zinc-800 border-zinc-700 text-white hover:bg-zinc-700">
+                            Cancelar
+                          </AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={handleLogout}
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                          >
+                            Sair
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
                   </div>
                 </div>
               </div>
