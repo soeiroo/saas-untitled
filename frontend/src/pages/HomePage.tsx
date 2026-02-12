@@ -5,10 +5,12 @@ import { getSubscriptions, getSharedSubscriptions, addSubscription, updateSubscr
 import { AddSubscriptionDialog } from '@/components/subscription/AddSubscriptionDialog';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { EditSubscriptionDialog } from '@/components/subscription/EditSubscriptionDialog';
+import { AIInsightsDialog } from '@/components/subscription/AIInsightsDialog';
 import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Button } from '@/components/ui/button';
 import { DollarSign, Bell, TrendingUp, Search, Sparkles, Loader2 } from 'lucide-react';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Subscription } from '@/types/subscription';
@@ -17,6 +19,8 @@ import { StatCounter } from '@/components/common/StatCounter';
 import { getAutoRenewedDate, getNextRenewalDate } from '@/utils/subscriptionRenewal';
 import { format } from 'date-fns';
 import type { SubscriptionFriend } from '@/types/subscriptionFriend';
+import { getAIInsights } from '@/api/insights';
+import { getCurrentUser } from '@/api/user';
 
 type HomePageProps = {
   activePage?: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
@@ -38,16 +42,24 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState<'renewal-asc' | 'price-desc' | 'price-asc' | 'name-asc'>('renewal-asc');
   const [subscriptionFriends, setSubscriptionFriends] = useState<Record<string, SubscriptionFriend[]>>({});
+  const [isLoadingInsights, setIsLoadingInsights] = useState(false);
+  const [aiInsights, setAiInsights] = useState<string>('');
+  const [insightsDialogOpen, setInsightsDialogOpen] = useState(false);
+  const [userPlan, setUserPlan] = useState<string>('');
+  const [isLoadingUser, setIsLoadingUser] = useState(true);
 
   useEffect(() => {
-    async function fetchSubs() {
+    async function fetchUserAndSubs() {
       setIsFetchingSubscriptions(true);
+      setIsLoadingUser(true);
       setError('');
       try {
-        const [subs, sharedSubs] = await Promise.all([
+        const [user, subs, sharedSubs] = await Promise.all([
+          getCurrentUser(),
           getSubscriptions(),
           getSharedSubscriptions(),
         ]);
+        setUserPlan(user.userPlan || '');
         const normalizedSubs = await autoRenewSubscriptions(subs);
         setMySubscriptions(normalizedSubs);
         setSharedSubscriptions(sharedSubs);
@@ -64,9 +76,10 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
         }
       } finally {
         setIsFetchingSubscriptions(false);
+        setIsLoadingUser(false);
       }
     }
-    fetchSubs();
+    fetchUserAndSubs();
   }, []);
 
   const loadSubscriptionFriends = async (subs: Subscription[]) => {
@@ -210,6 +223,33 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
       }
     } finally {
       setIsMutatingSubscriptions(false);
+    }
+  };
+
+  const handleGetAIInsights = async () => {
+    setIsLoadingInsights(true);
+    setError('');
+    try {
+      const insights = await getAIInsights();
+      
+      // Valida se retornou conteúdo
+      if (!insights || insights.trim() === '') {
+        setError('A IA não conseguiu gerar insights. Tente novamente mais tarde.');
+        return;
+      }
+      
+      setAiInsights(insights);
+      setInsightsDialogOpen(true);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao obter insights da IA');
+      }
+    } finally {
+      setIsLoadingInsights(false);
     }
   };
 
@@ -414,10 +454,16 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                   </Tabs>
 
                   <div className="flex items-center gap-3 mt-2 sm:mt-0">
-                    <div className="rounded-xl px-3 py-2 text-xs sm:text-sm text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-purple-400" />
-                      Insights atualizados hoje
-                    </div>
+                    {!isLoadingUser && userPlan?.toLowerCase() === 'premium' && (
+                      <Button
+                        onClick={handleGetAIInsights}
+                        disabled={isLoadingInsights || isFetchingSubscriptions}
+                        className="rounded-xl px-4 py-2 text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 to-emerald-500 hover:from-purple-700 hover:to-emerald-600 border-0 flex items-center gap-2 shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                      >
+                        <Sparkles className="h-4 w-4" />
+                        {isLoadingInsights ? 'Gerando Insights...' : 'Insights IA'}
+                      </Button>
+                    )}
                   </div>
                 </div>
 
@@ -530,10 +576,27 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 }}
                 onUpdate={handleUpdateSubscription}
               />
+
+              <AIInsightsDialog
+                open={insightsDialogOpen}
+                onClose={() => setInsightsDialogOpen(false)}
+                insights={aiInsights}
+              />
             </div>
           </main>
         </div>
       </div>
+
+      {/* Loading Overlay quando está buscando insights */}
+      {isLoadingInsights && (
+        <div className="fixed bottom-6 right-6 z-50 bg-zinc-900 border border-zinc-800 rounded-lg shadow-2xl p-4 flex items-center gap-3">
+          <Loader2 className="h-5 w-5 animate-spin text-purple-400" />
+          <div>
+            <p className="text-sm font-medium text-white">Analisando suas assinaturas...</p>
+            <p className="text-xs text-zinc-400">A IA está gerando insights personalizados</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
