@@ -1,9 +1,16 @@
 'use client';
 
-import { Calendar, DollarSign, Trash, Pencil, Bell, CheckCircle } from 'lucide-react';
+import { useEffect, useRef, useState } from 'react';
+import { Calendar, DollarSign, Trash, Pencil, Bell, CheckCircle, MoreVertical } from 'lucide-react';
 import { Button } from '../ui/button';
 import { Card } from '../ui/card';
 import { Badge } from '../ui/badge';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '../ui/dropdown-menu';
 import { differenceInDays, format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
 import { subscriptionIcons } from '@/data/subscriptionIcons';
@@ -23,13 +30,35 @@ interface SubscriptionCardProps {
 export function SubscriptionCard({ subscription, onDelete, onEdit, onMarkPaid, sharedFriends = [], isShared = false }: SubscriptionCardProps) {
   const daysUntilRenewal = differenceInDays(new Date(subscription.renewalDate), new Date());
   const isUpcoming = daysUntilRenewal >= 0 && daysUntilRenewal <= 7;
+  const headerRef = useRef<HTMLDivElement | null>(null);
+  const [compactActions, setCompactActions] = useState(false);
 
   const icon = subscriptionIcons.find(i => i.name === subscription.icon) || subscriptionIcons[0];
 
+  useEffect(() => {
+    const element = headerRef.current;
+    if (!element) {
+      return;
+    }
+
+    const observer = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const nextCompact = entry.contentRect.width < 360;
+        setCompactActions((current) => (current === nextCompact ? current : nextCompact));
+      }
+    });
+
+    observer.observe(element);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+
   return (
     <Card className="bg-zinc-900 border-zinc-800 p-4 hover:border-zinc-700 transition-all duration-300 hover:-translate-y-1">
-      <div className="flex items-start justify-between mb-3">
-        <div className="flex-1 flex items-center gap-3">
+      <div ref={headerRef} className="flex items-start justify-between mb-3">
+        <div className="flex-1 min-w-0 flex items-center gap-3">
           <span
             className="inline-flex items-center justify-center rounded-full"
             style={{ background: icon.color + '80', minWidth: 40, minHeight: 40, width: 40, height: 40 }}
@@ -97,37 +126,78 @@ export function SubscriptionCard({ subscription, onDelete, onEdit, onMarkPaid, s
           </div>
         </div>
         {(onMarkPaid || onEdit || onDelete) && (
-          <div className="flex gap-1">
-            {!isShared && onMarkPaid && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onMarkPaid(subscription)}
-                className="text-emerald-300 hover:text-emerald-200 hover:bg-emerald-900/30"
-                aria-label="Marcar como pago"
-              >
-                <CheckCircle className="h-4 w-4" />
-              </Button>
+          <div className="flex items-center gap-1">
+            {!compactActions && (
+              <div className="flex gap-1">
+              {!isShared && onMarkPaid && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onMarkPaid(subscription)}
+                  className="text-emerald-300 hover:text-emerald-200 hover:bg-emerald-900/30"
+                  aria-label="Marcar como pago"
+                >
+                  <CheckCircle className="h-4 w-4" />
+                </Button>
+              )}
+              {onEdit && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onEdit(subscription)}
+                  className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+                >
+                  <Pencil className="h-4 w-4" />
+                </Button>
+              )}
+              {onDelete && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onDelete(subscription.id)}
+                  className="text-red-400 hover:text-red-300 hover:bg-red-950/50"
+                >
+                  <Trash className="h-4 w-4" />
+                </Button>
+              )}
+              </div>
             )}
-            {onEdit && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onEdit(subscription)}
-                className="text-zinc-400 hover:text-white hover:bg-zinc-800"
-              >
-                <Pencil className="h-4 w-4" />
-              </Button>
-            )}
-            {onDelete && (
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onDelete(subscription.id)}
-                className="text-red-400 hover:text-red-300 hover:bg-red-950/50"
-              >
-                <Trash className="h-4 w-4" />
-              </Button>
+            {compactActions && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-zinc-400 hover:text-white hover:bg-zinc-800"
+                    aria-label="Abrir opções"
+                  >
+                    <MoreVertical className="h-4 w-4" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-44">
+                  {!isShared && onMarkPaid && (
+                    <DropdownMenuItem onSelect={() => onMarkPaid(subscription)}>
+                      <CheckCircle className="h-4 w-4 text-emerald-300" />
+                      Marcar como pago
+                    </DropdownMenuItem>
+                  )}
+                  {onEdit && (
+                    <DropdownMenuItem onSelect={() => onEdit(subscription)}>
+                      <Pencil className="h-4 w-4" />
+                      Editar
+                    </DropdownMenuItem>
+                  )}
+                  {onDelete && (
+                    <DropdownMenuItem
+                      variant="destructive"
+                      onSelect={() => onDelete(subscription.id)}
+                    >
+                      <Trash className="h-4 w-4" />
+                      Excluir
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
             )}
           </div>
         )}

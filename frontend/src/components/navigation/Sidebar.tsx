@@ -223,7 +223,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
                 <AlertDialogHeader>
                   <AlertDialogTitle className="text-white">Deseja sair da conta?</AlertDialogTitle>
                   <AlertDialogDescription className="text-zinc-400">
-                    Voce sera desconectado e precisara entrar novamente.
+                    Voce sera desconectado e precisará entrar novamente.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
