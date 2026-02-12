@@ -206,3 +206,5 @@ export async function deleteCurrentUser(): Promise<void> {
   invalidateSessionCache(['user:me']);
   clearSessionUserId();
 }
+
+export type { User };

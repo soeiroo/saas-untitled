@@ -121,3 +121,15 @@ export async function getSubscriptionFriends(subscriptionId: string): Promise<Su
     return response.json();
   });
 }
+
+export async function getAISpendingAdvice(): Promise<string> {
+  const token = getAuthToken();
+  const response = await fetch(`${API_URL}/api/subscriptions/advice`, {
+    credentials: 'include',
+    headers: {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+  });
+  if (!response.ok) throw new Error('Erro ao buscar análise de IA');
+  return response.text();
+}

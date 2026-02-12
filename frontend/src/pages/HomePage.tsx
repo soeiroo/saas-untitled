@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useMemo } from 'react';
-import { getSubscriptions, getSharedSubscriptions, addSubscription, updateSubscription, deleteSubscription, getSubscriptionFriends } from '@/api/subscription';
+import { getSubscriptions, getSharedSubscriptions, addSubscription, updateSubscription, deleteSubscription, getSubscriptionFriends, getAISpendingAdvice } from '@/api/subscription';
 import { AddSubscriptionDialog } from '@/components/subscription/AddSubscriptionDialog';
 import { SubscriptionCard } from '@/components/subscription/SubscriptionCard';
 import { EditSubscriptionDialog } from '@/components/subscription/EditSubscriptionDialog';
@@ -9,7 +9,7 @@ import { Card } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { DollarSign, Bell, TrendingUp, Search, Sparkles, Loader2 } from 'lucide-react';
+import { DollarSign, Bell, TrendingUp, Search, Sparkles, Loader2, X } from 'lucide-react';
 import { Sidebar } from '@/components/navigation/Sidebar';
 import type { Subscription } from '@/types/subscription';
 import MobileAppMenu from '@/components/navigation/MobileAppMenu';
@@ -38,6 +38,9 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [sortBy, setSortBy] = useState<'renewal-asc' | 'price-desc' | 'price-asc' | 'name-asc'>('renewal-asc');
   const [subscriptionFriends, setSubscriptionFriends] = useState<Record<string, SubscriptionFriend[]>>({});
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
+  const [aiAdvice, setAiAdvice] = useState<string | null>(null);
+  const [showAIModal, setShowAIModal] = useState(false);
 
   useEffect(() => {
     async function fetchSubs() {
@@ -132,6 +135,26 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
       }
     } finally {
       setIsMutatingSubscriptions(false);
+    }
+  };
+
+  const handleRequestAIAnalysis = async () => {
+    setIsLoadingAI(true);
+    setError('');
+    try {
+      const advice = await getAISpendingAdvice();
+      setAiAdvice(advice);
+      setShowAIModal(true);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else if (typeof err === 'string') {
+        setError(err);
+      } else {
+        setError('Erro ao solicitar análise de IA');
+      }
+    } finally {
+      setIsLoadingAI(false);
     }
   };
 
@@ -412,13 +435,17 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                       </TabsTrigger>
                     </TabsList>
                   </Tabs>
-
+{/* 
                   <div className="flex items-center gap-3 mt-2 sm:mt-0">
-                    <div className="rounded-xl px-3 py-2 text-xs sm:text-sm text-zinc-300 bg-zinc-900/70 border border-zinc-800 flex items-center gap-2">
-                      <Sparkles className="h-4 w-4 text-purple-400" />
-                      Insights atualizados hoje
-                    </div>
-                  </div>
+                    <button
+                      onClick={handleRequestAIAnalysis}
+                      disabled={isLoadingAI}
+                      className="rounded-xl px-3 py-2 text-xs sm:text-sm text-white bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-700 hover:to-purple-600 disabled:opacity-50 disabled:cursor-not-allowed border border-purple-400/20 flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-purple-500/20"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                      {isLoadingAI ? 'Analisando...' : 'Solicitar análise da IA'}
+                    </button>
+                  </div> */}
                 </div>
 
                 <div className="w-full flex flex-col lg:flex-row items-center gap-4 sm:gap-5">
@@ -533,6 +560,60 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
             </div>
           </main>
         </div>
+
+        {/* Modal de loading no canto */}
+        {isLoadingAI && (
+          <div className="fixed bottom-6 right-6 z-50 bg-zinc-900 border border-zinc-700 rounded-2xl p-4 shadow-2xl animate-in slide-in-from-bottom-4 duration-300">
+            <div className="flex items-center gap-3">
+              <Loader2 className="h-5 w-5 text-purple-400 animate-spin" />
+              <div>
+                <p className="text-sm font-semibold text-white">Analisando suas assinaturas</p>
+                <p className="text-xs text-zinc-400">A IA está processando seus dados...</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Modal grande com análise */}
+        {showAIModal && aiAdvice && (
+          <div 
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 animate-in fade-in duration-200"
+            onClick={() => setShowAIModal(false)}
+          >
+            <div 
+              className="bg-zinc-900 border border-zinc-700 rounded-3xl shadow-2xl max-w-4xl w-full max-h-[85vh] overflow-hidden animate-in zoom-in-95 duration-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              {/* Header do Modal */}
+              <div className="flex items-center justify-between p-6 border-b border-zinc-800">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-purple-600 to-purple-500 flex items-center justify-center">
+                    <Sparkles className="h-5 w-5 text-white" />
+                  </div>
+                  <div>
+                    <h2 className="text-xl font-bold text-white">Análise de Gastos</h2>
+                    <p className="text-sm text-zinc-400">Recomendações personalizadas da IA</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowAIModal(false)}
+                  className="h-10 w-10 rounded-xl bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center transition-colors"
+                >
+                  <X className="h-5 w-5 text-zinc-400" />
+                </button>
+              </div>
+
+              {/* Conteúdo do Modal */}
+              <div className="p-6 overflow-y-auto max-h-[calc(85vh-88px)]">
+                <div className="prose prose-invert prose-zinc max-w-none">
+                  <div className="text-zinc-200 whitespace-pre-wrap leading-relaxed">
+                    {aiAdvice}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

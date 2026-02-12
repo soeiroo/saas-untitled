@@ -188,12 +188,12 @@ export default function DashboardPage() {
                 </Alert>
               )}
 
-              <section className="mb-6 flex items-center justify-between">
+              {/* <section className="mb-6 flex items-center justify-between">
                 <div>
                   <h2 className="text-lg font-semibold text-white">Indicadores rápidos</h2>
                   <p className="text-sm text-zinc-500">Resumo do que importa agora</p>
                 </div>
-              </section>
+              </section> */}
 
               <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
                 {isLoading ? (

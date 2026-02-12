@@ -2,9 +2,12 @@
 
 import { Sidebar } from '@/components/navigation/Sidebar';
 import { Check } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { getCurrentUser, User } from '@/api/user';
 
 export default function PlanosPage() {
-  const plans = [
+  const [user, setUser] = useState<User | null>(null);
+  const [plans, setPlans] = useState([
     {
       name: 'Básico',
       price: 'R$ 29,90',
@@ -26,7 +29,7 @@ export default function PlanosPage() {
       features: [
         'Até 30 assinaturas',
         'Compartilhamento ilimitado',
-        'Relatórios semanais',
+        'Relatórios semanais e insights de IA',
         'Suporte prioritário',
         'Notificações personalizadas',
       ],
@@ -40,7 +43,7 @@ export default function PlanosPage() {
       features: [
         'Assinaturas ilimitadas',
         'Compartilhamento ilimitado',
-        'Relatórios em tempo real',
+        'Relatórios ilimitados e insights de IA',
         'Suporte 24/7',
         'Notificações personalizadas',
         'API de integração',
@@ -48,7 +51,26 @@ export default function PlanosPage() {
       ],
       isCurrent: false,
     },
-  ];
+  ]);
+
+  useEffect(() => {
+    async function fetchUser() {
+      const me = await getCurrentUser();
+      setUser(me);
+      if (me?.userPlan && me.userPlan !== 'Básico') {
+        setPlans(prev => prev.map(plan => ({
+          ...plan,
+          isCurrent: plan.name === 'Premium',
+        })));
+      } else {
+        setPlans(prev => prev.map(plan => ({
+          ...plan,
+          isCurrent: plan.name === 'Básico',
+        })));
+      }
+    }
+    fetchUser();
+  }, []);
 
   return (
     <div className="flex min-h-screen bg-zinc-950">
@@ -107,7 +129,7 @@ export default function PlanosPage() {
                     className={`w-full py-3.5 px-6 rounded-xl font-semibold transition-all duration-300 ${
                       plan.isCurrent
                         ? 'bg-zinc-800 text-zinc-400 shadow-[0_10px_28px_rgba(16,185,129,0.15)] cursor-not-allowed'
-                        : 'bg-zinc-800 text-white hover:bg-emerald-600'
+                        : 'bg-zinc-800 text-zinc-500'
                     }`}
                     disabled={plan.isCurrent}
                   >
