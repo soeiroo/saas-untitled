@@ -1,5 +1,5 @@
 import '@/styles/sidebar.css';
-import { LayoutDashboard, CreditCard, BarChart3, Settings, Contact, ChevronLeft, ChevronRight, LogOut } from 'lucide-react';
+import { LayoutDashboard, CreditCard, BarChart3, Settings, Contact, ChevronLeft, ChevronRight, LogOut, Package } from 'lucide-react';
 import Link from 'next/link';
 import React, { useEffect, useRef, useState } from 'react';
 import { getCurrentUser } from '@/api/user';
@@ -7,7 +7,7 @@ import type { User } from '@/types/user';
 import { ImageWithFallback } from '@/components/common/ImageWithFallback';
 
 interface SidebarProps {
-  activePage: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings';
+  activePage: 'overview' | 'subscriptions' | 'friends' | 'reports' | 'settings' | 'plans';
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
@@ -150,6 +150,22 @@ export const Sidebar: React.FC<SidebarProps> = ({ activePage }) => {
               <span className="sidebar-label opacity-0 transition-opacity duration-200 whitespace-nowrap">Assinaturas</span>
             </span>
             {activePage === 'subscriptions' && (
+              <span className="text-xs text-emerald-400 sidebar-label opacity-0 transition-opacity duration-200 pr-3">Atual</span>
+            )}
+          </Link>
+          <Link
+            href="/planos"
+            className={`sidebar-item flex items-center rounded-lg transition-all duration-300 px-0 py-0 h-12 w-full ${activePage === 'plans'
+                ? 'bg-emerald-500/10 text-emerald-200 border border-white/10 shadow-[0_14px_34px_rgba(16,185,129,0.10)]'
+                : 'text-zinc-400 hover:text-white hover:bg-white/5'
+              }`}
+            style={{ minHeight: '3rem' }}
+          >
+            <span className="flex items-center gap-2 flex-1 min-w-0 px-3 py-2">
+              <Package className="h-4 w-4 flex-shrink-0" />
+              <span className="sidebar-label opacity-0 transition-opacity duration-200 whitespace-nowrap">Planos</span>
+            </span>
+            {activePage === 'plans' && (
               <span className="text-xs text-emerald-400 sidebar-label opacity-0 transition-opacity duration-200 pr-3">Atual</span>
             )}
           </Link>

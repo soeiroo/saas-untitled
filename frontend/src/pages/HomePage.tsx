@@ -321,7 +321,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                 </Alert>
               )}
 
-              <section className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+              {/* <section className="hidden md:grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
                 <Card className="bg-zinc-900/80 border-zinc-800 p-6 shadow-lg shadow-black/20">
                   <div className="flex items-center justify-between">
                     <div>
@@ -373,7 +373,7 @@ export default function HomePage({ activePage = 'overview' }: HomePageProps) {
                     <Sparkles className="h-10 w-10 text-purple-400" />
                   </div>
                 </Card>
-              </section>
+              </section> */}
 
               <div className="flex flex-col items-center mb-6 sm:mb-8 gap-4 sm:gap-5 w-full">
                 <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-4 sm:gap-5">
