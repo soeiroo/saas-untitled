@@ -20,7 +20,7 @@ public class GeminiService {
     private final RestTemplate restTemplate;
 
     private static final String GEMINI_URL =
-            "https://generativelanguage.googleapis.com/v1/models/gemini-1.5-flash:generateContent";
+            "https://generativelanguage.googleapis.com/v1/models/gemini-2.5-flash:generateContent";
 
     public String generateFinancialAdvice(String prompt) {
 
